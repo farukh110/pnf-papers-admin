@@ -1,7 +1,10 @@
 import { Button, Form, Input } from 'antd';
 import './index.scss';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
+
+    const navigate = useNavigate();
 
     const onFinish = (values) => {
         console.log('Success:', values);
@@ -63,8 +66,14 @@ const Login = () => {
                                             <Input.Password className='custom-input-password' />
                                         </Form.Item>
 
+                                        <Link className='text-decoration-none' to='/forgot-password'> Forgot Password ? </Link>
+
                                         <Form.Item>
-                                            <Button type="primary" className='btn-login mt-md-3 w-100' htmlType="submit">
+                                            <Button
+                                                type="primary"
+                                                className='btn-login mt-md-3 w-100'
+                                                onClick={() => navigate('/admin')}
+                                                htmlType="submit">
                                                 Login
                                             </Button>
                                         </Form.Item>
