@@ -1,0 +1,40 @@
+.reset-page {
+    overflow-x: hidden;
+
+    .reset-left-area {
+        background: #501DEF;
+        height: 100vh;
+    }
+
+    .reset-right-area {
+
+        h2 {
+            font-size: 40px;
+        }
+
+        .reset-form {
+
+            input {
+                padding-top: 12px;
+                padding-bottom: 12px;
+            }
+
+            .custom-input-password {
+
+                input {
+                    padding-top: 8px;
+                    padding-bottom: 8px;
+                }
+            }
+
+            .btn-reset {
+
+                background: #501DEF !important;
+                border-radius: 50px !important;
+                height: 45px !important;
+                font-size: 16px;
+                font-weight: 500;
+            }
+        }
+    }
+}
