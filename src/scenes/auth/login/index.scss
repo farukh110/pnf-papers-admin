@@ -2,8 +2,39 @@
     overflow-x: hidden;
 
     .login-left-area {
-
         background: #501DEF;
         height: 100vh;
+    }
+
+    .login-right-area {
+
+        h2 {
+            font-size: 40px;
+        }
+
+        .login-form {
+
+            input {
+                padding-top: 12px;
+                padding-bottom: 12px;
+            }
+
+            .custom-input-password {
+
+                input {
+                    padding-top: 8px;
+                    padding-bottom: 8px;
+                }
+            }
+
+            .btn-login {
+
+                background: #501DEF !important;
+                border-radius: 50px !important;
+                height: 45px !important;
+                font-size: 16px;
+                font-weight: 500;
+            }
+        }
     }
 }

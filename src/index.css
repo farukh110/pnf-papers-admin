@@ -12,6 +12,7 @@
 body {
   padding: 0px;
   margin: 0px;
+  font-family: "Inter", system-ui;
 }
 
 .ant-layout {
