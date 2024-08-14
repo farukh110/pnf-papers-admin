@@ -1,3 +1,7 @@
+body {
+    overflow-x: hidden !important;
+}
+
 .ant-layout-sider {
 
     max-width: 250px !important;
@@ -11,4 +15,55 @@
     max-width: 80px !important;
     min-width: 80px !important;
     width: 80px !important;
+
+    .logo {
+
+        height: 60px !important;
+        width: 60px;
+        object-fit: contain;
+    }
+}
+
+.custom-sidebar {
+
+    .logo {
+
+        height: 90px;
+        margin: 0 auto;
+        display: table;
+        transition: all 0.3s;
+    }
+
+    .sidebar-icon {
+        font-size: 20px !important;
+    }
+}
+
+.header-right-area {
+
+    .ant-list-item-meta-title {
+
+        line-height: 1 !important;
+    }
+
+    .ant-list-item-meta {
+
+        align-items: center;
+    }
+}
+
+.notifications {
+
+    .notify-icon {
+
+        font-size: 35px;
+    }
+
+    .notify-badge {
+
+        width: 20px;
+        height: 20px;
+        right: 0px;
+        top: 10px;
+    }
 }

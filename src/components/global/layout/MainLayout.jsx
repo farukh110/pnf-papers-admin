@@ -3,17 +3,19 @@ import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
 } from '@ant-design/icons';
-import { Button, Layout, Menu, theme } from 'antd';
+import { Avatar, Button, Layout, List, Menu, theme } from 'antd';
 import { RiCustomerService2Line, RiDashboard3Line, RiProductHuntLine } from 'react-icons/ri';
 import { HiOutlineUsers } from 'react-icons/hi';
-import { useNavigate } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { AiOutlineBgColors } from 'react-icons/ai';
 import { GoDot } from 'react-icons/go';
 import { PiClipboardText } from 'react-icons/pi';
 import { TbBrandAirtable, TbBrandBlogger } from 'react-icons/tb';
 import { BiCategory } from 'react-icons/bi';
 const { Header, Sider, Content } = Layout;
+import logo from '../../../assets/images/logo/pnf-papers.png';
 import './index.scss';
+import { IoIosNotificationsOutline } from 'react-icons/io';
 
 const MainLayout = () => {
 
@@ -25,16 +27,25 @@ const MainLayout = () => {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
+    const data = [
+        {
+            title: 'Farukh Sajjad',
+        },
+    ];
+
     return (
         <Layout>
-            <Sider trigger={null} collapsible collapsed={collapsed}>
+            <Sider className='custom-sidebar' trigger={null} collapsible collapsed={collapsed}>
                 <div className="demo-logo-vertical" />
 
-
+                <Link to='/admin'>
+                    <img className='img-fluid logo my-md-4' src={logo} alt='Pnf Papers' />
+                </Link>
 
                 <Menu
                     theme="dark"
                     mode="inline"
+                    className='mt-md-2'
                     defaultSelectedKeys={['']}
                     onClick={(key) => {
 
@@ -48,17 +59,17 @@ const MainLayout = () => {
                     items={[
                         {
                             key: '',
-                            icon: <RiDashboard3Line className='fs-3' />,
+                            icon: <RiDashboard3Line className='sidebar-icon' />,
                             label: 'Dashboard',
                         },
                         {
                             key: 'customers',
-                            icon: <HiOutlineUsers className='fs-3' />,
+                            icon: <HiOutlineUsers className='sidebar-icon' />,
                             label: 'Customers',
                         },
                         {
                             key: 'products',
-                            icon: <RiProductHuntLine className='fs-3' />,
+                            icon: <RiProductHuntLine className='sidebar-icon' />,
                             label: 'Products',
                             children: [
                                 {
@@ -75,7 +86,7 @@ const MainLayout = () => {
                         },
                         {
                             key: 'brands',
-                            icon: <TbBrandAirtable className='fs-3' />,
+                            icon: <TbBrandAirtable className='sidebar-icon' />,
                             label: 'Brands',
                             children: [
                                 {
@@ -92,7 +103,7 @@ const MainLayout = () => {
                         },
                         {
                             key: 'category',
-                            icon: <BiCategory className='fs-3' />,
+                            icon: <BiCategory className='sidebar-icon' />,
                             label: 'Category',
                             children: [
                                 {
@@ -109,7 +120,7 @@ const MainLayout = () => {
                         },
                         {
                             key: 'colors',
-                            icon: <AiOutlineBgColors className='fs-3' />,
+                            icon: <AiOutlineBgColors className='sidebar-icon' />,
                             label: 'Colors',
                             children: [
                                 {
@@ -126,12 +137,12 @@ const MainLayout = () => {
                         },
                         {
                             key: 'orders',
-                            icon: <PiClipboardText className='fs-3' />,
+                            icon: <PiClipboardText className='sidebar-icon' />,
                             label: 'Orders',
                         },
                         {
                             key: 'blogs',
-                            icon: <TbBrandBlogger className='fs-3' />,
+                            icon: <TbBrandBlogger className='sidebar-icon' />,
                             label: 'Blogs',
                             children: [
                                 {
@@ -148,7 +159,7 @@ const MainLayout = () => {
                         },
                         {
                             key: 'blog-categories',
-                            icon: <BiCategory className='fs-3' />,
+                            icon: <BiCategory className='sidebar-icon' />,
                             label: 'Blog Categories',
                             children: [
                                 {
@@ -165,7 +176,7 @@ const MainLayout = () => {
                         },
                         {
                             key: 'enquiries',
-                            icon: <RiCustomerService2Line className='fs-3' />,
+                            icon: <RiCustomerService2Line className='sidebar-icon' />,
                             label: 'Enquiries',
                         },
                     ]}
@@ -173,21 +184,55 @@ const MainLayout = () => {
             </Sider>
             <Layout>
                 <Header
+                    className='row justify-content-between ps-2 pe-0'
                     style={{
                         padding: 0,
                         background: colorBgContainer,
                     }}
                 >
-                    <Button
-                        type="text"
-                        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                        onClick={() => setCollapsed(!collapsed)}
-                        style={{
-                            fontSize: '16px',
-                            width: 64,
-                            height: 64,
-                        }}
-                    />
+
+                    <div className='col-md-8'>
+                        <Button
+                            type="text"
+                            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                            onClick={() => setCollapsed(!collapsed)}
+                            style={{
+                                fontSize: '16px',
+                                width: 64,
+                                height: 64,
+                            }}
+                        />
+                    </div>
+
+                    <div className='col-md-1 notifications'>
+                        <div className='position-relative float-end'>
+                            <IoIosNotificationsOutline className='notify-icon' />
+                            <span className='badge bg-danger notify-badge rounded-circle p-1 position-absolute'>
+                                3
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <div className='col-md-3 header-right-area'>
+
+                        <List
+                            itemLayout="horizontal"
+                            dataSource={data}
+                            renderItem={(item, index) => (
+                                <List.Item key={index}>
+                                    <List.Item.Meta
+                                        avatar={<Avatar src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAw436esCuqhWhF6QPU_r2FKQmpnscithCVg&s`} />}
+                                        title={<p className='mb-0'>{item.title}</p>}
+                                        description={<p className='mb-0 text-dark'>farukhsajjad110@gmail.com</p>}
+
+                                    />
+                                </List.Item>
+                            )}
+                        />
+
+                    </div>
+
                 </Header>
                 <Content
                     style={{
@@ -198,7 +243,7 @@ const MainLayout = () => {
                         borderRadius: borderRadiusLG,
                     }}
                 >
-                    Content
+                    <Outlet />
                 </Content>
             </Layout>
         </Layout>
