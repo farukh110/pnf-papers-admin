@@ -1,7 +1,51 @@
 import { BsArrowDownRight } from 'react-icons/bs';
+import { Column } from '@ant-design/plots';
 import './index.scss';
 
 const Dashboard = () => {
+
+    const data = [
+        { type: 'January', sales: 40 },
+        { type: 'February', sales: 20 },
+        { type: 'March', sales: 30 },
+        { type: 'April', sales: 50 },
+        { type: 'May', sales: 70 },
+        { type: 'June', sales: 100 },
+        { type: 'July', sales: 50 },
+        { type: 'August', sales: 95 },
+        { type: 'September', sales: 24 },
+        { type: 'October', sales: 85 },
+        { type: 'November', sales: 25 },
+        { type: 'December', sales: 60 },
+    ];
+
+    const config = {
+
+        data,
+        xField: 'type',
+        yField: 'sales',
+        style: {
+            fill: () => {
+                return '#2989FF';
+            },
+        },
+        xAxis: {
+            label: {
+                autoHide: true,
+                autoRotate: false
+            }
+        },
+        legend: true,
+        meta: {
+            type: {
+                alias: "Month",
+            },
+            sales: {
+                alias: "Income"
+            }
+        }
+    };
+
     return (
         <>
             <div className='dashboard'>
@@ -97,6 +141,15 @@ const Dashboard = () => {
 
                     </div>
 
+                </div>
+
+                <div className='row'>
+                    <div className='col-md-12'>
+
+                        <h4 className='mt-md-3'> Income Statistics </h4>
+
+                        <Column className="mt-md-3" {...config} />
+                    </div>
                 </div>
             </div>
         </>
