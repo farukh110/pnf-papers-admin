@@ -13,6 +13,7 @@ import Customers from './scenes/customers';
 import Colors from './scenes/colors';
 import ProductsCategories from './scenes/products-categories';
 import Brands from './scenes/brands';
+import Products from './scenes/products';
 
 const App = () => {
 
@@ -33,6 +34,7 @@ const App = () => {
             <Route path='colors' element={<Colors />} />
             <Route path='categories' element={<ProductsCategories />} />
             <Route path='brands' element={<Brands />} />
+            <Route path='products' element={<Products />} />
           </Route>
         </Routes>
       </Router>
