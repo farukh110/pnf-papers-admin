@@ -5,6 +5,7 @@ import ForgotPassword from './scenes/auth/forgot-password'
 import MainLayout from './components/global/layout/MainLayout';
 import Dashboard from './scenes/dashboard';
 import './App.css'
+import Enquiries from './scenes/Enquiries';
 
 const App = () => {
 
@@ -17,6 +18,7 @@ const App = () => {
           <Route path='/forgot-password' element={<ForgotPassword />} />
           <Route path='/admin' element={<MainLayout />}>
             <Route index element={<Dashboard />} />
+            <Route path='enquiries' element={<Enquiries />} />
           </Route>
         </Routes>
       </Router>

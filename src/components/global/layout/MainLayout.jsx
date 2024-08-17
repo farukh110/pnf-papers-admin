@@ -47,12 +47,8 @@ const MainLayout = () => {
                     mode="inline"
                     className='mt-md-2'
                     defaultSelectedKeys={['']}
-                    onClick={(key) => {
-
-                        if (key == "signup") {
-
-                        } else {
-
+                    onClick={({ key }) => {
+                        if (key) {
                             navigate(key);
                         }
                     }}
