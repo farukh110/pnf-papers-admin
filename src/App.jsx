@@ -7,6 +7,7 @@ import Dashboard from './scenes/dashboard';
 import './App.css'
 import Enquiries from './scenes/Enquiries';
 import Blogs from './scenes/blogs';
+import BlogsCategories from './scenes/blogs-categories';
 
 const App = () => {
 
@@ -21,6 +22,7 @@ const App = () => {
             <Route index element={<Dashboard />} />
             <Route path='enquiries' element={<Enquiries />} />
             <Route path='blogs' element={<Blogs />} />
+            <Route path='blogs-categories' element={<BlogsCategories />} />
           </Route>
         </Routes>
       </Router>

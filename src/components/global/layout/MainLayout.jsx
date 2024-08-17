@@ -164,7 +164,7 @@ const MainLayout = () => {
                                     label: 'Add Blog Category',
                                 },
                                 {
-                                    key: 'blog-categories',
+                                    key: 'blogs-categories',
                                     icon: <GoDot />,
                                     label: 'Blog Categories',
                                 },
