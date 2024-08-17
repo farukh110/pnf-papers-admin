@@ -1,3 +1,4 @@
+import { Table } from 'antd';
 import { BsArrowDownRight } from 'react-icons/bs';
 import { Column } from '@ant-design/plots';
 import './index.scss';
@@ -45,6 +46,34 @@ const Dashboard = () => {
             }
         }
     };
+
+    const columns = [
+        {
+            title: 'S.No',
+            dataIndex: 'key',
+        },
+        {
+            title: 'Name',
+            dataIndex: 'name',
+        },
+        {
+            title: 'Product',
+            dataIndex: 'product',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+        },
+    ];
+
+    const dataSource = Array.from({
+        length: 46,
+    }).map((_, i) => ({
+        key: i,
+        name: `Edward King ${i}`,
+        product: 'Frontlit Backlit Flex Banner',
+        status: `Pending`,
+    }));
 
     return (
         <>
@@ -149,6 +178,20 @@ const Dashboard = () => {
                         <h4 className='mt-md-3'> Income Statistics </h4>
 
                         <Column className="mt-md-3" {...config} />
+                    </div>
+                </div>
+
+                <div className='row'>
+                    <div className='col-md-12'>
+
+                        <h4 className='mt-md-2'> Recent Orders </h4>
+
+                        <Table
+                            className='mt-md-3'
+                            columns={columns}
+                            dataSource={dataSource}
+                        />
+
                     </div>
                 </div>
             </div>
