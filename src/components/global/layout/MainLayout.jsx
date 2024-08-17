@@ -54,7 +54,7 @@ const MainLayout = () => {
                     }}
                     items={[
                         {
-                            key: 'admin',
+                            key: '',
                             icon: <RiDashboard3Line className='sidebar-icon' />,
                             label: 'Dashboard',
                         },

@@ -11,6 +11,7 @@ import BlogsCategories from './scenes/blogs-categories';
 import Orders from './scenes/orders';
 import Customers from './scenes/customers';
 import Colors from './scenes/colors';
+import ProductsCategories from './scenes/products-categories';
 
 const App = () => {
 
@@ -29,6 +30,7 @@ const App = () => {
             <Route path='orders' element={<Orders />} />
             <Route path='customers' element={<Customers />} />
             <Route path='colors' element={<Colors />} />
+            <Route path='categories' element={<ProductsCategories />} />
           </Route>
         </Routes>
       </Router>
