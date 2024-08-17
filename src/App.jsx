@@ -14,6 +14,7 @@ import Colors from './scenes/colors';
 import ProductsCategories from './scenes/products-categories';
 import Brands from './scenes/brands';
 import Products from './scenes/products';
+import AddBlog from './scenes/blogs/AddBlog';
 
 const App = () => {
 
@@ -27,6 +28,7 @@ const App = () => {
           <Route path='/admin' element={<MainLayout />}>
             <Route index element={<Dashboard />} />
             <Route path='enquiries' element={<Enquiries />} />
+            <Route path='add-blog' element={<AddBlog />} />
             <Route path='blogs' element={<Blogs />} />
             <Route path='blogs-categories' element={<BlogsCategories />} />
             <Route path='orders' element={<Orders />} />
