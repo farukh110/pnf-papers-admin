@@ -6,6 +6,7 @@ import MainLayout from './components/global/layout/MainLayout';
 import Dashboard from './scenes/dashboard';
 import './App.css'
 import Enquiries from './scenes/Enquiries';
+import Blogs from './scenes/blogs';
 
 const App = () => {
 
@@ -19,6 +20,7 @@ const App = () => {
           <Route path='/admin' element={<MainLayout />}>
             <Route index element={<Dashboard />} />
             <Route path='enquiries' element={<Enquiries />} />
+            <Route path='blogs' element={<Blogs />} />
           </Route>
         </Routes>
       </Router>
