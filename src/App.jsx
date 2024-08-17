@@ -8,6 +8,7 @@ import './App.css'
 import Enquiries from './scenes/Enquiries';
 import Blogs from './scenes/blogs';
 import BlogsCategories from './scenes/blogs-categories';
+import Orders from './scenes/orders';
 
 const App = () => {
 
@@ -23,6 +24,7 @@ const App = () => {
             <Route path='enquiries' element={<Enquiries />} />
             <Route path='blogs' element={<Blogs />} />
             <Route path='blogs-categories' element={<BlogsCategories />} />
+            <Route path='orders' element={<Orders />} />
           </Route>
         </Routes>
       </Router>
