@@ -12,6 +12,7 @@ import Orders from './scenes/orders';
 import Customers from './scenes/customers';
 import Colors from './scenes/colors';
 import ProductsCategories from './scenes/products-categories';
+import Brands from './scenes/brands';
 
 const App = () => {
 
@@ -31,6 +32,7 @@ const App = () => {
             <Route path='customers' element={<Customers />} />
             <Route path='colors' element={<Colors />} />
             <Route path='categories' element={<ProductsCategories />} />
+            <Route path='brands' element={<Brands />} />
           </Route>
         </Routes>
       </Router>
