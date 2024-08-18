@@ -21,6 +21,7 @@ import AddProductCategory from './scenes/products-categories/AddProductCategory'
 import AddBrand from './scenes/brands/AddBrand';
 import Coupons from './scenes/coupons';
 import AddCoupon from './scenes/coupons/AddCoupon';
+import AddProduct from './scenes/products/AddProduct';
 
 const App = () => {
 
@@ -46,6 +47,7 @@ const App = () => {
             <Route path='categories' element={<ProductsCategories />} />
             <Route path='add-brand' element={<AddBrand />} />
             <Route path='brands' element={<Brands />} />
+            <Route path='add-product' element={<AddProduct />} />
             <Route path='products' element={<Products />} />
             <Route path='add-coupon' element={<AddCoupon />} />
             <Route path='coupons' element={<Coupons />} />
