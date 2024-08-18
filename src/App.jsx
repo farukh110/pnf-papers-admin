@@ -17,6 +17,7 @@ import Products from './scenes/products';
 import AddBlog from './scenes/blogs/AddBlog';
 import AddBlogCategory from './scenes/blogs-categories/AddBlogCategory';
 import AddColor from './scenes/colors/AddColor';
+import AddProductCategory from './scenes/products-categories/AddProductCategory';
 
 const App = () => {
 
@@ -38,6 +39,7 @@ const App = () => {
             <Route path='customers' element={<Customers />} />
             <Route path='add-color' element={<AddColor />} />
             <Route path='colors' element={<Colors />} />
+            <Route path='add-category' element={<AddProductCategory />} />
             <Route path='categories' element={<ProductsCategories />} />
             <Route path='brands' element={<Brands />} />
             <Route path='products' element={<Products />} />
