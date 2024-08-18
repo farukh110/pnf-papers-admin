@@ -18,6 +18,7 @@ import AddBlog from './scenes/blogs/AddBlog';
 import AddBlogCategory from './scenes/blogs-categories/AddBlogCategory';
 import AddColor from './scenes/colors/AddColor';
 import AddProductCategory from './scenes/products-categories/AddProductCategory';
+import AddBrand from './scenes/brands/AddBrand';
 
 const App = () => {
 
@@ -41,6 +42,7 @@ const App = () => {
             <Route path='colors' element={<Colors />} />
             <Route path='add-category' element={<AddProductCategory />} />
             <Route path='categories' element={<ProductsCategories />} />
+            <Route path='add-brand' element={<AddBrand />} />
             <Route path='brands' element={<Brands />} />
             <Route path='products' element={<Products />} />
           </Route>
