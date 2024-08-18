@@ -30,11 +30,16 @@ const AddProduct = () => {
     }
 
     const handleKeyPress = (e) => {
+
         const charCode = e.which ? e.which : e.keyCode;
-        // Allow only numeric characters (0-9)
-        if (charCode < 48 || charCode > 57) {
-            e.preventDefault();
+        if (
+            (charCode >= 48 && charCode <= 57) ||
+            (charCode === 46 && e.target.value.indexOf('.') === -1)
+        ) {
+            return;
         }
+
+        e.preventDefault();
     };
 
     const props = {
@@ -112,6 +117,7 @@ const AddProduct = () => {
                                     <InputNumber
                                         style={{ width: '100%' }}
                                         onKeyPress={handleKeyPress}
+                                        step={0.01}
                                     />
                                 </Form.Item>
 
@@ -252,6 +258,75 @@ const AddProduct = () => {
                                         ]}
                                     />
 
+                                </Form.Item>
+                            </div>
+
+                            <div className="col-md-3 mt-md-3">
+                                <label>
+                                    Length
+                                </label>
+
+                                <Form.Item
+                                    name="length"
+                                    className="mt-md-1"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please enter Length',
+                                        },
+                                    ]}
+                                >
+                                    <InputNumber
+                                        style={{ width: '100%' }}
+                                        onKeyPress={handleKeyPress}
+                                        step={0.01}
+                                    />
+                                </Form.Item>
+                            </div>
+
+                            <div className="col-md-3 mt-md-3">
+                                <label>
+                                    Width
+                                </label>
+
+                                <Form.Item
+                                    name="width"
+                                    className="mt-md-1"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please enter Width',
+                                        },
+                                    ]}
+                                >
+                                    <InputNumber
+                                        style={{ width: '100%' }}
+                                        onKeyPress={handleKeyPress}
+                                        step={0.01}
+                                    />
+                                </Form.Item>
+                            </div>
+
+                            <div className="col-md-3 mt-md-3">
+                                <label>
+                                    Height
+                                </label>
+
+                                <Form.Item
+                                    name="height"
+                                    className="mt-md-1"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please enter Height',
+                                        },
+                                    ]}
+                                >
+                                    <InputNumber
+                                        style={{ width: '100%' }}
+                                        onKeyPress={handleKeyPress}
+                                        step={0.01}
+                                    />
                                 </Form.Item>
                             </div>
 
