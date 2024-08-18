@@ -4,7 +4,7 @@ import {
     MenuUnfoldOutlined,
 } from '@ant-design/icons';
 import { Avatar, Button, Layout, List, Menu, theme } from 'antd';
-import { RiCustomerService2Line, RiDashboard3Line, RiProductHuntLine } from 'react-icons/ri';
+import { RiCoupon3Line, RiCustomerService2Line, RiDashboard3Line, RiProductHuntLine } from 'react-icons/ri';
 import { HiOutlineUsers } from 'react-icons/hi';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { AiOutlineBgColors } from 'react-icons/ai';
@@ -135,6 +135,23 @@ const MainLayout = () => {
                             key: 'orders',
                             icon: <PiClipboardText className='sidebar-icon' />,
                             label: 'Orders',
+                        },
+                        {
+                            key: 'coupons',
+                            icon: <RiCoupon3Line className='sidebar-icon' />,
+                            label: 'Coupons',
+                            children: [
+                                {
+                                    key: 'add-coupon',
+                                    icon: <GoDot />,
+                                    label: 'Add Coupon',
+                                },
+                                {
+                                    key: 'coupons',
+                                    icon: <GoDot />,
+                                    label: 'Coupons',
+                                },
+                            ]
                         },
                         {
                             key: 'blogs',
