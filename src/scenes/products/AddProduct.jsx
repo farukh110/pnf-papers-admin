@@ -7,10 +7,20 @@ import { message, Upload } from 'antd';
 const { Dragger } = Upload;
 import { Button } from 'primereact/button';
 import './index.scss';
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
 
 const AddProduct = () => {
 
     const [description, setDescription] = useState('');
+
+    const [selectedCountry, setSelectedCountry] = useState(null);
+
+    const countries = [
+        { name: 'Australia', code: 'AU' },
+        { name: 'Brazil', code: 'BR' },
+        { name: 'China', code: 'CN' },
+    ];
 
     const onFinish = (values) => {
         console.log('Success:', values);
@@ -96,7 +106,10 @@ const AddProduct = () => {
                                         },
                                     ]}
                                 >
-                                    <Input />
+                                    <InputText
+                                        className="form-control"
+                                        placeholder="Please enter product name"
+                                    />
 
                                 </Form.Item>
                             </div>
@@ -117,10 +130,10 @@ const AddProduct = () => {
                                         },
                                     ]}
                                 >
-                                    <InputNumber
-                                        style={{ width: '100%' }}
-                                        onKeyPress={handleKeyPress}
-                                        step={0.01}
+                                    <InputText
+                                        className="form-control"
+                                        keyfilter="pint"
+                                        placeholder="Please enter price"
                                     />
                                 </Form.Item>
 
@@ -142,22 +155,15 @@ const AddProduct = () => {
                                     ]}
                                 >
 
-                                    <Select
-                                        onChange={handleChange}
-                                        options={[
-                                            {
-                                                value: 'jack',
-                                                label: 'Jack',
-                                            },
-                                            {
-                                                value: 'lucy',
-                                                label: 'Lucy',
-                                            },
-                                            {
-                                                value: 'Yiminghe',
-                                                label: 'yiminghe',
-                                            },
-                                        ]}
+                                    <Dropdown
+                                        value={selectedCountry}
+                                        onChange={(e) => setSelectedCountry(e.value)}
+                                        options={countries}
+                                        optionLabel="name"
+                                        placeholder="Select Product Brand"
+                                        filter
+                                        showClear
+                                        className="w-full custom-dropdown"
                                     />
 
                                 </Form.Item>
@@ -179,22 +185,15 @@ const AddProduct = () => {
                                     ]}
                                 >
 
-                                    <Select
-                                        onChange={handleChange}
-                                        options={[
-                                            {
-                                                value: 'jack',
-                                                label: 'Jack',
-                                            },
-                                            {
-                                                value: 'lucy',
-                                                label: 'Lucy',
-                                            },
-                                            {
-                                                value: 'Yiminghe',
-                                                label: 'yiminghe',
-                                            },
-                                        ]}
+                                    <Dropdown
+                                        value={selectedCountry}
+                                        onChange={(e) => setSelectedCountry(e.value)}
+                                        options={countries}
+                                        optionLabel="name"
+                                        placeholder="Select product category"
+                                        filter
+                                        showClear
+                                        className="w-full custom-dropdown"
                                     />
 
                                 </Form.Item>
@@ -243,22 +242,15 @@ const AddProduct = () => {
                                     ]}
                                 >
 
-                                    <Select
-                                        onChange={handleChange}
-                                        options={[
-                                            {
-                                                value: 'jack',
-                                                label: 'Jack',
-                                            },
-                                            {
-                                                value: 'lucy',
-                                                label: 'Lucy',
-                                            },
-                                            {
-                                                value: 'Yiminghe',
-                                                label: 'yiminghe',
-                                            },
-                                        ]}
+                                    <Dropdown
+                                        value={selectedCountry}
+                                        onChange={(e) => setSelectedCountry(e.value)}
+                                        options={countries}
+                                        optionLabel="name"
+                                        placeholder="Select color"
+                                        filter
+                                        showClear
+                                        className="w-full custom-dropdown"
                                     />
 
                                 </Form.Item>
@@ -279,10 +271,10 @@ const AddProduct = () => {
                                         },
                                     ]}
                                 >
-                                    <InputNumber
-                                        style={{ width: '100%' }}
-                                        onKeyPress={handleKeyPress}
-                                        step={0.01}
+                                    <InputText
+                                        className="form-control"
+                                        keyfilter="pint"
+                                        placeholder="Please enter length"
                                     />
                                 </Form.Item>
                             </div>
@@ -302,11 +294,13 @@ const AddProduct = () => {
                                         },
                                     ]}
                                 >
-                                    <InputNumber
-                                        style={{ width: '100%' }}
-                                        onKeyPress={handleKeyPress}
-                                        step={0.01}
+
+                                    <InputText
+                                        className="form-control"
+                                        keyfilter="pint"
+                                        placeholder="Please enter width"
                                     />
+
                                 </Form.Item>
                             </div>
 
@@ -325,11 +319,12 @@ const AddProduct = () => {
                                         },
                                     ]}
                                 >
-                                    <InputNumber
-                                        style={{ width: '100%' }}
-                                        onKeyPress={handleKeyPress}
-                                        step={0.01}
+                                    <InputText
+                                        className="form-control"
+                                        keyfilter="pint"
+                                        placeholder="Please enter height"
                                     />
+
                                 </Form.Item>
                             </div>
 
