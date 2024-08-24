@@ -1,4 +1,6 @@
-import { Button, ColorPicker, Form } from 'antd';
+import { Form } from 'antd';
+import { Button } from 'primereact/button';
+import { ColorPicker } from 'primereact/colorpicker';
 import './index.scss';
 
 const AddColor = () => {
@@ -26,7 +28,7 @@ const AddColor = () => {
 
                     <div className="row">
 
-                        <div className="col-md-3">
+                        <div className="col-md-1">
                             <label>
                                 Color
                             </label>
@@ -42,14 +44,18 @@ const AddColor = () => {
                                 ]}
                             >
                                 <ColorPicker />
+
                             </Form.Item>
                         </div>
 
-                        <div className="col-md-3">
+                        <div className="col-md-3 mt-md-4">
                             <Form.Item>
-                                <Button className="mt-md-4" type="primary" htmlType="submit">
-                                    Add Color
-                                </Button>
+                                <Button
+                                    severity="help"
+                                    type="submit"
+                                    className="rounded p-2 ps-3 pe-3"
+                                    label="Add Color"
+                                />
                             </Form.Item>
 
                         </div>
