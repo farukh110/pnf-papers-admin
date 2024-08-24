@@ -1,4 +1,6 @@
-import { Button, Form, Input } from "antd";
+import { Form, Input } from "antd";
+import { Button } from 'primereact/button';
+import { InputText } from 'primereact/inputtext';
 import './index.scss';
 
 const AddBrand = () => {
@@ -42,15 +44,19 @@ const AddBrand = () => {
                                         },
                                     ]}
                                 >
-                                    <Input />
+                                    {/* <Input /> */}
+                                    <InputText className="form-control" />
                                 </Form.Item>
                             </div>
 
-                            <div className="col-md-3">
+                            <div className="col-md-3 mt-md-4">
                                 <Form.Item>
-                                    <Button className="mt-md-4" type="primary" htmlType="submit">
-                                        Add Brand
-                                    </Button>
+                                    <Button
+                                        severity="help"
+                                        type="submit"
+                                        className="rounded p-2 ps-3 pe-3"
+                                        label="Add Brand"
+                                    />
                                 </Form.Item>
 
                             </div>
