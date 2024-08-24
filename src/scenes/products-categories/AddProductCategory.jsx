@@ -1,4 +1,4 @@
-import { Form, Input } from "antd";
+import { Form } from "antd";
 import { Button } from 'primereact/button';
 import './index.scss';
 import { InputText } from "primereact/inputtext";
