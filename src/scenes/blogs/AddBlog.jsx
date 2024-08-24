@@ -1,15 +1,26 @@
 import { useState } from "react";
-import { Button, Form, Input, Select } from "antd";
+import { Form, Input, Select } from "antd";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { InboxOutlined } from '@ant-design/icons';
 import { message, Upload } from 'antd';
 const { Dragger } = Upload;
+import { Button } from 'primereact/button';
 import './index.scss';
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from 'primereact/dropdown';
 
 const AddBlog = () => {
 
     const [description, setDescription] = useState('');
+
+    const [selectedCountry, setSelectedCountry] = useState(null);
+
+    const countries = [
+        { name: 'Australia', code: 'AU' },
+        { name: 'Brazil', code: 'BR' },
+        { name: 'China', code: 'CN' },
+    ];
 
     const onFinish = (values) => {
         console.log('Success:', values);
@@ -81,7 +92,7 @@ const AddBlog = () => {
                                         },
                                     ]}
                                 >
-                                    <Input />
+                                    <InputText className="form-control" />
                                 </Form.Item>
                             </div>
 
@@ -101,22 +112,15 @@ const AddBlog = () => {
                                     ]}
                                 >
 
-                                    <Select
-                                        onChange={handleChange}
-                                        options={[
-                                            {
-                                                value: 'jack',
-                                                label: 'Jack',
-                                            },
-                                            {
-                                                value: 'lucy',
-                                                label: 'Lucy',
-                                            },
-                                            {
-                                                value: 'Yiminghe',
-                                                label: 'yiminghe',
-                                            },
-                                        ]}
+                                    <Dropdown
+                                        value={selectedCountry}
+                                        onChange={(e) => setSelectedCountry(e.value)}
+                                        options={countries}
+                                        optionLabel="name"
+                                        placeholder="Select a Country"
+                                        filter
+                                        showClear
+                                        className="w-full custom-dropdown"
                                     />
 
                                 </Form.Item>
@@ -149,7 +153,7 @@ const AddBlog = () => {
 
                             </div>
 
-                            <div className="col-md-4">
+                            <div className="col-md-12">
                                 <Form.Item
                                     name="upload_images"
                                     className="mt-md-4"
@@ -180,9 +184,12 @@ const AddBlog = () => {
                         <div className="row mt-md-3">
 
                             <Form.Item>
-                                <Button type="primary" htmlType="submit">
-                                    Add Blog
-                                </Button>
+                                <Button
+                                    severity="help"
+                                    type="submit"
+                                    className="rounded p-2 ps-3 pe-3"
+                                    label="Add Blog"
+                                />
                             </Form.Item>
 
                         </div>
