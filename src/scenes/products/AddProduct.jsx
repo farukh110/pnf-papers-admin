@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Button, Form, Input, InputNumber, Select } from "antd";
+import { Form, Input, InputNumber, Select } from "antd";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { InboxOutlined } from '@ant-design/icons';
 import { message, Upload } from 'antd';
 const { Dragger } = Upload;
+import { Button } from 'primereact/button';
 import './index.scss';
 
 const AddProduct = () => {
@@ -80,6 +81,7 @@ const AddProduct = () => {
                         <div className="row">
 
                             <div className="col-md-4">
+
                                 <label>
                                     Product Title
                                 </label>
@@ -95,6 +97,7 @@ const AddProduct = () => {
                                     ]}
                                 >
                                     <Input />
+
                                 </Form.Item>
                             </div>
 
@@ -361,9 +364,16 @@ const AddProduct = () => {
                         <div className="row mt-md-3">
 
                             <Form.Item>
-                                <Button type="primary" htmlType="submit">
+                                {/* <Button type="primary" htmlType="submit">
                                     Add Product
-                                </Button>
+                                </Button> */}
+                                <Button
+                                    severity="help"
+                                    type="submit"
+                                    className="rounded"
+                                    label="Add Product"
+                                />
+
                             </Form.Item>
 
                         </div>
