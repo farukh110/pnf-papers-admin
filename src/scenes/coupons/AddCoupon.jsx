@@ -1,6 +1,8 @@
-import { useState } from "react";
-import { Button, DatePicker, Form, Input } from "antd";
+import { Form, Input } from "antd";
+import { Button } from 'primereact/button';
+import { Calendar } from 'primereact/calendar';
 import './index.scss';
+import { InputText } from "primereact/inputtext";
 
 const AddCoupon = () => {
 
@@ -11,13 +13,13 @@ const AddCoupon = () => {
         console.log('Failed:', errorInfo);
     };
 
-    const handleKeyPress = (e) => {
-        const charCode = e.which ? e.which : e.keyCode;
-        // Allow only numeric characters (0-9)
-        if (charCode < 48 || charCode > 57) {
-            e.preventDefault();
-        }
-    };
+    // const handleKeyPress = (e) => {
+    //     const charCode = e.which ? e.which : e.keyCode;
+    //     // Allow only numeric characters (0-9)
+    //     if (charCode < 48 || charCode > 57) {
+    //         e.preventDefault();
+    //     }
+    // };
 
     return (
         <>
@@ -51,7 +53,10 @@ const AddCoupon = () => {
                                         },
                                     ]}
                                 >
-                                    <Input />
+                                    <InputText
+                                        className="form-control"
+                                        placeholder="Please enter title"
+                                    />
                                 </Form.Item>
                             </div>
 
@@ -70,7 +75,10 @@ const AddCoupon = () => {
                                         },
                                     ]}
                                 >
-                                    <DatePicker />
+                                    <Calendar
+                                        inputClassName="form-control"
+                                        placeholder="Please select date"
+                                    />
                                 </Form.Item>
                             </div>
 
@@ -89,19 +97,24 @@ const AddCoupon = () => {
                                         },
                                     ]}
                                 >
-                                    <Input
-                                        onKeyPress={handleKeyPress}
-                                        placeholder="Enter discount %"
-                                        maxLength={2} // Limit to two digits
+                                    <InputText
+                                        className="form-control"
+                                        keyfilter="pint"
+                                        placeholder="Please enter enter discount %"
+                                        maxLength={3}
                                     />
                                 </Form.Item>
                             </div>
 
-                            <div className="col-md-3">
+                            <div className="col-md-3 mt-md-4">
                                 <Form.Item>
-                                    <Button className="mt-md-4" type="primary" htmlType="submit">
-                                        Add Coupon
-                                    </Button>
+
+                                    <Button
+                                        severity="help"
+                                        type="submit"
+                                        className="rounded p-2 ps-3 pe-3"
+                                        label="Add Coupon"
+                                    />
                                 </Form.Item>
 
                             </div>
