@@ -1,0 +1,71 @@
+.custom-datatable {
+
+    table {
+
+        thead {
+
+            tr {
+
+                th {
+
+                    padding-left: 5px;
+                    padding-right: 5px;
+
+                    &:first-child {
+
+                        text-align: center;
+                    }
+
+                    .p-checkbox-box {
+
+                        border: unset !important;
+                    }
+
+                    .p-column-title {
+
+                        font-size: 12px !important;
+                    }
+
+                    .p-inputtext {
+
+                        padding: 8px;
+                        font-size: 12px;
+
+                        &::placeholder {
+
+                            font-size: 12px !important;
+                        }
+                    }
+                }
+            }
+        }
+
+        tbody {
+
+            tr {
+
+                td {
+
+                    font-size: 12px !important;
+
+                    .p-checkbox {
+
+                        margin: 0 auto;
+                        display: table;
+                    }
+
+                }
+            }
+        }
+    }
+
+    .p-checkbox-box {
+
+        border: 1px solid #d1d5db !important;
+    }
+
+    .p-column-filter-clear-button {
+
+        display: none;
+    }
+}
