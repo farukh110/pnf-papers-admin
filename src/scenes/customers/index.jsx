@@ -203,8 +203,8 @@ const Customers = () => {
             id: 1,
             btn_label: "Excel All",
             btn_color: "secondary",
-            class_name: "w-100 rounded",
-            column_class: "col-md-6",
+            class_name: "w-100 rounded p-2 ps-3 pe-3",
+            column_class: "col-md-6 pe-1",
             icon: "pi pi-file-excel",
             btn_size: "small",
             on_action: () => {
@@ -216,7 +216,7 @@ const Customers = () => {
             id: 2,
             btn_label: "Clear Filter",
             btn_color: "secondary",
-            class_name: "w-100 rounded",
+            class_name: "w-100 rounded p-2 ps-3 pe-3",
             column_class: "col-md-6",
             icon: "pi pi-filter-slash",
             btn_size: "small",
@@ -238,7 +238,7 @@ const Customers = () => {
 
                         </div>
 
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                             <CustomPanel
                                 custom_main_class="row"
                                 actionList={actionItems}
