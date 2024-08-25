@@ -66,6 +66,11 @@
 
     .p-column-filter-clear-button {
 
-        display: none;
+        display: none !important;
     }
+}
+
+.p-column-filter-menu-button {
+
+    display: none !important;
 }

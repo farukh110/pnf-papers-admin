@@ -123,6 +123,7 @@ const Customers = () => {
                 icon="pi pi-bars"
                 size="small"
                 className='rounded'
+                menuClassName='ps-0'
                 severity="success"
                 model={[
                     {
