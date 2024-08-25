@@ -3,10 +3,16 @@ import './index.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';  // Import Yup
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../../../redux/api/auth/authSlice';
+import { useEffect } from 'react';
 
 const Login = () => {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const { user, isError, isLoading, isSuccess, message } = useSelector((state) => state.auth);
 
     // Define the Yup validation schema
     const validationSchema = Yup.object({
@@ -18,6 +24,7 @@ const Login = () => {
     });
 
     const formik = useFormik({
+
         initialValues: {
             email: '',
             password: '',
@@ -27,8 +34,25 @@ const Login = () => {
 
             console.log('submission data: ', values);
 
+            dispatch(login(values))
+
         },
     });
+
+    useEffect(() => {
+
+        console.log('user: -> ', user);
+
+        if (!user == null || isSuccess) {
+
+            navigate('/admin');
+
+        } else {
+
+            console.log('not allow');
+
+        }
+    }, [user, isError, isLoading, isSuccess, message, navigate]);
 
     return (
         <div className="login-page">
