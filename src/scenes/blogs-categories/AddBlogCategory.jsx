@@ -1,7 +1,7 @@
 import { Form } from "antd";
-import { Button } from 'primereact/button';
 import { InputText } from "primereact/inputtext";
 import './index.scss';
+import CustomButton from "../../components/global/custom-web-controls/custom-button";
 
 const AddBlogCategory = () => {
 
@@ -50,7 +50,7 @@ const AddBlogCategory = () => {
 
                             <div className="col-md-3 mt-md-4">
                                 <Form.Item>
-                                    <Button
+                                    <CustomButton
                                         severity="help"
                                         type="submit"
                                         className="rounded p-2 ps-3 pe-3"
