@@ -1,6 +1,6 @@
 import { Form } from 'antd';
-import { Button } from 'primereact/button';
 import { ColorPicker } from 'primereact/colorpicker';
+import CustomButton from '../../components/global/custom-web-controls/custom-button';
 import './index.scss';
 
 const AddColor = () => {
@@ -50,7 +50,7 @@ const AddColor = () => {
 
                         <div className="col-md-3 mt-md-4">
                             <Form.Item>
-                                <Button
+                                <CustomButton
                                     severity="help"
                                     type="submit"
                                     className="rounded p-2 ps-3 pe-3"
