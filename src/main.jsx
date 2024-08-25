@@ -8,11 +8,15 @@ import "primeicons/primeicons.css";
 import 'bootstrap/dist/js/bootstrap.js';
 import App from './App.jsx';
 import './index.css';
+import { Provider } from 'react-redux';
+import { store } from './redux/store/index.js';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <PrimeReactProvider>
-      <App />
-    </PrimeReactProvider>
+    <Provider store={store}>
+      <PrimeReactProvider>
+        <App />
+      </PrimeReactProvider>
+    </Provider>
   </StrictMode>,
 )
