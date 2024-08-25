@@ -1,8 +1,8 @@
 import { Form, Input } from "antd";
 import { Calendar } from 'primereact/calendar';
 import './index.scss';
-import { InputText } from "primereact/inputtext";
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
+import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
 
 const AddCoupon = () => {
 
@@ -53,7 +53,7 @@ const AddCoupon = () => {
                                         },
                                     ]}
                                 >
-                                    <InputText
+                                    <CustomInputText
                                         className="form-control"
                                         placeholder="Please enter title"
                                     />
@@ -97,7 +97,7 @@ const AddCoupon = () => {
                                         },
                                     ]}
                                 >
-                                    <InputText
+                                    <CustomInputText
                                         className="form-control"
                                         keyfilter="pint"
                                         placeholder="Please enter enter discount %"

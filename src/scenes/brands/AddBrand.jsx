@@ -1,7 +1,7 @@
 import { Form } from "antd";
-import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
 import './index.scss';
+import CustomButton from "../../components/global/custom-web-controls/custom-button";
+import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
 
 const AddBrand = () => {
 
@@ -40,18 +40,20 @@ const AddBrand = () => {
                                     rules={[
                                         {
                                             required: true,
-                                            message: 'Please enter Brand title',
+                                            message: 'Please enter brand title',
                                         },
                                     ]}
                                 >
-                                    {/* <Input /> */}
-                                    <InputText className="form-control" />
+                                    <CustomInputText
+                                        className="form-control"
+                                        placeholder="Please enter title"
+                                    />
                                 </Form.Item>
                             </div>
 
                             <div className="col-md-3 mt-md-4">
                                 <Form.Item>
-                                    <Button
+                                    <CustomButton
                                         severity="help"
                                         type="submit"
                                         className="rounded p-2 ps-3 pe-3"

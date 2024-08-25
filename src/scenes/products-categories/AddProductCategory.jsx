@@ -2,6 +2,7 @@ import { Form } from "antd";
 import './index.scss';
 import { InputText } from "primereact/inputtext";
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
+import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
 
 const AddProductCategory = () => {
 
@@ -44,7 +45,10 @@ const AddProductCategory = () => {
                                         },
                                     ]}
                                 >
-                                    <InputText className="form-control" />
+                                    <CustomInputText
+                                        className="form-control"
+                                        placeholder="Please enter category title"
+                                    />
                                 </Form.Item>
                             </div>
 

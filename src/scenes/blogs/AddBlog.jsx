@@ -5,10 +5,10 @@ import 'react-quill/dist/quill.snow.css';
 import { InboxOutlined } from '@ant-design/icons';
 import { message, Upload } from 'antd';
 const { Dragger } = Upload;
-import { Button } from 'primereact/button';
 import './index.scss';
-import { InputText } from "primereact/inputtext";
 import { Dropdown } from 'primereact/dropdown';
+import CustomButton from "../../components/global/custom-web-controls/custom-button";
+import CustomInputText from "../../components/global/custom-web-controls/custom-input-text"
 
 const AddBlog = () => {
 
@@ -92,7 +92,10 @@ const AddBlog = () => {
                                         },
                                     ]}
                                 >
-                                    <InputText className="form-control" />
+                                    <CustomInputText
+                                        className="form-control"
+                                        placeholder="Please enter title"
+                                    />
                                 </Form.Item>
                             </div>
 
@@ -184,7 +187,7 @@ const AddBlog = () => {
                         <div className="row mt-md-3">
 
                             <Form.Item>
-                                <Button
+                                <CustomButton
                                     severity="help"
                                     type="submit"
                                     className="rounded p-2 ps-3 pe-3"

@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Form, Input, InputNumber, Select } from "antd";
+import { Form } from "antd";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { InboxOutlined } from '@ant-design/icons';
 import { message, Upload } from 'antd';
 const { Dragger } = Upload;
-import { Button } from 'primereact/button';
 import './index.scss';
-import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
+import CustomButton from "../../components/global/custom-web-controls/custom-button";
+import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
 
 const AddProduct = () => {
 
@@ -106,7 +106,7 @@ const AddProduct = () => {
                                         },
                                     ]}
                                 >
-                                    <InputText
+                                    <CustomInputText
                                         className="form-control"
                                         placeholder="Please enter product name"
                                     />
@@ -130,7 +130,7 @@ const AddProduct = () => {
                                         },
                                     ]}
                                 >
-                                    <InputText
+                                    <CustomInputText
                                         className="form-control"
                                         keyfilter="pint"
                                         placeholder="Please enter price"
@@ -271,7 +271,7 @@ const AddProduct = () => {
                                         },
                                     ]}
                                 >
-                                    <InputText
+                                    <CustomInputText
                                         className="form-control"
                                         keyfilter="pint"
                                         placeholder="Please enter length"
@@ -295,7 +295,7 @@ const AddProduct = () => {
                                     ]}
                                 >
 
-                                    <InputText
+                                    <CustomInputText
                                         className="form-control"
                                         keyfilter="pint"
                                         placeholder="Please enter width"
@@ -319,7 +319,7 @@ const AddProduct = () => {
                                         },
                                     ]}
                                 >
-                                    <InputText
+                                    <CustomInputText
                                         className="form-control"
                                         keyfilter="pint"
                                         placeholder="Please enter height"
@@ -362,7 +362,7 @@ const AddProduct = () => {
                                 {/* <Button type="primary" htmlType="submit">
                                     Add Product
                                 </Button> */}
-                                <Button
+                                <CustomButton
                                     severity="help"
                                     type="submit"
                                     className="rounded"
