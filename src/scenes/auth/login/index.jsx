@@ -1,4 +1,5 @@
-import { Button, Input } from 'antd';
+/*eslint-disable */
+import { Alert, Button, Input } from 'antd';
 import './index.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
@@ -40,19 +41,14 @@ const Login = () => {
     });
 
     useEffect(() => {
-
-        console.log('user: -> ', user);
-
-        if (!user == null || isSuccess) {
-
-            navigate('/admin');
-
-        } else {
-
-            console.log('not allow');
-
+        if (!user && !isLoading && !isSuccess) {
+            navigate("/login");
         }
-    }, [user, isError, isLoading, isSuccess, message, navigate]);
+
+        if (isSuccess) {
+            navigate("/admin");
+        }
+    }, [user, isError, isLoading, isSuccess]);
 
     return (
         <div className="login-page">
@@ -98,6 +94,8 @@ const Login = () => {
                                     </div>
 
                                     <Link className='text-decoration-none' to='/forgot-password'>Forgot Password?</Link>
+
+                                    {message.message === "Rejected" ? <Alert message="You are not an admin" type="warning" showIcon closable /> : ""}
 
                                     <div className="form-item">
                                         <Button

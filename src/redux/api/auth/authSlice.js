@@ -2,20 +2,20 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ADMIN_LOGIN } from "../../../app-constants";
 import authService from "./authService";
 
-const userDefaultState = {
+// const userDefaultState = {
+//     _id: null,
+//     firstname: null,
+//     lastname: null,
+//     email: null,
+//     mobile: null,
+//     token: null
+// };
 
-    _id: null,
-    firstname: null,
-    lastname: null,
-    email: null,
-    mobile: null,
-    token: null
-
-};
+const getUserFromLocalStorage = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
 
 const initialState = {
 
-    user: userDefaultState,
+    user: getUserFromLocalStorage,
     isError: false,
     isLoading: false,
     isSuccess: false,
