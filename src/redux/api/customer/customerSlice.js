@@ -12,19 +12,22 @@ const initialState = {
 
 }
 
-export const getAllUsers = createAsyncThunk(GET_ALL_USERS, async (thunkAPI) => {
+export const getAllUsers = createAsyncThunk(GET_ALL_USERS, async (_, thunkAPI) => {
 
     try {
 
-        return customerService.getAllUsers();
+        const response = await customerService.getAllUsers();
+        return response.data;
 
     } catch (error) {
 
-        thunkAPI.rejectWithValue(error);
+        return thunkAPI.rejectWithValue(error.response?.data || error.message);
+
     }
 
 });
 
+// Customer slice
 export const customerSlice = createSlice({
 
     name: "users",
@@ -51,11 +54,10 @@ export const customerSlice = createSlice({
                 state.isLoading = false;
                 state.isError = true;
                 state.isSuccess = false;
-                state.message = action.error;
+                state.message = action.payload;
 
-            })
-    }
-
+            });
+    },
 });
 
-export default customerSlice.reducer; 
+export default customerSlice.reducer;

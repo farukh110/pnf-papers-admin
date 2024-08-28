@@ -1,22 +1,23 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SplitButton } from "primereact/splitbutton";
 import CustomDataTable from "../../components/global/custom-web-controls/custom-data-table";
-import CustomPanel from "../../components/global/custom-web-controls/custom-button-panel"
-import axios from 'axios';
+import CustomPanel from "../../components/global/custom-web-controls/custom-button-panel";
 import './index.scss';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllUsers } from '../../redux/api/customer/customerSlice';
 
 const Customers = () => {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    const [loading, setLoading] = useState(false);
-    const [totalRecords, setTotalRecords] = useState(0);
+    const { customers = [], totalRecords = 0, isLoading } = useSelector(state => state.customers);
+
     const [dataSource, setDataSource] = useState(null);
     const [lazyState, setLazyState] = useState({
         first: 0,
-        rows: 50,
+        rows: 2,
         page: 1,
         sortField: null,
         sortOrder: null,
@@ -26,38 +27,30 @@ const Customers = () => {
     const [selectAll, setSelectAll] = useState(false);
     const [selectedItems, setSelectedItems] = useState(null);
 
-    // console.log('dataSource: ',dataSource);
-
+    // Load data from the server with pagination
     const loadLazyData = useCallback(() => {
-        setLoading(true);
+        dispatch(getAllUsers({
+            page: lazyState.page,
+            limit: lazyState.rows,
+            sortBy: lazyState.sortField,
+            sortOrder: lazyState.sortOrder === 1 ? 'asc' : 'desc',
+        }));
+    }, [dispatch, lazyState.page, lazyState.rows, lazyState.sortField, lazyState.sortOrder]);
 
-        axios
-            .get("https://dummyjson.com/users"
-                //     {
-                //     params: {
-                //         lazyEvent: JSON.stringify(lazyState),
-                //     },
-                // }
-            )
-            .then((response) => {
-                const data = response.data; // Assuming response.data is in the same format as your existing customer service response
+    useEffect(() => {
+        loadLazyData();
+    }, [loadLazyData]);
 
-                console.log('data: ', data)
+    useEffect(() => {
+        if (Array.isArray(customers)) {
+            const customersWithSerialNumbers = customers.map((customer, index) => ({
+                ...customer,
+                serialNumber: lazyState.first + index + 1,
+            }));
 
-                setTotalRecords(data.total);
-                // Generate serial numbers for the data
-                const newData = data.users.map((item, index) => ({
-                    ...item,
-                    serialNumber: lazyState.first + index + 1,
-                }));
-                setDataSource(newData);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error("Error fetching data:", error);
-                setLoading(false);
-            });
-    }, [lazyState]);
+            setDataSource(customersWithSerialNumbers);
+        }
+    }, [customers, lazyState.first]);
 
     const onPage = useCallback((event) => {
         const { first, rows } = event;
@@ -65,7 +58,7 @@ const Customers = () => {
             ...prevState,
             first,
             rows,
-            page: Math.floor(first / rows) + 1, // Calculate the page number based on the first row index
+            page: Math.floor(first / rows) + 1,
         }));
     }, []);
 
@@ -79,42 +72,29 @@ const Customers = () => {
     }, []);
 
     const editCustomer = useCallback((customerId) => {
-        // Handle edit action here
         console.log("Edit customer:", customerId);
     }, []);
 
     const deleteCustomer = useCallback((customerId) => {
-        // Handle delete action here
         console.log("Delete customer:", customerId);
     }, []);
 
     const onSelectionChange = useCallback((event) => {
         const value = event.value;
-
         setSelectedItems(value);
         setSelectAll(value.length === totalRecords);
-
-    }, []);
+    }, [totalRecords]);
 
     const onSelectAllChange = useCallback((event) => {
         const selectAll = event.checked;
-
         if (selectAll) {
-            axios
-                .get("https://www.primefaces.org/data/customers")
-                .then((response) => {
-                    const data = response.data;
-                    setSelectAll(true);
-                    setSelectedItems(data.customers);
-                })
-                .catch((error) => {
-                    console.error("Error fetching data:", error);
-                });
+            setSelectAll(true);
+            setSelectedItems(customers);
         } else {
             setSelectAll(false);
             setSelectedItems([]);
         }
-    }, []);
+    }, [customers]);
 
     const actionTemplate = useCallback((rowData) => {
         return (
@@ -129,12 +109,12 @@ const Customers = () => {
                     {
                         label: "Edit",
                         icon: "pi pi-pencil",
-                        command: () => editCustomer(rowData.id),
+                        command: () => editCustomer(rowData._id),
                     },
                     {
                         label: "Delete",
                         icon: "pi pi-trash",
-                        command: () => deleteCustomer(rowData.id),
+                        command: () => deleteCustomer(rowData._id),
                     },
                 ]}
             />
@@ -151,7 +131,7 @@ const Customers = () => {
             width: "30px",
         },
         {
-            field: "firstName",
+            field: "firstname",
             header: "First Name",
             sortable: true,
             filter: true,
@@ -159,7 +139,7 @@ const Customers = () => {
             width: "150px",
         },
         {
-            field: "lastName",
+            field: "lastname",
             header: "Last Name",
             sortable: true,
             filter: true,
@@ -167,27 +147,29 @@ const Customers = () => {
             width: "150px",
         },
         {
-            field: "company.name", // Accessing the nested "name" field from the "company" object
-            header: "Company Name",
+            field: "email",
+            header: "Email",
             sortable: true,
             filter: true,
             visible: true,
-            width: "150px",
+            width: "200px",
         },
         {
-            field: "company.title", // Accessing the nested "title" field from the "company" object
-            header: "Company Title",
+            field: "role",
+            header: "Role",
             sortable: true,
             filter: true,
             visible: true,
-            width: "150px",
+            width: "100px",
         },
         {
-            field: "age",
-            header: "Age",
+            field: "isBlocked",
+            header: "Blocked",
+            sortable: true,
             filter: true,
             visible: true,
-            width: "150px",
+            width: "100px",
+            body: (rowData) => (rowData.isBlocked ? 'Yes' : 'No'),
         },
         {
             field: "action",
@@ -197,7 +179,6 @@ const Customers = () => {
             width: "100px",
         },
     ], [actionTemplate]);
-
 
     const actionItems = useMemo(() => [
         {
@@ -209,8 +190,7 @@ const Customers = () => {
             icon: "pi pi-file-excel",
             btn_size: "small",
             on_action: () => {
-                console.log("excel all");
-                // exportExcelAll();
+                console.log("Excel all");
             },
         },
         {
@@ -222,59 +202,51 @@ const Customers = () => {
             icon: "pi pi-filter-slash",
             btn_size: "small",
             on_action: () => {
-                console.log("clear filter");
+                console.log("Clear filter");
             },
         },
     ], []);
 
     return (
-        <>
-            <div className='row'>
-                <div className='col-md-12'>
-
-                    <h4 className='mt-md-2'> Customers List </h4>
-
-                    <div className="row justify-content-between my-md-3">
-                        <div className="col-md-5">
-
-                        </div>
-
-                        <div className="col-md-3">
-                            <CustomPanel
-                                custom_main_class="row"
-                                actionList={actionItems}
-                            />
-                        </div>
+        <div className='row'>
+            <div className='col-md-12'>
+                <h4 className='mt-md-2'> Customers List </h4>
+                <div className="row justify-content-between my-md-3">
+                    <div className="col-md-5"></div>
+                    <div className="col-md-3">
+                        <CustomPanel
+                            custom_main_class="row"
+                            actionList={actionItems}
+                        />
                     </div>
-
-                    <CustomDataTable
-                        loadLazyData={loadLazyData}
-                        columns={columns}
-                        lazyState={lazyState}
-                        totalRecords={totalRecords}
-                        dataSource={dataSource}
-                        loading={loading}
-                        scrollHeight="450px"
-                        scrollable={true}
-                        onPage={onPage}
-                        onSort={onSort}
-                        onFilter={onFilter}
-                        tableSize="small"
-                        tableWidth="70rem"
-                        borderGridlines={true}
-                        selection={selectedItems}
-                        onSelectionChange={onSelectionChange}
-                        selectAll={selectAll}
-                        onSelectAllChange={onSelectAllChange}
-                        resizeColumns={false}
-                        stripedRows={false}
-                    // pageSizes={[50, 100, 500, 1000]}
-                    />
-
                 </div>
+                <CustomDataTable
+                    loadLazyData={loadLazyData}
+                    columns={columns}
+                    lazyState={lazyState}
+                    totalRecords={totalRecords}
+                    dataSource={dataSource}
+                    loading={isLoading}
+                    scrollHeight="450px"
+                    scrollable={true}
+                    onPage={onPage}
+                    onSort={onSort}
+                    onRows={lazyState.rows}
+                    onFilter={onFilter}
+                    tableSize="small"
+                    tableWidth="70rem"
+                    borderGridlines={true}
+                    selection={selectedItems}
+                    onSelectionChange={onSelectionChange}
+                    selectAll={selectAll}
+                    onSelectAllChange={onSelectAllChange}
+                    resizeColumns={false}
+                    stripedRows={false}
+                    pageSizes={[2, 50, 100, 500]}
+                />
             </div>
-        </>
-    )
+        </div>
+    );
 }
 
 export default Customers;
