@@ -1,31 +1,37 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { SplitButton } from "primereact/splitbutton";
-import CustomDataTable from "../../components/global/custom-web-controls/custom-data-table";
-import CustomPanel from "../../components/global/custom-web-controls/custom-button-panel";
+import { useNavigate, useLocation } from 'react-router-dom';
+import { SplitButton } from 'primereact/splitbutton';
+import CustomDataTable from '../../components/global/custom-web-controls/custom-data-table';
+import CustomPanel from '../../components/global/custom-web-controls/custom-button-panel';
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllUsers } from '../../redux/api/customer/customerSlice';
 
 const Customers = () => {
-
     const navigate = useNavigate();
+    const location = useLocation();
     const dispatch = useDispatch();
 
+    // Fetch customers and totalRecords from Redux state
     const { customers = [], totalRecords = 0, isLoading } = useSelector(state => state.customers);
 
-    const [dataSource, setDataSource] = useState(null);
+    // Parse URL query parameters
+    const queryParams = new URLSearchParams(location.search);
+    const initialPage = parseInt(queryParams.get('page')) || 1;
+    const initialLimit = parseInt(queryParams.get('limit')) || 50;
+
+    const [dataSource, setDataSource] = useState([]);
     const [lazyState, setLazyState] = useState({
-        first: 0,
-        rows: 2,
-        page: 1,
+        first: (initialPage - 1) * initialLimit,
+        rows: initialLimit,
+        page: initialPage,
         sortField: null,
         sortOrder: null,
         filters: {},
     });
 
     const [selectAll, setSelectAll] = useState(false);
-    const [selectedItems, setSelectedItems] = useState(null);
+    const [selectedItems, setSelectedItems] = useState([]);
 
     // Load data from the server with pagination
     const loadLazyData = useCallback(() => {
@@ -34,8 +40,9 @@ const Customers = () => {
             limit: lazyState.rows,
             sortBy: lazyState.sortField,
             sortOrder: lazyState.sortOrder === 1 ? 'asc' : 'desc',
+            filters: JSON.stringify(lazyState.filters),
         }));
-    }, [dispatch, lazyState.page, lazyState.rows, lazyState.sortField, lazyState.sortOrder]);
+    }, [dispatch, lazyState]);
 
     useEffect(() => {
         loadLazyData();
@@ -43,7 +50,8 @@ const Customers = () => {
 
     useEffect(() => {
         if (Array.isArray(customers)) {
-            const customersWithSerialNumbers = customers.map((customer, index) => ({
+            const filteredCustomers = customers.filter(customer => customer.role === 'admin');
+            const customersWithSerialNumbers = filteredCustomers.map((customer, index) => ({
                 ...customer,
                 serialNumber: lazyState.first + index + 1,
             }));
@@ -54,21 +62,35 @@ const Customers = () => {
 
     const onPage = useCallback((event) => {
         const { first, rows } = event;
+        const newPage = Math.floor(first / rows) + 1;
+
         setLazyState((prevState) => ({
             ...prevState,
             first,
             rows,
-            page: Math.floor(first / rows) + 1,
+            page: newPage,
+        }));
+
+        // Update URL with new page and rows parameters
+        navigate(`/customers?page=${newPage}&limit=${rows}`);
+    }, [navigate]);
+
+    const onSort = useCallback((event) => {
+        setLazyState(prevState => ({
+            ...prevState,
+            sortField: event.sortField,
+            sortOrder: event.sortOrder,
         }));
     }, []);
 
-    const onSort = useCallback((event) => {
-        setLazyState(event);
-    }, []);
-
     const onFilter = useCallback((event) => {
-        event["first"] = 0;
-        setLazyState(event);
+        event.first = 0;  // Reset to the first page when filtering
+        setLazyState((prevState) => ({
+            ...prevState,
+            filters: event.filters,
+            first: 0,  // Reset pagination to first page
+            page: 1,
+        }));
     }, []);
 
     const editCustomer = useCallback((customerId) => {
@@ -125,7 +147,7 @@ const Customers = () => {
         {
             field: "serialNumber",
             header: "S.No",
-            sortable: true,
+            sortable: false,
             filter: false,
             visible: true,
             width: "30px",
@@ -203,14 +225,22 @@ const Customers = () => {
             btn_size: "small",
             on_action: () => {
                 console.log("Clear filter");
+                // Reset filters
+                setLazyState(prevState => ({
+                    ...prevState,
+                    filters: {},
+                    page: 1,
+                    first: 0
+                }));
+                navigate(`/customers?page=1&limit=${lazyState.rows}`);
             },
         },
-    ], []);
+    ], [lazyState.rows, navigate]);
 
     return (
         <div className='row'>
             <div className='col-md-12'>
-                <h4 className='mt-md-2'> Customers List </h4>
+                <h4 className='mt-md-2'>Customers List</h4>
                 <div className="row justify-content-between my-md-3">
                     <div className="col-md-5"></div>
                     <div className="col-md-3">
@@ -231,7 +261,7 @@ const Customers = () => {
                     scrollable={true}
                     onPage={onPage}
                     onSort={onSort}
-                    onRows={lazyState.rows}
+                    rows={lazyState.rows}
                     onFilter={onFilter}
                     tableSize="small"
                     tableWidth="70rem"

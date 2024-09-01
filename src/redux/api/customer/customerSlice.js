@@ -12,19 +12,17 @@ const initialState = {
 
 }
 
-export const getAllUsers = createAsyncThunk(GET_ALL_USERS, async (_, thunkAPI) => {
+export const getAllUsers = createAsyncThunk(GET_ALL_USERS, async (params, thunkAPI) => {
 
     try {
 
-        const response = await customerService.getAllUsers();
+        const response = await customerService.getAllUsers(params);
         return response.data;
 
     } catch (error) {
 
         return thunkAPI.rejectWithValue(error.response?.data || error.message);
-
     }
-
 });
 
 // Customer slice

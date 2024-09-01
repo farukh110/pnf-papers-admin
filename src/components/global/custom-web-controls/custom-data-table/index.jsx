@@ -38,7 +38,7 @@ const CustomDataTable = (props) => {
     loadLazyData();
   }, [lazyState]);
 
-  const [rowsPerPage, setRowsPerPage] = useState(onRows);
+  const [rowsPerPage, setRowsPerPage] = useState(onRows || 10); // Set a default value
 
   const onPageChange = (e) => {
     setRowsPerPage(e.rows);
@@ -56,9 +56,9 @@ const CustomDataTable = (props) => {
         scrollable={scrollable}
         scrollHeight={scrollHeight}
         first={lazyState.first}
-        rows={lazyState.rows}
+        rows={rowsPerPage} // Ensure rowsPerPage is used
         totalRecords={totalRecords}
-        onPage={onPage}
+        onPage={onPageChange}
         onSort={onSort}
         sortField={lazyState.sortField}
         sortOrder={lazyState.sortOrder}
@@ -77,7 +77,7 @@ const CustomDataTable = (props) => {
       >
         {columns.map((column, index) => {
           if (column.visible) {
-            const key = `${column.field}-${index}`; // Use a more meaningful key
+            const key = `${column.field}-${index}`;
 
             if (column.field === "selection") {
               return (
@@ -113,7 +113,7 @@ const CustomDataTable = (props) => {
 
       <Paginator
         first={lazyState.first}
-        rows={rowsPerPage}
+        rows={rowsPerPage} // Ensure rowsPerPage is used here as well
         totalRecords={totalRecords}
         onPageChange={onPageChange}
         rowsPerPageOptions={pageSizes}
@@ -123,3 +123,4 @@ const CustomDataTable = (props) => {
 };
 
 export default CustomDataTable;
+
