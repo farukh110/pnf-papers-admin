@@ -6,43 +6,53 @@ import CustomPanel from '../../components/global/custom-web-controls/custom-butt
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllUsers } from '../../redux/api/customer/customerSlice';
+import debounce from 'lodash/debounce';
 
 const Customers = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
 
-    // Fetch customers and totalRecords from Redux state
     const { customers = [], totalRecords = 0, isLoading } = useSelector(state => state.customers);
 
-    // Parse URL query parameters
     const queryParams = new URLSearchParams(location.search);
-    const initialPage = parseInt(queryParams.get('page')) || 1;
-    const initialLimit = parseInt(queryParams.get('limit')) || 50;
+    const initialPage = parseInt(queryParams.get('page'), 10) || 1;
+    const initialLimit = parseInt(queryParams.get('limit'), 10) || 50;
+    const initialSortBy = queryParams.get('sortBy') || 'createdAt';
+    const initialSortOrder = queryParams.get('sortOrder') === 'asc' ? 1 : -1;
 
     const [dataSource, setDataSource] = useState([]);
     const [lazyState, setLazyState] = useState({
         first: (initialPage - 1) * initialLimit,
         rows: initialLimit,
         page: initialPage,
-        sortField: null,
-        sortOrder: null,
+        sortField: initialSortBy,
+        sortOrder: initialSortOrder,
         filters: {},
     });
 
     const [selectAll, setSelectAll] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
 
-    // Load data from the server with pagination
-    const loadLazyData = useCallback(() => {
-        dispatch(getAllUsers({
-            page: lazyState.page,
-            limit: lazyState.rows,
-            sortBy: lazyState.sortField,
-            sortOrder: lazyState.sortOrder === 1 ? 'asc' : 'desc',
-            filters: JSON.stringify(lazyState.filters),
-        }));
-    }, [dispatch, lazyState]);
+    const loadLazyData = useCallback(debounce(() => {
+        const { page, rows, sortField, sortOrder, filters } = lazyState;
+
+        const params = {
+            page,
+            limit: rows,
+            filters: processFilters(filters), // Process filters
+            sortBy: sortField,
+            sortOrder: sortOrder === 1 ? 'asc' : 'desc',
+        };
+
+        console.log("API Request Params:", params); // Debugging
+
+        dispatch(getAllUsers(params))
+            .unwrap()
+            .catch((error) => {
+                console.log(`Error: ${error.message}`);
+            });
+    }, 300), [dispatch, lazyState]);
 
     useEffect(() => {
         loadLazyData();
@@ -71,24 +81,36 @@ const Customers = () => {
             page: newPage,
         }));
 
-        // Update URL with new page and rows parameters
         navigate(`/customers?page=${newPage}&limit=${rows}`);
     }, [navigate]);
 
     const onSort = useCallback((event) => {
-        setLazyState(prevState => ({
+        setLazyState((prevState) => ({
             ...prevState,
             sortField: event.sortField,
             sortOrder: event.sortOrder,
         }));
     }, []);
 
+    const processFilters = (filters) => {
+
+        return Object.entries(filters).reduce((acc, [key, { value, matchMode }]) => {
+            if (value !== null && value !== '') { // Check if value is not null or empty
+                acc[key] = { value, matchMode: matchMode || 'startsWith' }; // Default matchMode if not provided
+            }
+            return acc;
+        }, {});
+    };
+
+
     const onFilter = useCallback((event) => {
-        event.first = 0;  // Reset to the first page when filtering
-        setLazyState((prevState) => ({
+        const processedFilters = processFilters(event.filters);
+
+        console.log('Processed filters before sending:', processedFilters);
+
+        setLazyState(prevState => ({
             ...prevState,
-            filters: event.filters,
-            first: 0,  // Reset pagination to first page
+            filters: processedFilters,
             page: 1,
         }));
     }, []);
@@ -147,7 +169,7 @@ const Customers = () => {
         {
             field: "serialNumber",
             header: "S.No",
-            sortable: false,
+            sortable: true,
             filter: false,
             visible: true,
             width: "30px",
@@ -202,6 +224,16 @@ const Customers = () => {
         },
     ], [actionTemplate]);
 
+    const clearFilters = () => {
+        setLazyState(prevState => ({
+            ...prevState,
+            filters: {}, // Reset filters
+            page: 1, // Optionally reset to the first page
+        }));
+
+        loadLazyData(); // Trigger a new data fetch
+    };
+
     const actionItems = useMemo(() => [
         {
             id: 1,
@@ -223,19 +255,9 @@ const Customers = () => {
             column_class: "col-md-6",
             icon: "pi pi-filter-slash",
             btn_size: "small",
-            on_action: () => {
-                console.log("Clear filter");
-                // Reset filters
-                setLazyState(prevState => ({
-                    ...prevState,
-                    filters: {},
-                    page: 1,
-                    first: 0
-                }));
-                navigate(`/customers?page=1&limit=${lazyState.rows}`);
-            },
+            on_action: clearFilters,
         },
-    ], [lazyState.rows, navigate]);
+    ], []);
 
     return (
         <div className='row'>
@@ -265,14 +287,10 @@ const Customers = () => {
                     onFilter={onFilter}
                     tableSize="small"
                     tableWidth="70rem"
-                    borderGridlines={true}
-                    selection={selectedItems}
+                    borderGrid={true}
                     onSelectionChange={onSelectionChange}
-                    selectAll={selectAll}
                     onSelectAllChange={onSelectAllChange}
-                    resizeColumns={false}
-                    stripedRows={false}
-                    pageSizes={[2, 50, 100, 500]}
+                    selectAll={selectAll}
                 />
             </div>
         </div>
