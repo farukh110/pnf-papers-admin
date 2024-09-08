@@ -10,20 +10,23 @@ const getAllProducts = async (params) => {
         limit,
         sortBy,
         sortOrder,
-        filters: JSON.stringify(filters), // Properly stringify the filters
+        filters: JSON.stringify(filters),
     }).toString();
 
-    const response = await axios.get(`${BACKEND}/api/product?${queryString}`);
+    try {
+        const response = await axios.get(`${BACKEND}/product?${queryString}`);
 
-    if (response.data) {
+        console.log('products response: ', response);
+
         return response.data;
+
+    } catch (error) {
+        throw new Error('Error: ', error);
     }
 };
 
 const productService = {
-
     getAllProducts
-
 };
 
-export default productService; 
+export default productService;

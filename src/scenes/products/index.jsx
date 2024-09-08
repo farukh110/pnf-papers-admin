@@ -36,6 +36,7 @@ const Products = () => {
     const [selectedItems, setSelectedItems] = useState([]);
 
     const loadLazyData = useCallback(debounce(() => {
+
         const { page, rows, sortField, sortOrder, filters } = lazyState;
 
         const params = {
@@ -61,8 +62,7 @@ const Products = () => {
 
     useEffect(() => {
         if (Array.isArray(products)) {
-            const filteredProducts = products.filter(product => product);
-            const productsWithSerialNumbers = filteredProducts.map((product, index) => ({
+            const productsWithSerialNumbers = products.map((product, index) => ({
                 ...product,
                 serialNumber: lazyState.first + index + 1,
             }));
@@ -72,6 +72,7 @@ const Products = () => {
     }, [products, lazyState.first]);
 
     const onPage = useCallback((event) => {
+
         const { first, rows } = event;
         const newPage = Math.floor(first / rows) + 1;
 
@@ -93,16 +94,24 @@ const Products = () => {
         }));
     }, []);
 
-    const processFilters = (filters) => {
+    // const processFilters = (filters) => {
 
-        return Object.entries(filters).reduce((acc, [key, { value, matchMode }]) => {
+    //     return Object.entries(filters).reduce((acc, [key, { value, matchMode }]) => {
+    //         if (value !== null && value !== '') { // Check if value is not null or empty
+    //             acc[key] = { value, matchMode: matchMode || 'startsWith' }; // Default matchMode if not provided
+    //         }
+    //         return acc;
+    //     }, {});
+    // };
+
+    const processFilters = (filters) => {
+        return Object.entries(filters).reduce((acc, [key, { value }]) => {
             if (value !== null && value !== '') { // Check if value is not null or empty
-                acc[key] = { value, matchMode: matchMode || 'startsWith' }; // Default matchMode if not provided
+                acc[key] = { value, matchMode: 'equals' }; // Set matchMode to 'equals'
             }
             return acc;
         }, {});
     };
-
 
     const onFilter = useCallback((event) => {
         const processedFilters = processFilters(event.filters);
@@ -207,14 +216,14 @@ const Products = () => {
             visible: true,
             width: "200px",
         },
-        {
-            field: "color",
-            header: "Color",
-            sortable: true,
-            filter: true,
-            visible: true,
-            width: "100px",
-        },
+        // {
+        //     field: "color",
+        //     header: "Color",
+        //     sortable: true,
+        //     filter: true,
+        //     visible: true,
+        //     width: "100px",
+        // },
         {
             field: "quantity",
             header: "Quantity",
