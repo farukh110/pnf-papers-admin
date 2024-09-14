@@ -190,7 +190,7 @@ const Products = () => {
             sortable: true,
             filter: true,
             visible: true,
-            width: "150px",
+            width: "350px",
         },
         {
             field: "price",
