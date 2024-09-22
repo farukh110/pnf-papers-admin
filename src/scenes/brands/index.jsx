@@ -37,6 +37,7 @@ const Brands = () => {
     const [selectedItems, setSelectedItems] = useState([]);
 
     const loadLazyData = useCallback(debounce(() => {
+
         const { page, rows, sortField, sortOrder, filters } = lazyState;
 
         const params = {
