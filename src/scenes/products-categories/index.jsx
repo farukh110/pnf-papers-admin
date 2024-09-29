@@ -6,7 +6,7 @@ import CustomPanel from '../../components/global/custom-web-controls/custom-butt
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { getAllBrands } from './../../redux/api/brand/brandSlice';
+import { getAllProductsCategory } from './../../redux/api/product-categories/categoriesSlice';
 
 const ProductsCategories = () => {
 
@@ -14,7 +14,7 @@ const ProductsCategories = () => {
     const location = useLocation();
     const dispatch = useDispatch();
 
-    const { brands = [], totalRecords = 0, isLoading } = useSelector(state => state.brands);
+    const { categories = [], totalRecords = 0, isLoading } = useSelector(state => state.productsCategory);
 
     const queryParams = new URLSearchParams(location.search);
     const initialPage = parseInt(queryParams.get('page'), 10) || 1;
@@ -50,7 +50,7 @@ const ProductsCategories = () => {
 
         console.log("API Request Params:", params); // Debugging
 
-        dispatch(getAllBrands(params))
+        dispatch(getAllProductsCategory(params))
             .unwrap()
             .catch((error) => {
                 console.log(`Error: ${error.message}`);
@@ -62,17 +62,18 @@ const ProductsCategories = () => {
     }, [loadLazyData]);
 
     useEffect(() => {
-        if (Array.isArray(brands)) {
-            const brandsWithSerialNumbers = brands.map((brand, index) => ({
-                ...brand,
+        if (Array.isArray(categories)) {
+            const categoryWithSerialNumbers = categories.map((category, index) => ({
+                ...category,
                 serialNumber: lazyState.first + index + 1,
             }));
 
-            setDataSource(brandsWithSerialNumbers);
+            setDataSource(categoryWithSerialNumbers);
         }
-    }, [brands, lazyState.first]);
+    }, [categories, lazyState.first]);
 
     const onPage = useCallback((event) => {
+
         const { first, rows } = event;
         const newPage = Math.floor(first / rows) + 1;
 
@@ -83,7 +84,8 @@ const ProductsCategories = () => {
             page: newPage,
         }));
 
-        navigate(`/brands?page=${newPage}&limit=${rows}`);
+        navigate(`/category?page=${newPage}&limit=${rows}`);
+
     }, [navigate]);
 
     const onSort = useCallback((event) => {
@@ -104,7 +106,6 @@ const ProductsCategories = () => {
         }, {});
     };
 
-
     const onFilter = useCallback((event) => {
         const processedFilters = processFilters(event.filters);
 
@@ -117,12 +118,12 @@ const ProductsCategories = () => {
         }));
     }, []);
 
-    const editBrand = useCallback((brandId) => {
-        console.log("Edit brand:", brandId);
+    const editCategory = useCallback((categoryId) => {
+        console.log("Edit brand:", categoryId);
     }, []);
 
-    const deleteBrand = useCallback((brandId) => {
-        console.log("Delete brand:", brandId);
+    const deleteCategory = useCallback((categoryId) => {
+        console.log("Delete brand:", categoryId);
     }, []);
 
     const onSelectionChange = useCallback((event) => {
@@ -135,12 +136,12 @@ const ProductsCategories = () => {
         const selectAll = event.checked;
         if (selectAll) {
             setSelectAll(true);
-            setSelectedItems(brands);
+            setSelectedItems(categories);
         } else {
             setSelectAll(false);
             setSelectedItems([]);
         }
-    }, [brands]);
+    }, [categories]);
 
     const actionTemplate = useCallback((rowData) => {
         return (
@@ -155,17 +156,17 @@ const ProductsCategories = () => {
                     {
                         label: "Edit",
                         icon: "pi pi-pencil",
-                        command: () => editBrand(rowData._id),
+                        command: () => editCategory(rowData._id),
                     },
                     {
                         label: "Delete",
                         icon: "pi pi-trash",
-                        command: () => deleteBrand(rowData._id),
+                        command: () => deleteCategory(rowData._id),
                     },
                 ]}
             />
         );
-    }, [editBrand, deleteBrand]);
+    }, [editCategory, deleteCategory]);
 
     const columns = useMemo(() => [
         {

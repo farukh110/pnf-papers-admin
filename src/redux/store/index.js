@@ -3,7 +3,7 @@ import authReducer from "../api/auth/authSlice"; // Import the default export (t
 import customerReducer from "../api/customer/customerSlice";
 import productReducer from "../api/product/productSlice";
 import brandReducer from "../api/brand/brandSlice";
-import ProductsCategoryReducer from "../api/product-categories/categoriesService";
+import productsCategoryReducer from "../api/product-categories/categoriesSlice";
 
 export const store = configureStore({
     reducer: {
@@ -11,6 +11,6 @@ export const store = configureStore({
         customers: customerReducer,
         products: productReducer,
         brands: brandReducer,
-        ProductsCategory: ProductsCategoryReducer
+        productsCategory: productsCategoryReducer
     }
 });

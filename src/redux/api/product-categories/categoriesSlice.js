@@ -29,7 +29,7 @@ export const getAllProductsCategory = createAsyncThunk(GET_ALL_PRODUCTS_CATEGORY
 
 export const categoriesSlice = createSlice({
 
-    name: "ProductsCategories",
+    name: "productsCategory",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
@@ -47,7 +47,7 @@ export const categoriesSlice = createSlice({
                 state.categories = action.payload.data;
                 state.totalRecords = action.payload.totalRecords;
             })
-            .add(getAllProductsCategory.rejected, (state, action) => {
+            .addCase(getAllProductsCategory.rejected, (state, action) => {
 
                 state.isLoading = false;
                 state.isError = true;
