@@ -8,6 +8,7 @@ import debounce from 'lodash/debounce';
 import { getAllColors } from './../../redux/api/color/colorSlice';
 
 const Colors = () => {
+
     const dispatch = useDispatch();
     const { colors = [], totalRecords = 0, isLoading } = useSelector(state => state.colors);
 
