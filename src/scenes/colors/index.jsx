@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { SplitButton } from 'primereact/splitbutton';
 import CustomDataTable from '../../components/global/custom-web-controls/custom-data-table';
 import CustomPanel from '../../components/global/custom-web-controls/custom-button-panel';
@@ -9,27 +8,17 @@ import debounce from 'lodash/debounce';
 import { getAllColors } from './../../redux/api/color/colorSlice';
 
 const Colors = () => {
-
-    const navigate = useNavigate();
-    const location = useLocation();
     const dispatch = useDispatch();
-
     const { colors = [], totalRecords = 0, isLoading } = useSelector(state => state.colors);
-
-    const queryParams = new URLSearchParams(location.search);
-    const initialPage = parseInt(queryParams.get('page'), 10) || 1;
-    const initialLimit = parseInt(queryParams.get('limit'), 10) || 50;
-    const initialSortBy = queryParams.get('sortBy') || 'createdAt';
-    const initialSortOrder = queryParams.get('sortOrder') === 'asc' ? 1 : -1;
 
     const [dataSource, setDataSource] = useState([]);
 
     const [lazyState, setLazyState] = useState({
-        first: (initialPage - 1) * initialLimit,
-        rows: initialLimit,
-        page: initialPage,
-        sortField: initialSortBy,
-        sortOrder: initialSortOrder,
+        first: 0,
+        rows: 50,
+        page: 1,
+        sortField: 'createdAt',
+        sortOrder: -1,
         filters: {},
     });
 
@@ -37,7 +26,6 @@ const Colors = () => {
     const [selectedItems, setSelectedItems] = useState([]);
 
     const loadLazyData = useCallback(debounce(() => {
-
         const { page, rows, sortField, sortOrder, filters } = lazyState;
 
         const params = {
@@ -82,9 +70,7 @@ const Colors = () => {
             rows,
             page: newPage,
         }));
-
-        navigate(`/color?page=${newPage}&limit=${rows}`);
-    }, [navigate]);
+    }, []);
 
     const onSort = useCallback((event) => {
         setLazyState((prevState) => ({
@@ -95,7 +81,6 @@ const Colors = () => {
     }, []);
 
     const processFilters = (filters) => {
-
         return Object.entries(filters).reduce((acc, [key, { value, matchMode }]) => {
             if (value !== null && value !== '') { // Check if value is not null or empty
                 acc[key] = { value, matchMode: matchMode || 'startsWith' }; // Default matchMode if not provided
@@ -104,12 +89,8 @@ const Colors = () => {
         }, {});
     };
 
-
     const onFilter = useCallback((event) => {
         const processedFilters = processFilters(event.filters);
-
-        console.log('Processed filters before sending:', processedFilters);
-
         setLazyState(prevState => ({
             ...prevState,
             filters: processedFilters,
