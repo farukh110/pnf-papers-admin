@@ -6,11 +6,12 @@ import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
 import { getAllColors } from './../../redux/api/color/colorSlice';
+import { getAllCoupons } from '../../redux/api/coupon/couponSlice';
 
 const Coupons = () => {
 
     const dispatch = useDispatch();
-    const { colors = [], totalRecords = 0, isLoading } = useSelector(state => state.colors);
+    const { coupons = [], totalRecords = 0, isLoading } = useSelector(state => state.coupons);
 
     const [dataSource, setDataSource] = useState([]);
 
@@ -39,7 +40,7 @@ const Coupons = () => {
 
         console.log("API Request Params:", params); // Debugging
 
-        dispatch(getAllColors(params))
+        dispatch(getAllCoupons(params))
             .unwrap()
             .catch((error) => {
                 console.log(`Error: ${error.message}`);
@@ -51,15 +52,15 @@ const Coupons = () => {
     }, [loadLazyData]);
 
     useEffect(() => {
-        if (Array.isArray(colors)) {
-            const colorsWithSerialNumbers = colors.map((color, index) => ({
-                ...color,
+        if (Array.isArray(coupons)) {
+            const couponsWithSerialNumbers = coupons.map((coupon, index) => ({
+                ...coupon,
                 serialNumber: lazyState.first + index + 1,
             }));
 
-            setDataSource(colorsWithSerialNumbers);
+            setDataSource(couponsWithSerialNumbers);
         }
-    }, [colors, lazyState.first]);
+    }, [coupons, lazyState.first]);
 
     const onPage = useCallback((event) => {
         const { first, rows } = event;
@@ -99,12 +100,12 @@ const Coupons = () => {
         }));
     }, []);
 
-    const editColor = useCallback((colorId) => {
-        console.log("Edit color:", colorId);
+    const editCoupon = useCallback((colorId) => {
+        console.log("Edit coupon:", colorId);
     }, []);
 
-    const deleteColor = useCallback((colorId) => {
-        console.log("Delete color:", colorId);
+    const deleteCoupon = useCallback((colorId) => {
+        console.log("Delete coupon:", colorId);
     }, []);
 
     const onSelectionChange = useCallback((event) => {
@@ -117,12 +118,12 @@ const Coupons = () => {
         const selectAll = event.checked;
         if (selectAll) {
             setSelectAll(true);
-            setSelectedItems(colors);
+            setSelectedItems(coupons);
         } else {
             setSelectAll(false);
             setSelectedItems([]);
         }
-    }, [colors]);
+    }, [coupons]);
 
     const actionTemplate = useCallback((rowData) => {
         return (
@@ -137,17 +138,17 @@ const Coupons = () => {
                     {
                         label: "Edit",
                         icon: "pi pi-pencil",
-                        command: () => editColor(rowData._id),
+                        command: () => editCoupon(rowData._id),
                     },
                     {
                         label: "Delete",
                         icon: "pi pi-trash",
-                        command: () => deleteColor(rowData._id),
+                        command: () => deleteCoupon(rowData._id),
                     },
                 ]}
             />
         );
-    }, [editColor, deleteColor]);
+    }, [editCoupon, deleteCoupon]);
 
     const columns = useMemo(() => [
         {
