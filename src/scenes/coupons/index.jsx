@@ -5,7 +5,6 @@ import CustomPanel from '../../components/global/custom-web-controls/custom-butt
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { getAllColors } from './../../redux/api/color/colorSlice';
 import { getAllCoupons } from '../../redux/api/coupon/couponSlice';
 
 const Coupons = () => {
