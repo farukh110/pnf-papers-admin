@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GET_ALL_BLOGS } from "../../../app-constants";
+import { GET_ALL_BLOGS_CATEGORY } from "../../../app-constants";
 import blogCategoryService from "./blogCategoryService";
 
 const initialState = {
@@ -13,7 +13,7 @@ const initialState = {
 
 };
 
-export const getAllBlogCategories = createAsyncThunk(GET_ALL_BLOGS, async (params, thunkAPI) => {
+export const getAllBlogCategories = createAsyncThunk(GET_ALL_BLOGS_CATEGORY, async (params, thunkAPI) => {
 
     try {
 
