@@ -8,6 +8,7 @@ import colorReducer from "../api/color/colorSlice";
 import couponReducer from "../api/coupon/couponSlice";
 import blogReducer from "../api/blog/blogSlice";
 import blogCategoryReducer from "../api/blog-category/blogCategorySlice";
+import enquiryReducer from "../api/enquiry/enquirySlice";
 
 export const store = configureStore({
     reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
         colors: colorReducer,
         coupons: couponReducer,
         blogs: blogReducer,
-        blogCategory: blogCategoryReducer
+        blogCategory: blogCategoryReducer,
+        enquiries: enquiryReducer
     }
 });
