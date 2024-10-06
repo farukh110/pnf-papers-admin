@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GET_ALL_BLOGS } from "../../../app-constants";
+import { GET_ALL_ENQUIRIES } from "../../../app-constants";
 import enquiryService from "./enquiryService";
 
 const initialState = {
@@ -13,7 +13,7 @@ const initialState = {
 
 };
 
-export const getAllEnquiries = createAsyncThunk(GET_ALL_BLOGS, async (params, thunkAPI) => {
+export const getAllEnquiries = createAsyncThunk(GET_ALL_ENQUIRIES, async (params, thunkAPI) => {
 
     try {
 
