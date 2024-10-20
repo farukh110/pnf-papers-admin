@@ -22,8 +22,12 @@ const Orders = () => {
             dataIndex: 'product',
         },
         {
-            title: 'Status',
-            dataIndex: 'status',
+            title: 'Amount',
+            dataIndex: 'amount',
+        },
+        {
+            title: 'Date',
+            dataIndex: 'date',
         },
     ];
 
@@ -38,9 +42,12 @@ const Orders = () => {
     // Ensure orderState is not null before using .map
     const dataSource = (orderState ?? []).map((item, index) => ({
         key: index + 1,
-        name: item.name,
-        product: item.product,
-        status: item.status,
+        name: `${item?.orderBy?.firstname} ${item?.orderBy?.lastname}`,
+        product: item.products.map((item, index) => {
+            return <p key={index}>{item?.product?.title}</p>
+        }),
+        amount: item.paymentIntent.amount,
+        date: new Date(item.createdAt).toLocaleString(),
     }));
 
     return (

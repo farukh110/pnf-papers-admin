@@ -3,10 +3,12 @@ import { BACKEND } from "../../utilities/base_url";
 
 const getTokenFromLocalStorage = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
 
+console.log('getTokenFromLocalStorage: ', getTokenFromLocalStorage);
+
 const config = {
 
     headers: {
-        Authorization: `Bearer ${getTokenFromLocalStorage.token}`,
+        Authorization: `Bearer ${getTokenFromLocalStorage?.token}`,
         Accept: "application/json"
     }
 };
@@ -34,7 +36,7 @@ const getAllOrders = async () => {
 
         console.log('getTokenFromLocalStorage: ', getTokenFromLocalStorage.token);
 
-        const response = await axios.get(`${BACKEND}/user/orders`, config);
+        const response = await axios.get(`${BACKEND}/user/all-orders`, config);
 
         return response.data;
 
