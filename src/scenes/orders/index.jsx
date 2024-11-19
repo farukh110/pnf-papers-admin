@@ -40,15 +40,18 @@ const Orders = () => {
     console.log('orderState: ', orderState);
 
     // Ensure orderState is not null before using .map
-    const dataSource = (orderState ?? []).map((item, index) => ({
-        key: index + 1,
-        name: `${item?.orderBy?.firstname} ${item?.orderBy?.lastname}`,
-        product: item.products.map((item, index) => {
-            return <p key={index}>{item?.product?.title}</p>
-        }),
-        amount: item.paymentIntent.amount,
-        date: new Date(item.createdAt).toLocaleString(),
-    }));
+    const dataSource = Array.isArray(orderState.data)
+        ? orderState.data.map((item, index) => ({
+            key: index + 1,
+            name: `${item?.orderBy?.firstname} ${item?.orderBy?.lastname}`,
+            product: item.products.map((productItem, idx) => (
+                <p key={idx}>{productItem?.product?.title}</p>
+            )),
+            amount: item.paymentIntent.amount,
+            date: new Date(item.createdAt).toLocaleString(),
+        }))
+        : [];
+
 
     return (
         <>
