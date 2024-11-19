@@ -37,7 +37,7 @@ const Orders = () => {
 
     const orderState = useSelector((state) => state.auth.orders);
 
-    console.log('orderState: ', orderState);
+    // console.log('orderState: ', orderState);
 
     // Ensure orderState is not null before using .map
     const dataSource = Array.isArray(orderState.data)
