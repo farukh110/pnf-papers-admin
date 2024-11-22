@@ -30,15 +30,46 @@ const login = async (userData) => {
     }
 };
 
-const getAllOrders = async () => {
+// const getAllOrders = async () => {
+
+//     try {
+
+//         console.log('getTokenFromLocalStorage: ', getTokenFromLocalStorage.token);
+
+//         const response = await axios.get(`${BACKEND}/user/all-orders`, config);
+
+//         return response.data;
+
+//     } catch (error) {
+
+//         console.error('Error during login:', error);
+//         throw new Error(error.response?.data?.message || 'Login failed');
+//     }
+// }
+
+const getAllOrders = async (params) => {
 
     try {
 
+        const { page, limit, sortBy, sortOrder, filters } = params;
+
+        const queryString = new URLSearchParams({
+
+            page,
+            limit,
+            sortBy,
+            sortOrder,
+            filters: JSON.stringify(filters)
+
+        }).toString();
+
         console.log('getTokenFromLocalStorage: ', getTokenFromLocalStorage.token);
 
-        const response = await axios.get(`${BACKEND}/user/all-orders`, config);
+        const response = await axios.get(`${BACKEND}/user/all-orders?${queryString}`, config);
 
-        return response.data;
+        if (response?.data) {
+            return response?.data;
+        }
 
     } catch (error) {
 
