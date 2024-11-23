@@ -38,11 +38,14 @@ export const login = createAsyncThunk(ADMIN_LOGIN, async (user, thunkAPI) => {
 
 });
 
-export const getAllOrders = createAsyncThunk(GET_ALL_USER_ORDERS, async (thunkAPI) => {
+export const getAllOrders = createAsyncThunk(GET_ALL_USER_ORDERS, async (params, thunkAPI) => {
 
     try {
 
-        const response = await authService.getAllOrders();
+        const response = await authService.getAllOrders(params);
+
+        // console.log('response authSlice: ', response);
+
         return response;
 
     } catch (error) {
@@ -92,7 +95,7 @@ export const authSlice = createSlice({
                 state.isError = false;
                 state.isLoading = false;
                 state.isSuccess = true;
-                state.orders = action.payload;
+                state.orders = action.payload.data;
                 state.totalRecords = action.payload.totalRecords;
                 state.message = "success";
             })

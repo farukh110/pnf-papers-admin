@@ -1,72 +1,269 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { Table } from 'antd';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { SplitButton } from 'primereact/splitbutton';
+import CustomDataTable from '../../components/global/custom-web-controls/custom-data-table';
+import CustomPanel from '../../components/global/custom-web-controls/custom-button-panel';
 import './index.scss';
-import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import debounce from 'lodash/debounce';
 import { getAllOrders } from '../../redux/api/auth/authSlice';
 
 const Orders = () => {
 
+    const navigate = useNavigate();
+    const location = useLocation();
     const dispatch = useDispatch();
 
-    const orderState = useSelector((state) => state.auth.orders);
+    const { orders = [], totalRecords = 0, isLoading } = useSelector(state => state.auth);
 
-    const columns = [
-        {
-            title: 'S.No',
-            dataIndex: 'key',
-        },
-        {
-            title: 'Name',
-            dataIndex: 'name',
-        },
-        {
-            title: 'Product',
-            dataIndex: 'product',
-        },
-        {
-            title: 'Amount',
-            dataIndex: 'amount',
-        },
-        {
-            title: 'Date',
-            dataIndex: 'date',
-        },
-    ];
+    const queryParams = new URLSearchParams(location.search);
+    const initialPage = parseInt(queryParams.get('page'), 10) || 1;
+    const initialLimit = parseInt(queryParams.get('limit'), 10) || 50;
+    const initialSortBy = queryParams.get('sortBy') || 'orderDate';
+    const initialSortOrder = queryParams.get('sortOrder') === 'asc' ? 1 : -1;
+
+    const [dataSource, setDataSource] = useState([]);
+
+    const [lazyState, setLazyState] = useState({
+        first: (initialPage - 1) * initialLimit,
+        rows: initialLimit,
+        page: initialPage,
+        sortField: initialSortBy,
+        sortOrder: initialSortOrder,
+        filters: {},
+    });
+
+    const [selectAll, setSelectAll] = useState(false);
+    const [selectedItems, setSelectedItems] = useState([]);
+
+    const loadLazyData = useCallback(debounce(() => {
+
+        const { page, rows, sortField, sortOrder, filters } = lazyState;
+
+        const params = {
+            page,
+            limit: rows,
+            filters: processFilters(filters), // Process filters
+            sortBy: sortField,
+            sortOrder: sortOrder === 1 ? 'asc' : 'desc',
+        };
+
+        // console.log("API Request Params:", params); // Debugging
+
+        dispatch(getAllOrders(params))
+            .unwrap()
+            .catch((error) => {
+                console.log(`Error: ${error.message}`);
+            });
+    }, 300), [dispatch, lazyState]);
 
     useEffect(() => {
-        dispatch(getAllOrders());
-    }, [dispatch]);
+        loadLazyData();
+    }, [loadLazyData]);
 
-    // console.log('orderState: ', orderState);
+    useEffect(() => {
+        if (Array.isArray(orders)) {
 
-    // Ensure orderState is not null before using .map
-    const dataSource = Array.isArray(orderState.data)
-        ? orderState.data.map((item, index) => ({
-            key: index + 1,
-            name: `${item?.orderBy?.firstname} ${item?.orderBy?.lastname}`,
-            product: item.products.map((productItem, idx) => (
+            // console.log('orders: ', orders);
+
+            const ordersWithSerialNumbers = orders.map((order, index) => ({
+                ...order,
+                serialNumber: lazyState.first + index + 1,
+            }));
+
+            setDataSource(ordersWithSerialNumbers);
+        }
+    }, [orders, lazyState.first]);
+
+    const onPage = useCallback((event) => {
+        const { first, rows } = event;
+        const newPage = Math.floor(first / rows) + 1;
+
+        setLazyState((prevState) => ({
+            ...prevState,
+            first,
+            rows,
+            page: newPage,
+        }));
+
+        navigate(`/orders?page=${newPage}&limit=${rows}`);
+    }, [navigate]);
+
+    const onSort = useCallback((event) => {
+        setLazyState((prevState) => ({
+            ...prevState,
+            sortField: event.sortField,
+            sortOrder: event.sortOrder,
+        }));
+    }, []);
+
+    const processFilters = (filters) => {
+        return Object.entries(filters).reduce((acc, [key, { value, matchMode }]) => {
+            if (value !== null && value !== '') { // Check if value is not null or empty
+                acc[key] = { value, matchMode: matchMode || 'startsWith' }; // Default matchMode if not provided
+            }
+            return acc;
+        }, {});
+    };
+
+    const onFilter = useCallback((event) => {
+        const processedFilters = processFilters(event.filters);
+
+        console.log('Processed filters before sending:', processedFilters);
+
+        setLazyState(prevState => ({
+            ...prevState,
+            filters: processedFilters,
+            page: 1,
+        }));
+    }, []);
+
+    const viewOrder = useCallback((orderId) => {
+        console.log("View order:", orderId);
+    }, []);
+
+    const deleteOrder = useCallback((orderId) => {
+        console.log("Delete order:", orderId);
+    }, []);
+
+    const onSelectionChange = useCallback((event) => {
+        const value = event.value;
+        setSelectedItems(value);
+        setSelectAll(value.length === totalRecords);
+    }, [totalRecords]);
+
+    const onSelectAllChange = useCallback((event) => {
+        const selectAll = event.checked;
+        if (selectAll) {
+            setSelectAll(true);
+            setSelectedItems(orders);
+        } else {
+            setSelectAll(false);
+            setSelectedItems([]);
+        }
+    }, [orders]);
+
+    const columns = useMemo(() => [
+        {
+            field: "serialNumber",
+            header: "S.No",
+            sortable: true,
+            filter: false,
+            visible: true,
+            width: "30px",
+        },
+        {
+            field: "name",
+            header: "Name",
+            body: (rowData) => (`${rowData?.orderBy?.firstname} ${rowData?.orderBy?.lastname}`),
+            sortable: true,
+            filter: true,
+            visible: true,
+            width: "150px",
+        },
+        {
+            field: "product",
+            header: "Product",
+            body: (rowData) => (rowData?.products?.map((productItem, idx) => (
                 <p key={idx}>{productItem?.product?.title}</p>
-            )),
-            amount: item.paymentIntent.amount,
-            date: new Date(item.createdAt).toLocaleString(),
-        }))
-        : [];
+            ))),
+            sortable: true,
+            filter: true,
+            visible: true,
+            width: "150px",
+        },
+        {
+            field: "amount",
+            header: "Amount",
+            body: (rowData) => (`${rowData?.paymentIntent?.amount ? rowData?.paymentIntent?.amount : ""}`),
+            sortable: true,
+            filter: true,
+            visible: true,
+            width: "80px",
+        },
+        {
+            field: "createdAt",
+            header: "Date",
+            sortable: true,
+            filter: true,
+            visible: true,
+            width: "100px",
+        },
+    ], []);
 
+    const clearFilters = () => {
+        setLazyState(prevState => ({
+            ...prevState,
+            filters: {}, // Reset filters
+            page: 1, // Optionally reset to the first page
+        }));
+
+        loadLazyData(); // Trigger a new data fetch
+    };
+
+    const actionItems = useMemo(() => [
+        {
+            id: 1,
+            btn_label: "Excel All",
+            btn_color: "secondary",
+            class_name: "w-100 rounded p-2 ps-3 pe-3",
+            column_class: "col-md-6 pe-1",
+            icon: "pi pi-file-excel",
+            btn_size: "small",
+            on_action: () => {
+                console.log("Excel all");
+            },
+        },
+        {
+            id: 2,
+            btn_label: "Clear Filter",
+            btn_color: "secondary",
+            class_name: "w-100 rounded p-2 ps-3 pe-3",
+            column_class: "col-md-6",
+            icon: "pi pi-filter-slash",
+            btn_size: "small",
+            on_action: clearFilters,
+        },
+    ], []);
+
+    // console.log('dataSource: ', dataSource);
 
     return (
-        <>
-            <div className='row'>
-                <div className='col-md-12'>
-                    <h4 className='mt-md-2'> Orders List </h4>
-                    <Table
-                        className='mt-md-3'
-                        columns={columns}
-                        dataSource={dataSource}
-                    />
+        <div className='row'>
+            <div className='col-md-12'>
+                <h4 className='mt-md-2'>Orders List</h4>
+                <div className="row justify-content-between my-md-3">
+                    <div className="col-md-5"></div>
+                    <div className="col-md-3">
+                        <CustomPanel
+                            custom_main_class="row"
+                            actionList={actionItems}
+                        />
+                    </div>
                 </div>
+                <CustomDataTable
+                    loadLazyData={loadLazyData}
+                    columns={columns}
+                    lazyState={lazyState}
+                    totalRecords={totalRecords}
+                    dataSource={dataSource}
+                    loading={isLoading}
+                    scrollHeight="450px"
+                    scrollable={true}
+                    onPage={onPage}
+                    onSort={onSort}
+                    rows={lazyState.rows}
+                    onFilter={onFilter}
+                    tableSize="small"
+                    tableWidth="70rem"
+                    borderGrid={true}
+                    onSelectionChange={onSelectionChange}
+                    onSelectAllChange={onSelectAllChange}
+                    selectAll={selectAll}
+                />
             </div>
-        </>
+        </div>
     );
-};
+}
 
 export default Orders;
