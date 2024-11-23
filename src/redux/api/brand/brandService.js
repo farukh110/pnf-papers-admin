@@ -3,28 +3,54 @@ import { BACKEND } from "../../utilities/base_url";
 
 const getAllBrands = async (params) => {
 
-    const { page, limit, sortBy, sortOrder, filters } = params;
+    try {
 
-    const queryString = new URLSearchParams({
+        const { page, limit, sortBy, sortOrder, filters } = params;
 
-        page,
-        limit,
-        sortBy,
-        sortOrder,
-        filters: JSON.stringify(filters)
+        const queryString = new URLSearchParams({
 
-    }).toString();
+            page,
+            limit,
+            sortBy,
+            sortOrder,
+            filters: JSON.stringify(filters)
 
-    const response = await axios.get(`${BACKEND}/brand?${queryString}`);
+        }).toString();
 
-    if (response?.data) {
-        return response?.data;
+        const response = await axios.get(`${BACKEND}/brand?${queryString}`);
+
+        if (response?.data) {
+            return response?.data;
+        }
+
+    } catch (error) {
+
+        console.error('Error:', error);
+        throw new Error(error.response?.data?.message || 'api error');
+    }
+}
+
+const getAllBrandsOption = async () => {
+
+    try {
+
+        const response = await axios.get(`${BACKEND}/brand/options`);
+
+        if (response?.data) {
+            return response?.data;
+        }
+
+    } catch (error) {
+
+        console.error('Error:', error);
+        throw new Error(error.response?.data?.message || 'api error');
     }
 }
 
 const brandService = {
 
-    getAllBrands
+    getAllBrands,
+    getAllBrandsOption
 }
 
 export default brandService;
