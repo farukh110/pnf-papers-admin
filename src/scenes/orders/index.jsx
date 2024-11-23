@@ -8,6 +8,8 @@ const Orders = () => {
 
     const dispatch = useDispatch();
 
+    const orderState = useSelector((state) => state.auth.orders);
+
     const columns = [
         {
             title: 'S.No',
@@ -34,8 +36,6 @@ const Orders = () => {
     useEffect(() => {
         dispatch(getAllOrders());
     }, [dispatch]);
-
-    const orderState = useSelector((state) => state.auth.orders);
 
     // console.log('orderState: ', orderState);
 
