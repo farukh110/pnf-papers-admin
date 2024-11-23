@@ -48,8 +48,6 @@ const Orders = () => {
             sortOrder: sortOrder === 1 ? 'asc' : 'desc',
         };
 
-        // console.log("API Request Params:", params); // Debugging
-
         dispatch(getAllOrders(params))
             .unwrap()
             .catch((error) => {
@@ -63,9 +61,6 @@ const Orders = () => {
 
     useEffect(() => {
         if (Array.isArray(orders)) {
-
-            // console.log('orders: ', orders);
-
             const ordersWithSerialNumbers = orders.map((order, index) => ({
                 ...order,
                 serialNumber: lazyState.first + index + 1,
@@ -109,21 +104,13 @@ const Orders = () => {
     const onFilter = useCallback((event) => {
         const processedFilters = processFilters(event.filters);
 
-        console.log('Processed filters before sending:', processedFilters);
+        // console.log('Processed filters before sending:', processedFilters);
 
         setLazyState(prevState => ({
             ...prevState,
             filters: processedFilters,
             page: 1,
         }));
-    }, []);
-
-    const viewOrder = useCallback((orderId) => {
-        console.log("View order:", orderId);
-    }, []);
-
-    const deleteOrder = useCallback((orderId) => {
-        console.log("Delete order:", orderId);
     }, []);
 
     const onSelectionChange = useCallback((event) => {
