@@ -146,7 +146,7 @@ const Orders = () => {
             sortable: true,
             filter: true,
             visible: true,
-            width: "150px",
+            width: "100px",
         },
         {
             field: "product",
@@ -171,6 +171,7 @@ const Orders = () => {
         {
             field: "createdAt",
             header: "Date",
+            body: (rowData) => (new Date(rowData?.createdAt).toLocaleString()),
             sortable: true,
             filter: true,
             visible: true,
