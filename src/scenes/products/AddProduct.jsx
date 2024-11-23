@@ -16,7 +16,7 @@ const AddProduct = () => {
 
     const dispatch = useDispatch();
     const [description, setDescription] = useState('');
-    // const [brandsOption, setBrandsOption] = useState([]);
+    const [brandsOption, setBrandsOption] = useState(null);
     const [selectedCountry, setSelectedCountry] = useState(null);
 
     const { brands = [] } = useSelector(state => state.brands);
@@ -167,11 +167,10 @@ const AddProduct = () => {
                                         },
                                     ]}
                                 >
-
                                     <Dropdown
-                                        value={selectedCountry}
-                                        onChange={(e) => setSelectedCountry(e.value)}
-                                        options={countries}
+                                        value={brandsOption}
+                                        onChange={(e) => setBrandsOption(e.value)}
+                                        options={brands.map((item) => ({ name: item?.title, code: item?._id }))}
                                         optionLabel="name"
                                         placeholder="Select Product Brand"
                                         filter
