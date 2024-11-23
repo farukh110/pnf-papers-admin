@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form } from "antd";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -9,18 +9,31 @@ import './index.scss';
 import { Dropdown } from "primereact/dropdown";
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllBrandsOption } from './../../redux/api/brand/brandSlice';
 
 const AddProduct = () => {
 
+    const dispatch = useDispatch();
     const [description, setDescription] = useState('');
-
+    // const [brandsOption, setBrandsOption] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState(null);
+
+    const { brands = [] } = useSelector(state => state.brands);
 
     const countries = [
         { name: 'Australia', code: 'AU' },
         { name: 'Brazil', code: 'BR' },
         { name: 'China', code: 'CN' },
     ];
+
+    useEffect(() => {
+
+        dispatch(getAllBrandsOption());
+
+    }, []);
+
+    console.log('brands: ', brands);
 
     const onFinish = (values) => {
         console.log('Success:', values);
