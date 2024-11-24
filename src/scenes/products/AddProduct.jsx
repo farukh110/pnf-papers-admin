@@ -15,6 +15,7 @@ import { getAllCategoryOption } from "../../redux/api/product-categories/categor
 import { Multiselect } from "react-widgets";
 import "react-widgets/styles.css";
 import { getAllColorsOption } from "../../redux/api/color/colorSlice";
+import Dropzone from 'react-dropzone'
 
 const AddProduct = () => {
 
@@ -368,7 +369,7 @@ const AddProduct = () => {
                                 </Form.Item>
                             </div>
 
-                            <div className="col-md-12">
+                            {/* <div className="col-md-12">
                                 <Form.Item
                                     name="upload_images"
                                     className="mt-md-4"
@@ -390,6 +391,32 @@ const AddProduct = () => {
                                             banned files.
                                         </p>
                                     </Dragger>
+
+                                </Form.Item>
+                            </div> */}
+
+                            <div className="col-md-12">
+                                <Form.Item
+                                    name="upload_images"
+                                    className="mt-md-4"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please upload images',
+                                        },
+                                    ]}
+                                >
+
+                                    <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
+                                        {({ getRootProps, getInputProps }) => (
+                                            <section>
+                                                <div {...getRootProps()}>
+                                                    <input {...getInputProps()} />
+                                                    <p>Drag and drop some files here, or click to select files</p>
+                                                </div>
+                                            </section>
+                                        )}
+                                    </Dropzone>
 
                                 </Form.Item>
                             </div>
