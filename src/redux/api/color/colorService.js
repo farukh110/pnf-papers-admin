@@ -22,7 +22,7 @@ const getAllColors = async (params) => {
     }
 }
 
-export const getAllColorsOption = async () => {
+const getAllColorsOption = async () => {
 
     try {
 
@@ -37,7 +37,6 @@ export const getAllColorsOption = async () => {
         console.error('Error:', error);
         throw new Error(error.response?.data?.message || 'api error');
     }
-
 }
 
 const colorService = {

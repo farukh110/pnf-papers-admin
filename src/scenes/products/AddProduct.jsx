@@ -12,6 +12,9 @@ import CustomInputText from "../../components/global/custom-web-controls/custom-
 import { useDispatch, useSelector } from "react-redux";
 import { getAllBrandsOption } from './../../redux/api/brand/brandSlice';
 import { getAllCategoryOption } from "../../redux/api/product-categories/categoriesSlice";
+import { Multiselect } from "react-widgets";
+import "react-widgets/styles.css";
+import { getAllColorsOption } from "../../redux/api/color/colorSlice";
 
 const AddProduct = () => {
 
@@ -19,22 +22,17 @@ const AddProduct = () => {
     const [description, setDescription] = useState('');
     const [brandsOption, setBrandsOption] = useState(null);
     const [categoryOption, setCategoryOption] = useState(null);
-    const [selectedCountry, setSelectedCountry] = useState(null);
+    const [colorsOption, setColorsOption] = useState(null);
 
     const { brands = [] } = useSelector(state => state.brands);
-
     const { categories = [] } = useSelector(state => state.productsCategory);
-
-    const countries = [
-        { name: 'Australia', code: 'AU' },
-        { name: 'Brazil', code: 'BR' },
-        { name: 'China', code: 'CN' },
-    ];
+    const { colors = [] } = useSelector(state => state.colors);
 
     useEffect(() => {
 
         dispatch(getAllBrandsOption());
         dispatch(getAllCategoryOption());
+        dispatch(getAllColorsOption());
 
     }, []);
 
@@ -259,15 +257,16 @@ const AddProduct = () => {
                                     ]}
                                 >
 
-                                    <Dropdown
-                                        value={selectedCountry}
-                                        onChange={(e) => setSelectedCountry(e.value)}
-                                        options={countries}
-                                        optionLabel="name"
-                                        placeholder="Select color"
-                                        filter
-                                        showClear
-                                        className="w-full custom-dropdown"
+                                    <Multiselect
+                                        name="color"
+                                        dataKey="id"
+                                        onChange={(e) => {
+                                            console.log(e);
+                                            setColorsOption(e.value)
+                                        }}
+                                        textField="color"
+                                        defaultValue={[1]}
+                                        data={colors.map((item) => ({ color: item?.title, id: item?._id }))}
                                     />
 
                                 </Form.Item>
@@ -296,7 +295,7 @@ const AddProduct = () => {
                                 </Form.Item>
                             </div>
 
-                            <div className="col-md-3 mt-md-3">
+                            <div className="col-md-2 mt-md-3">
                                 <label>
                                     Width
                                 </label>
@@ -321,7 +320,7 @@ const AddProduct = () => {
                                 </Form.Item>
                             </div>
 
-                            <div className="col-md-3 mt-md-3">
+                            <div className="col-md-2 mt-md-3">
                                 <label>
                                     Height
                                 </label>
@@ -340,6 +339,30 @@ const AddProduct = () => {
                                         className="form-control"
                                         keyfilter="pint"
                                         placeholder="Please enter height"
+                                    />
+
+                                </Form.Item>
+                            </div>
+
+                            <div className="col-md-2 mt-md-3">
+                                <label>
+                                    Quantity
+                                </label>
+
+                                <Form.Item
+                                    name="quantity"
+                                    className="mt-md-1"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please enter Quantity',
+                                        },
+                                    ]}
+                                >
+                                    <CustomInputText
+                                        className="form-control"
+                                        keyfilter="pint"
+                                        placeholder="Please enter quantity"
                                     />
 
                                 </Form.Item>
