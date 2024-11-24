@@ -11,15 +11,19 @@ import CustomButton from "../../components/global/custom-web-controls/custom-but
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllBrandsOption } from './../../redux/api/brand/brandSlice';
+import { getAllCategoryOption } from "../../redux/api/product-categories/categoriesSlice";
 
 const AddProduct = () => {
 
     const dispatch = useDispatch();
     const [description, setDescription] = useState('');
     const [brandsOption, setBrandsOption] = useState(null);
+    const [categoryOption, setCategoryOption] = useState(null);
     const [selectedCountry, setSelectedCountry] = useState(null);
 
     const { brands = [] } = useSelector(state => state.brands);
+
+    const { categories = [] } = useSelector(state => state.productsCategory);
 
     const countries = [
         { name: 'Australia', code: 'AU' },
@@ -30,6 +34,7 @@ const AddProduct = () => {
     useEffect(() => {
 
         dispatch(getAllBrandsOption());
+        dispatch(getAllCategoryOption());
 
     }, []);
 
@@ -198,11 +203,11 @@ const AddProduct = () => {
                                 >
 
                                     <Dropdown
-                                        value={selectedCountry}
-                                        onChange={(e) => setSelectedCountry(e.value)}
-                                        options={countries}
+                                        value={categoryOption}
+                                        onChange={(e) => setCategoryOption(e.value)}
+                                        options={categories.map((item) => ({ name: item?.title, code: item?._id }))}
                                         optionLabel="name"
-                                        placeholder="Select product category"
+                                        placeholder="Select Product Category"
                                         filter
                                         showClear
                                         className="w-full custom-dropdown"

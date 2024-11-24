@@ -23,9 +23,27 @@ const getAllProductsCategory = async (params) => {
     }
 }
 
+const getAllCategoryOption = async () => {
+
+    try {
+
+        const response = await axios.get(`${BACKEND}/category/options`);
+
+        if (response?.data) {
+            return response?.data;
+        }
+
+    } catch (error) {
+
+        console.error('Error:', error);
+        throw new Error(error.response?.data?.message || 'api error');
+    }
+}
+
 const categoriesService = {
 
-    getAllProductsCategory
+    getAllProductsCategory,
+    getAllCategoryOption
 }
 
 export default categoriesService;
