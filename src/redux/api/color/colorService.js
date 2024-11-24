@@ -22,9 +22,28 @@ const getAllColors = async (params) => {
     }
 }
 
+export const getAllColorsOption = async () => {
+
+    try {
+
+        const response = await axios.get(`${BACKEND}/color/options`);
+
+        if (response?.data) {
+            return response?.data;
+        }
+
+    } catch (error) {
+
+        console.error('Error:', error);
+        throw new Error(error.response?.data?.message || 'api error');
+    }
+
+}
+
 const colorService = {
 
-    getAllColors
+    getAllColors,
+    getAllColorsOption
 }
 
 export default colorService;
