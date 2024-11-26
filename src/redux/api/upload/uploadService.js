@@ -5,7 +5,7 @@ const uploadImage = async (data) => {
 
     try {
 
-        const response = await axios.post(`${BACKEND}/color`, data, config);
+        const response = await axios.post(`${BACKEND}/upload`, data, config);
         return response.data;
 
     } catch (error) {
