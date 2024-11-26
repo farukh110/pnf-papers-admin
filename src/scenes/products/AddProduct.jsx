@@ -16,6 +16,7 @@ import { Multiselect } from "react-widgets";
 import "react-widgets/styles.css";
 import { getAllColorsOption } from "../../redux/api/color/colorSlice";
 import Dropzone from 'react-dropzone'
+import { uploadImages } from "../../redux/api/upload/uploadSlice";
 
 const AddProduct = () => {
 
@@ -407,7 +408,7 @@ const AddProduct = () => {
                                     ]}
                                 >
 
-                                    <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
+                                    <Dropzone onDrop={acceptedFiles => dispatch(uploadImages(acceptedFiles))}>
                                         {({ getRootProps, getInputProps }) => (
                                             <section>
                                                 <div {...getRootProps()}>
