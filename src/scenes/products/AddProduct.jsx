@@ -399,7 +399,7 @@ const AddProduct = () => {
                             <div className="col-md-12">
                                 <Form.Item
                                     name="upload_images"
-                                    className="mt-md-4"
+                                    className="mt-md-4 shadow p-3"
                                     rules={[
                                         {
                                             required: true,
