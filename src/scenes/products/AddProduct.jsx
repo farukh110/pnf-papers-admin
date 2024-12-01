@@ -29,6 +29,7 @@ const AddProduct = () => {
     const { brands = [] } = useSelector(state => state.brands);
     const { categories = [] } = useSelector(state => state.productsCategory);
     const { colors = [] } = useSelector(state => state.colors);
+    const images = useSelector((state) => state.upload.images);
 
     useEffect(() => {
 
@@ -422,6 +423,30 @@ const AddProduct = () => {
                                 </Form.Item>
                             </div>
 
+                            <div className="col-md-12 mt-md-4">
+
+                                <div className="showing-images d-flex flex-wrap shadow p-3 gap-3">
+
+                                    {
+                                        images.map((item, index) => {
+
+                                            return (
+                                                <div key={index} className="position-relative">
+
+                                                    <button className="position-absolute btn-remove pi pi-times"></button>
+                                                    <img
+                                                        src={item.url}
+                                                        width="200"
+                                                        height="200"
+                                                    />
+                                                </div>
+                                            )
+                                        })
+                                    }
+
+                                </div>
+
+                            </div>
                         </div>
 
                         <div className="row mt-md-3">
