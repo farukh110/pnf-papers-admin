@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { UPLOAD_IMAGES } from "../../../app-constants";
+import { DELETE_IMAGE, UPLOAD_IMAGES } from "../../../app-constants";
 import uploadService from "./uploadService";
 
 const initialState = {
@@ -30,6 +30,20 @@ export const uploadImages = createAsyncThunk(UPLOAD_IMAGES, async (data, thunkAP
     }
 });
 
+export const deleteImage = createAsyncThunk(DELETE_IMAGE, async (id, thunkAPI) => {
+
+    try {
+
+        return await uploadService.deleteImage(id);
+
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error);
+
+    }
+
+});
+
 export const uploadSlice = createSlice({
     name: "uploadImages",
     initialState,
@@ -55,7 +69,25 @@ export const uploadSlice = createSlice({
                 state.isError = true;
                 state.isSuccess = false;
                 state.message = action.error;
-            });
+            })
+            .addCase(deleteImage.pending, (state) => {
+
+                state.isLoading = true;
+            })
+            .addCase(deleteImage.fulfilled, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.images = [];
+            })
+            .addCase(deleteImage.rejected, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.payload;
+            })
     }
 });
 
