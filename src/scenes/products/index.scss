@@ -56,3 +56,17 @@ div#blog_description_help {
         padding-bottom: 5px !important;
     }
 }
+
+.btn-remove {
+
+    top: 10px;
+    right: 10px;
+    background: red;
+    border-radius: 50px;
+    border: 1px solid red;
+    color: #fff;
+    width: 25px;
+    height: 25px;
+    font-size: 12px;
+    padding: 5px;
+}
