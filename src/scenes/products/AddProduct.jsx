@@ -16,7 +16,7 @@ import { Multiselect } from "react-widgets";
 import "react-widgets/styles.css";
 import { getAllColorsOption } from "../../redux/api/color/colorSlice";
 import Dropzone from 'react-dropzone'
-import { uploadImages } from "../../redux/api/upload/uploadSlice";
+import { deleteImage, uploadImages } from "../../redux/api/upload/uploadSlice";
 
 const AddProduct = () => {
 
@@ -433,7 +433,12 @@ const AddProduct = () => {
                                             return (
                                                 <div key={index} className="position-relative">
 
-                                                    <button className="position-absolute btn-remove pi pi-times"></button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => dispatch(deleteImage(item.public_id))}
+                                                        className="position-absolute btn-remove pi pi-times">
+
+                                                    </button>
                                                     <img
                                                         src={item.url}
                                                         width="200"
