@@ -454,7 +454,7 @@ const AddProduct = () => {
                             </div>
                         </div>
 
-                        <div className="row mt-md-3">
+                        <div className="row mt-md-4">
 
                             <Form.Item>
                                 {/* <Button type="primary" htmlType="submit">
