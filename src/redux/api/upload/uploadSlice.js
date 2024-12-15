@@ -50,7 +50,9 @@ export const uploadSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
 
+
         builder
+            // upload images
             .addCase(uploadImages.pending, (state) => {
 
                 state.isLoading = true;
@@ -70,6 +72,7 @@ export const uploadSlice = createSlice({
                 state.isSuccess = false;
                 state.message = action.error;
             })
+            // delete image
             .addCase(deleteImage.pending, (state) => {
 
                 state.isLoading = true;
@@ -79,7 +82,10 @@ export const uploadSlice = createSlice({
                 state.isLoading = false;
                 state.isError = false;
                 state.isSuccess = true;
-                state.images = [];
+
+                console.log('state.images: ', state.images);
+
+                state.images = state.images.filter(image => image.public_id !== action.meta.arg);
             })
             .addCase(deleteImage.rejected, (state, action) => {
 
