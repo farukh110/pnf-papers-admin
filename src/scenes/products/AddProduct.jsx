@@ -14,6 +14,7 @@ import "react-widgets/styles.css";
 import { getAllColorsOption } from "../../redux/api/color/colorSlice";
 import Dropzone from 'react-dropzone'
 import { deleteImage, uploadImages } from "../../redux/api/upload/uploadSlice";
+import { createProduct } from "../../redux/api/product/productSlice";
 
 const AddProduct = () => {
 
@@ -72,13 +73,20 @@ const AddProduct = () => {
     };
 
     const onFinish = (values) => {
+
         const productData = {
             ...values,
             description,
             images,
+            brand: values?.product_brand?.name,
+            category: values?.product_category?.name
+
         };
+
         console.log('Success:', productData);
-        dispatch();
+
+        dispatch(createProduct(productData));
+
     };
 
 
@@ -293,7 +301,7 @@ const AddProduct = () => {
                                 </Form.Item>
                             </div>
 
-                            <div className="col-md-2 mt-md-3">
+                            <div className="col-md-3 mt-md-3">
                                 <label>
                                     Width
                                 </label>
@@ -318,7 +326,7 @@ const AddProduct = () => {
                                 </Form.Item>
                             </div>
 
-                            <div className="col-md-2 mt-md-3">
+                            <div className="col-md-3 mt-md-3">
                                 <label>
                                     Height
                                 </label>
@@ -342,7 +350,7 @@ const AddProduct = () => {
                                 </Form.Item>
                             </div>
 
-                            <div className="col-md-2 mt-md-3">
+                            <div className="col-md-3 mt-md-3">
                                 <label>
                                     Quantity
                                 </label>
@@ -361,6 +369,30 @@ const AddProduct = () => {
                                         className="form-control"
                                         keyfilter="pint"
                                         placeholder="Please enter quantity"
+                                    />
+
+                                </Form.Item>
+                            </div>
+
+                            <div className="col-md-3 mt-md-3">
+                                <label>
+                                    Weight
+                                </label>
+
+                                <Form.Item
+                                    name="weight"
+                                    className="mt-md-1"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please enter Weight',
+                                        },
+                                    ]}
+                                >
+                                    <CustomInputText
+                                        className="form-control"
+                                        keyfilter="pint"
+                                        placeholder="Please enter weight"
                                     />
 
                                 </Form.Item>

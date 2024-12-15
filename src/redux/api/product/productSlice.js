@@ -4,6 +4,7 @@ import productService from './productService';
 
 const initialState = {
     products: [],
+    createProduct: "",
     totalRecords: 0, // Add this to store the total records count
     isError: false,
     isLoading: false,
