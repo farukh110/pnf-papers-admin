@@ -78,6 +78,7 @@ const AddProduct = () => {
             images,
         };
         console.log('Success:', productData);
+        dispatch();
     };
 
 

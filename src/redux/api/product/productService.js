@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BACKEND } from "../../utilities/base_url";
+import { BACKEND, config } from "../../utilities/base_url";
 
 const getAllProducts = async (params) => {
 
@@ -25,8 +25,15 @@ const getAllProducts = async (params) => {
     }
 };
 
+const createProduct = async (product) => {
+
+    const response = await axios.post(`${BACKEND}/product/`, product, config);
+    return response.data;
+};
+
 const productService = {
-    getAllProducts
+    getAllProducts,
+    createProduct
 };
 
 export default productService;
