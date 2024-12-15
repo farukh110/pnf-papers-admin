@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 import { Form } from "antd";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { InboxOutlined } from '@ant-design/icons';
-import { message, Upload } from 'antd';
-const { Dragger } = Upload;
 import './index.scss';
 import { Dropdown } from "primereact/dropdown";
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
@@ -39,8 +36,6 @@ const AddProduct = () => {
 
     }, []);
 
-    console.log('brands: ', brands);
-
     const onFinish = (values) => {
         console.log('Success:', values);
     };
@@ -70,26 +65,6 @@ const AddProduct = () => {
         }
 
         e.preventDefault();
-    };
-
-    const props = {
-        name: 'file',
-        multiple: true,
-        action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
-        onChange(info) {
-            const { status } = info.file;
-            if (status !== 'uploading') {
-                console.log(info.file, info.fileList);
-            }
-            if (status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully.`);
-            } else if (status === 'error') {
-                message.error(`${info.file.name} file upload failed.`);
-            }
-        },
-        onDrop(e) {
-            console.log('Dropped files', e.dataTransfer.files);
-        },
     };
 
     return (
@@ -370,32 +345,6 @@ const AddProduct = () => {
 
                                 </Form.Item>
                             </div>
-
-                            {/* <div className="col-md-12">
-                                <Form.Item
-                                    name="upload_images"
-                                    className="mt-md-4"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: 'Please upload images',
-                                        },
-                                    ]}
-                                >
-
-                                    <Dragger {...props}>
-                                        <p className="ant-upload-drag-icon">
-                                            <InboxOutlined />
-                                        </p>
-                                        <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                                        <p className="ant-upload-hint">
-                                            Support for a single or bulk upload. Strictly prohibited from uploading company data or other
-                                            banned files.
-                                        </p>
-                                    </Dragger>
-
-                                </Form.Item>
-                            </div> */}
 
                             <div className="col-md-12">
                                 <Form.Item
