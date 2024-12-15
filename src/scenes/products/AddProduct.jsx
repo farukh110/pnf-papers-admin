@@ -36,13 +36,6 @@ const AddProduct = () => {
 
     }, []);
 
-    const onFinish = (values) => {
-        console.log('Success:', values);
-    };
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
-
     const handleChange = (value) => {
         console.log(`selected ${value}`);
     };
@@ -66,6 +59,32 @@ const AddProduct = () => {
 
         e.preventDefault();
     };
+
+    const handleDrop = (acceptedFiles) => {
+        dispatch(uploadImages(acceptedFiles));
+    };
+
+    const validateImages = (_, value) => {
+        if (images.length === 0) {
+            return Promise.reject(new Error('Please upload images'));
+        }
+        return Promise.resolve();
+    };
+
+    const onFinish = (values) => {
+        const productData = {
+            ...values,
+            description,
+            images,
+        };
+        console.log('Success:', productData);
+    };
+
+
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
+
 
     return (
         <>
@@ -352,13 +371,12 @@ const AddProduct = () => {
                                     className="mt-md-4 shadow p-3"
                                     rules={[
                                         {
-                                            required: true,
-                                            message: 'Please upload images',
+                                            validator: validateImages,
                                         },
                                     ]}
                                 >
 
-                                    <Dropzone onDrop={acceptedFiles => dispatch(uploadImages(acceptedFiles))}>
+                                    <Dropzone onDrop={handleDrop}>
                                         {({ getRootProps, getInputProps }) => (
                                             <section>
                                                 <div {...getRootProps()}>
