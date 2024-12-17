@@ -9,7 +9,7 @@ import CustomInputText from "../../components/global/custom-web-controls/custom-
 import { useDispatch, useSelector } from "react-redux";
 import { getAllBrandsOption } from './../../redux/api/brand/brandSlice';
 import { getAllCategoryOption } from "../../redux/api/product-categories/categoriesSlice";
-import { Multiselect } from "react-widgets";
+import { DropdownList, Multiselect } from "react-widgets";
 import "react-widgets/styles.css";
 import { getAllColorsOption } from "../../redux/api/color/colorSlice";
 import Dropzone from 'react-dropzone'
@@ -23,6 +23,7 @@ const AddProduct = () => {
     const [brandsOption, setBrandsOption] = useState(null);
     const [categoryOption, setCategoryOption] = useState(null);
     const [colorsOption, setColorsOption] = useState(null);
+    const [tagsOption, setTagsOption] = useState({ tag: "Featured", id: "featured" });
 
     const { brands = [] } = useSelector(state => state.brands);
     const { categories = [] } = useSelector(state => state.productsCategory);
@@ -79,7 +80,8 @@ const AddProduct = () => {
             description,
             images,
             brand: values?.product_brand?.name,
-            category: values?.product_category?.name
+            category: values?.product_category?.name,
+            tags: values?.tags?.tag
 
         };
 
@@ -271,8 +273,43 @@ const AddProduct = () => {
                                             setColorsOption(e.value)
                                         }}
                                         textField="color"
-                                        defaultValue={[1]}
+                                        defaultValue={["Red"]}
                                         data={colors.map((item) => ({ color: item?.title, id: item?._id }))}
+                                    />
+
+                                </Form.Item>
+                            </div>
+
+                            <div className="col-md-3 mt-md-3">
+                                <label>
+                                    Tags
+                                </label>
+
+                                <Form.Item
+                                    name="tags"
+                                    className="mt-md-1"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please select Tags',
+                                        },
+                                    ]}
+                                >
+
+                                    <DropdownList
+                                        name="tags"
+                                        dataKey="id"
+                                        textField="tag"
+                                        value={tagsOption}
+                                        data={[
+                                            { tag: "Featured", id: "featured" },
+                                            { tag: "Popular", id: "popular" },
+                                            { tag: "Special", id: "special" },
+                                        ]}
+                                        onChange={(e) => {
+                                            console.log(e);
+                                            setTagsOption(e);
+                                        }}
                                     />
 
                                 </Form.Item>
