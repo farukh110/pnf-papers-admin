@@ -273,7 +273,7 @@ const AddProduct = () => {
                                             setColorsOption(e.value)
                                         }}
                                         textField="color"
-                                        defaultValue={["Red"]}
+                                        value={["Red"]}
                                         data={colors.map((item) => ({ color: item?.title, id: item?._id }))}
                                     />
 

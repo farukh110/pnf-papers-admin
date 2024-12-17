@@ -1,4 +1,3 @@
-import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { PrimeReactProvider } from 'primereact/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -12,11 +11,11 @@ import { Provider } from 'react-redux';
 import { store } from './redux/store/index.js';
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <Provider store={store}>
-      <PrimeReactProvider>
-        <App />
-      </PrimeReactProvider>
-    </Provider>
-  </StrictMode>,
+  // <StrictMode>
+  <Provider store={store}>
+    <PrimeReactProvider>
+      <App />
+    </PrimeReactProvider>
+  </Provider>
+  // </StrictMode>,
 )
