@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BACKEND } from "../../utilities/base_url";
+import { BACKEND, config } from "../../utilities/base_url";
 
 const getAllProductsCategory = async (params) => {
 
@@ -40,10 +40,17 @@ const getAllCategoryOption = async () => {
     }
 }
 
+const createCategory = async (category) => {
+
+    const response = await axios.post(`${BACKEND}/category`, category, config);
+    return response.data;
+}
+
 const categoriesService = {
 
     getAllProductsCategory,
-    getAllCategoryOption
+    getAllCategoryOption,
+    createCategory
 }
 
 export default categoriesService;

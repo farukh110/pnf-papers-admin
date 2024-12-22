@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GET_ALL_PRODUCTS_CATEGORY, GET_ALL_PRODUCTS_CATEGORY_OPTION } from "../../../app-constants";
+import { CREATE_PRODUCT_CATEGORY, GET_ALL_PRODUCTS_CATEGORY, GET_ALL_PRODUCTS_CATEGORY_OPTION } from "../../../app-constants";
 import categoriesService from "./categoriesService";
 
 const initialState = {
 
     categories: [],
+    createdCategory: "",
     totalRecords: 0,
     isError: false,
     isLoading: false,
@@ -39,6 +40,18 @@ export const getAllCategoryOption = createAsyncThunk(GET_ALL_PRODUCTS_CATEGORY_O
         return thunkAPI.rejectWithValue(error?.response?.data || error?.message);
     }
 
+});
+
+export const createCategory = createAsyncThunk(CREATE_PRODUCT_CATEGORY, async (categoryData, thunkAPI) => {
+
+    try {
+
+        return await categoriesService.createCategory(categoryData);
+
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error);
+    }
 });
 
 export const categoriesSlice = createSlice({
@@ -91,6 +104,27 @@ export const categoriesSlice = createSlice({
                 state.isSuccess = false;
                 state.message = action.payload;
 
+            })
+            // create product category
+            .addCase(createCategory.pending, (state) => {
+
+                state.isLoading = true;
+
+            })
+            .addCase(createCategory.fulfilled, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.createdCategory = action.payload;
+
+            })
+            .addCase(createCategory.rejected, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
             })
     }
 
