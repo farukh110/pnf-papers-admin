@@ -97,14 +97,14 @@ const AddProduct = () => {
             notification.success({
                 message: 'Product Created',
                 description: 'The product has been created successfully!',
-                duration: 3,
+                duration: 1,
             });
 
             setTimeout(() => {
 
                 navigate('/admin/products');
 
-            }, 3000);
+            }, 1000);
 
         } catch (error) {
 
@@ -112,7 +112,7 @@ const AddProduct = () => {
             notification.error({
                 message: 'Creation Failed',
                 description: 'An error occurred while creating the product. Please try again.',
-                duration: 3,
+                duration: 1,
             });
         }
 

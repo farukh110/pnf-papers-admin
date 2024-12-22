@@ -1,14 +1,46 @@
-import { Form } from "antd";
+import { Form, notification } from "antd";
 import './index.scss';
-import { InputText } from "primereact/inputtext";
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { createCategory } from "../../redux/api/product-categories/categoriesSlice";
 
 const AddProductCategory = () => {
 
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const onFinish = (values) => {
-        console.log('Success:', values);
+
+        try {
+
+            dispatch(createCategory(values));
+
+            notification.success({
+                message: 'Product Category Created',
+                description: 'The product category has been created successfully!',
+                duration: 1,
+            });
+
+            setTimeout(() => {
+
+                navigate('/admin/categories');
+
+            }, 1000);
+
+        } catch (error) {
+
+            console.log("error: ", error);
+            notification.error({
+                message: 'Creation Failed',
+                description: 'An error occurred while creating the product category. Please try again.',
+                duration: 1,
+            });
+        }
+
     };
+
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
@@ -26,6 +58,9 @@ const AddProductCategory = () => {
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
                         autoComplete="off"
+                        initialValues={{
+                            title: "",
+                        }}
                     >
 
                         <div className="row">

@@ -20,14 +20,14 @@ const AddBrand = () => {
             notification.success({
                 message: 'Brand Created',
                 description: 'The brand has been created successfully!',
-                duration: 3,
+                duration: 1,
             });
 
             setTimeout(() => {
 
                 navigate('/admin/brands');
 
-            }, 3000);
+            }, 1000);
 
         } catch (error) {
 
@@ -35,7 +35,7 @@ const AddBrand = () => {
             notification.error({
                 message: 'Creation Failed',
                 description: 'An error occurred while creating the brand. Please try again.',
-                duration: 3,
+                duration: 1,
             });
         }
 
