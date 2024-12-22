@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GET_ALL_BLOGS_CATEGORY } from "../../../app-constants";
+import { CREATE_BLOG_CATEGORY, GET_ALL_BLOGS_CATEGORY } from "../../../app-constants";
 import blogCategoryService from "./blogCategoryService";
 
 const initialState = {
 
     blogCategory: [],
+    createBlogCategory: "",
     totalRecords: 0,
     isError: false,
     isLoading: false,
@@ -27,6 +28,18 @@ export const getAllBlogCategories = createAsyncThunk(GET_ALL_BLOGS_CATEGORY, asy
 
 });
 
+export const createBlogCategory = createAsyncThunk(CREATE_BLOG_CATEGORY, async (blogCategoryData, thunkAPI) => {
+
+    try {
+
+        return await blogCategoryService.createBlogCategory(blogCategoryData);
+
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error);
+    }
+});
+
 export const blogCategorySlice = createSlice({
 
     name: 'blogCategory',
@@ -35,6 +48,7 @@ export const blogCategorySlice = createSlice({
     extraReducers: (builder) => {
 
         builder
+            // get all blog categories
             .addCase(getAllBlogCategories.pending, (state) => {
 
                 state.isLoading = true;
@@ -55,6 +69,28 @@ export const blogCategorySlice = createSlice({
                 state.isError = true;
                 state.isSuccess = false;
                 state.message = action.payload;
+
+            })
+            // create category
+            .addCase(createBlogCategory.pending, (state) => {
+
+                state.isLoading = true;
+
+            })
+            .addCase(createBlogCategory.fulfilled, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.createBlogCategory = action.payload;
+
+            })
+            .addCase(createBlogCategory.rejected, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
 
             })
 
