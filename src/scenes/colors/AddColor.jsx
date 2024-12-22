@@ -1,13 +1,46 @@
-import { Form } from 'antd';
+import { Form, notification } from 'antd';
 import { ColorPicker } from 'primereact/colorpicker';
 import CustomButton from '../../components/global/custom-web-controls/custom-button';
 import './index.scss';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { createColor } from '../../redux/api/color/colorSlice';
 
 const AddColor = () => {
 
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const onFinish = (values) => {
-        console.log('Success:', values);
+
+        try {
+
+            dispatch(createColor(values));
+
+            notification.success({
+                message: 'Color Created',
+                description: 'The color has been created successfully!',
+                duration: 1,
+            });
+
+            setTimeout(() => {
+
+                navigate('/admin/colors');
+
+            }, 1000);
+
+        } catch (error) {
+
+            console.log("error: ", error);
+            notification.error({
+                message: 'Creation Failed',
+                description: 'An error occurred while creating the color. Please try again.',
+                duration: 1,
+            });
+        }
+
     };
+
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
@@ -28,7 +61,7 @@ const AddColor = () => {
 
                     <div className="row">
 
-                        <div className="col-md-1">
+                        <div className="col-md-2">
                             <label>
                                 Color
                             </label>
