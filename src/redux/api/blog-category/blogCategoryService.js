@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BACKEND } from "../../utilities/base_url";
+import { BACKEND, config } from "../../utilities/base_url";
 
 const getAllBlogCategories = async (params) => {
 
@@ -22,9 +22,16 @@ const getAllBlogCategories = async (params) => {
     }
 }
 
+const createBlogCategory = async (blogCategory) => {
+
+    const response = await axios.post(`${BACKEND}/blog-category`, blogCategory, config);
+    return response.data;
+}
+
 const blogCategoryService = {
 
-    getAllBlogCategories
+    getAllBlogCategories,
+    createBlogCategory
 }
 
 export default blogCategoryService;
