@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GET_ALL_COLORS, GET_ALL_COLORS_OPTION } from "../../../app-constants";
+import { CREATE_COLOR, GET_ALL_COLORS, GET_ALL_COLORS_OPTION } from "../../../app-constants";
 import colorService from "./colorService";
 
 const initialState = {
 
     colors: [],
+    createdColor: "",
     totalRecords: 0,
     isError: false,
     isLoading: false,
@@ -39,6 +40,18 @@ export const getAllColorsOption = createAsyncThunk(GET_ALL_COLORS_OPTION, async 
         return thunkAPI.rejectWithValue(error?.response?.data || error.message);
     }
 
+});
+
+export const createColor = createAsyncThunk(CREATE_COLOR, async (colorData, thunkAPI) => {
+
+    try {
+
+        return await colorService.createColor(colorData);
+
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error);
+    }
 });
 
 export const colorSlice = createSlice({
@@ -92,6 +105,28 @@ export const colorSlice = createSlice({
                 state.isError = true;
                 state.isSuccess = false;
                 state.message = action.payload;
+
+            })
+            // create color
+            .addCase(createColor.pending, (state) => {
+
+                state.isLoading = true;
+
+            })
+            .addCase(createColor.fulfilled, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.createdColor = action.payload;
+
+            })
+            .addCase(createColor.rejected, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
 
             })
 

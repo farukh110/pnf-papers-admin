@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BACKEND } from "../../utilities/base_url";
+import { BACKEND, config } from "../../utilities/base_url";
 
 const getAllColors = async (params) => {
 
@@ -39,10 +39,18 @@ const getAllColorsOption = async () => {
     }
 }
 
+const createColor = async (color) => {
+
+    const response = await axios.post(`${BACKEND}/color`, color, config);
+    return response.data;
+
+}
+
 const colorService = {
 
     getAllColors,
-    getAllColorsOption
+    getAllColorsOption,
+    createColor
 }
 
 export default colorService;
