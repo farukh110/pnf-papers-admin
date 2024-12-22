@@ -5,6 +5,7 @@ import brandService from "./brandService";
 const initialState = {
 
     brands: [],
+    createdBrand: "",
     totalRecords: 0,
     isError: false,
     isLoading: false,

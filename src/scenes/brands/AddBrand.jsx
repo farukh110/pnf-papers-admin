@@ -1,16 +1,46 @@
-import { Form } from "antd";
+import { Form, notification } from "antd";
 import './index.scss';
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { createBrand } from "../../redux/api/brand/brandSlice";
 
 const AddBrand = () => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const onFinish = (values) => {
-        console.log('Success:', values);
+
+        try {
+
+            dispatch(createBrand(values));
+
+            notification.success({
+                message: 'Brand Created',
+                description: 'The brand has been created successfully!',
+                duration: 3,
+            });
+
+            setTimeout(() => {
+
+                navigate('/admin/brands');
+
+            }, 3000);
+
+        } catch (error) {
+
+            console.log("error: ", error);
+            notification.error({
+                message: 'Creation Failed',
+                description: 'An error occurred while creating the brand. Please try again.',
+                duration: 3,
+            });
+        }
+
     };
+
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
@@ -28,6 +58,9 @@ const AddBrand = () => {
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
                         autoComplete="off"
+                        initialValues={{
+                            title: "",
+                        }}
                     >
 
                         <div className="row">
