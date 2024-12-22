@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form } from "antd";
+import { Form, notification } from "antd";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './index.scss';
@@ -15,8 +15,11 @@ import { getAllColorsOption } from "../../redux/api/color/colorSlice";
 import Dropzone from 'react-dropzone'
 import { deleteImage, uploadImages } from "../../redux/api/upload/uploadSlice";
 import { createProduct } from "../../redux/api/product/productSlice";
+import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
+
+    const navigate = useNavigate();
 
     const dispatch = useDispatch();
     const [description, setDescription] = useState('');
@@ -87,15 +90,37 @@ const AddProduct = () => {
 
         console.log('Success:', productData);
 
-        dispatch(createProduct(productData));
+        try {
+
+            dispatch(createProduct(productData));
+
+            notification.success({
+                message: 'Product Created',
+                description: 'The product has been created successfully!',
+                duration: 3,
+            });
+
+            setTimeout(() => {
+
+                navigate('/admin/products');
+
+            }, 3000);
+
+        } catch (error) {
+
+            console.log("error: ", error);
+            notification.error({
+                message: 'Creation Failed',
+                description: 'An error occurred while creating the product. Please try again.',
+                duration: 3,
+            });
+        }
 
     };
-
 
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
-
 
     return (
         <>
