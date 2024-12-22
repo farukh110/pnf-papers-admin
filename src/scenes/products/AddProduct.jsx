@@ -15,8 +15,11 @@ import { getAllColorsOption } from "../../redux/api/color/colorSlice";
 import Dropzone from 'react-dropzone'
 import { deleteImage, uploadImages } from "../../redux/api/upload/uploadSlice";
 import { createProduct } from "../../redux/api/product/productSlice";
+import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
+
+    const navigate = useNavigate();
 
     const dispatch = useDispatch();
     const [description, setDescription] = useState('');
@@ -89,6 +92,7 @@ const AddProduct = () => {
 
         dispatch(createProduct(productData));
 
+        navigate('/admin/products');
     };
 
 
