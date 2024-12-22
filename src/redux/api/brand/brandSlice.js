@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GET_ALL_BRANDS, GET_ALL_BRANDS_OPTION } from "../../../app-constants";
+import { CREATE_BRAND, GET_ALL_BRANDS, GET_ALL_BRANDS_OPTION } from "../../../app-constants";
 import brandService from "./brandService";
 
 const initialState = {
@@ -37,6 +37,19 @@ export const getAllBrandsOption = createAsyncThunk(GET_ALL_BRANDS_OPTION, async 
     } catch (error) {
 
         return thunkAPI.rejectWithValue(error?.response?.data || error.message);
+    }
+
+});
+
+export const createBrand = createAsyncThunk(CREATE_BRAND, async (brandData, thunkAPI) => {
+
+    try {
+
+        return await brandService.createBrand(brandData);
+
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error);
     }
 
 });
@@ -94,6 +107,26 @@ export const brandSlice = createSlice({
                 state.message = action.payload;
 
             })
+            // create brand
+            .addCase(createBrand.pending, (state) => {
+
+                state.isLoading = true;
+
+            })
+            .addCase(createBrand.fulfilled, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.createdBrand = action.payload
+            })
+            .addCase(createBrand.rejected, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            });
 
     }
 });

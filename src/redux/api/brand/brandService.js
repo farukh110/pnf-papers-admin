@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BACKEND } from "../../utilities/base_url";
+import { BACKEND, config } from "../../utilities/base_url";
 
 const getAllBrands = async (params) => {
 
@@ -47,10 +47,17 @@ const getAllBrandsOption = async () => {
     }
 }
 
+const createBrand = async (brand) => {
+
+    const response = await axios.post(`${BACKEND}/brand`, brand, config);
+    return response.data;
+}
+
 const brandService = {
 
     getAllBrands,
-    getAllBrandsOption
+    getAllBrandsOption,
+    createBrand
 }
 
 export default brandService;
