@@ -2,8 +2,11 @@ import { Form } from "antd";
 import './index.scss';
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
+import { useDispatch } from "react-redux";
 
 const AddBrand = () => {
+
+    const dispatch = useDispatch();
 
     const onFinish = (values) => {
         console.log('Success:', values);
