@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, Input, Select } from "antd";
+import { Form } from "antd";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { InboxOutlined } from '@ant-design/icons';
@@ -8,19 +8,39 @@ const { Dragger } = Upload;
 import './index.scss';
 import { Dropdown } from 'primereact/dropdown';
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
-import CustomInputText from "../../components/global/custom-web-controls/custom-input-text"
+import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
+import Dropzone from 'react-dropzone';
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteImage, uploadImages } from "../../redux/api/upload/uploadSlice";
 
 const AddBlog = () => {
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [description, setDescription] = useState('');
 
     const [selectedCountry, setSelectedCountry] = useState(null);
+
+    const images = useSelector((state) => state.upload.images);
 
     const countries = [
         { name: 'Australia', code: 'AU' },
         { name: 'Brazil', code: 'BR' },
         { name: 'China', code: 'CN' },
     ];
+
+    const handleDrop = (acceptedFiles) => {
+        dispatch(uploadImages(acceptedFiles));
+    };
+
+    const validateImages = (_, value) => {
+        if (images.length === 0) {
+            return Promise.reject(new Error('Please upload images'));
+        }
+        return Promise.resolve();
+    };
 
     const onFinish = (values) => {
         console.log('Success:', values);
@@ -39,26 +59,6 @@ const AddBlog = () => {
         setDescription(e);
 
     }
-
-    const props = {
-        name: 'file',
-        multiple: true,
-        action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
-        onChange(info) {
-            const { status } = info.file;
-            if (status !== 'uploading') {
-                console.log(info.file, info.fileList);
-            }
-            if (status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully.`);
-            } else if (status === 'error') {
-                message.error(`${info.file.name} file upload failed.`);
-            }
-        },
-        onDrop(e) {
-            console.log('Dropped files', e.dataTransfer.files);
-        },
-    };
 
     return (
         <>
@@ -159,27 +159,56 @@ const AddBlog = () => {
                             <div className="col-md-12">
                                 <Form.Item
                                     name="upload_images"
-                                    className="mt-md-4"
+                                    className="mt-md-4 shadow p-3"
                                     rules={[
                                         {
-                                            required: true,
-                                            message: 'Please upload images',
+                                            validator: validateImages,
                                         },
                                     ]}
                                 >
 
-                                    <Dragger {...props}>
-                                        <p className="ant-upload-drag-icon">
-                                            <InboxOutlined />
-                                        </p>
-                                        <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                                        <p className="ant-upload-hint">
-                                            Support for a single or bulk upload. Strictly prohibited from uploading company data or other
-                                            banned files.
-                                        </p>
-                                    </Dragger>
+                                    <Dropzone onDrop={handleDrop}>
+                                        {({ getRootProps, getInputProps }) => (
+                                            <section>
+                                                <div {...getRootProps()}>
+                                                    <input {...getInputProps()} />
+                                                    <p>Drag and drop some files here, or click to select files</p>
+                                                </div>
+                                            </section>
+                                        )}
+                                    </Dropzone>
 
                                 </Form.Item>
+                            </div>
+
+                            <div className="col-md-12 mt-md-4">
+
+                                <div className="showing-images d-flex flex-wrap shadow p-3 gap-3">
+
+                                    {
+                                        images.map((item, index) => {
+
+                                            return (
+                                                <div key={index} className="position-relative">
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => dispatch(deleteImage(item.public_id))}
+                                                        className="position-absolute btn-remove pi pi-times">
+
+                                                    </button>
+                                                    <img
+                                                        src={item.url}
+                                                        width="200"
+                                                        height="200"
+                                                    />
+                                                </div>
+                                            )
+                                        })
+                                    }
+
+                                </div>
+
                             </div>
 
                         </div>
