@@ -26,7 +26,7 @@ const AddBlog = () => {
     const images = useSelector((state) => state.upload.images);
 
     const countries = [
-        { name: 'Australia', code: 'AU' },
+        { name: 'Australia 1', code: 'AU' },
         { name: 'Brazil', code: 'BR' },
         { name: 'China', code: 'CN' },
     ];
