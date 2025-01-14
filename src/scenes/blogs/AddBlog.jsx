@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form } from "antd";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -13,6 +13,7 @@ import Dropzone from 'react-dropzone';
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteImage, uploadImages } from "../../redux/api/upload/uploadSlice";
+import { getAllBlogCategoryOption } from "../../redux/api/blog-category/blogCategorySlice";
 
 const AddBlog = () => {
 
@@ -21,15 +22,19 @@ const AddBlog = () => {
 
     const [description, setDescription] = useState('');
 
-    const [selectedCountry, setSelectedCountry] = useState(null);
+    const [categoryOption, setCategoryOption] = useState(null);
 
     const images = useSelector((state) => state.upload.images);
 
-    const countries = [
-        { name: 'Australia 1', code: 'AU' },
-        { name: 'Brazil', code: 'BR' },
-        { name: 'China', code: 'CN' },
-    ];
+    const { blogCategory = [] } = useSelector(state => state.blogCategory);
+
+    console.log('blogCategory: ', blogCategory);
+
+    useEffect(() => {
+
+        dispatch(getAllBlogCategoryOption());
+
+    }, []);
 
     const handleDrop = (acceptedFiles) => {
         dispatch(uploadImages(acceptedFiles));
@@ -114,13 +119,12 @@ const AddBlog = () => {
                                         },
                                     ]}
                                 >
-
                                     <Dropdown
-                                        value={selectedCountry}
-                                        onChange={(e) => setSelectedCountry(e.value)}
-                                        options={countries}
+                                        value={categoryOption}
+                                        onChange={(e) => setCategoryOption(e.value)}
+                                        options={blogCategory.map((item) => ({ name: item?.title, code: item?._id }))}
                                         optionLabel="name"
-                                        placeholder="Select a Country"
+                                        placeholder="Select Blog Category"
                                         filter
                                         showClear
                                         className="w-full custom-dropdown"
