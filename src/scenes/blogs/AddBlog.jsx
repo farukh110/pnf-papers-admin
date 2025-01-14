@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form } from "antd";
+import { Form, notification } from "antd";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { InboxOutlined } from '@ant-design/icons';
@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteImage, uploadImages } from "../../redux/api/upload/uploadSlice";
 import { getAllBlogCategoryOption } from "../../redux/api/blog-category/blogCategorySlice";
+import { createBlog } from "../../redux/api/blog/blogSlice";
 
 const AddBlog = () => {
 
@@ -28,7 +29,7 @@ const AddBlog = () => {
 
     const { blogCategory = [] } = useSelector(state => state.blogCategory);
 
-    console.log('blogCategory: ', blogCategory);
+    // console.log('blogCategory: ', blogCategory);
 
     useEffect(() => {
 
@@ -48,14 +49,47 @@ const AddBlog = () => {
     };
 
     const onFinish = (values) => {
-        console.log('Success:', values);
-    };
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+
+        const blogData = {
+            ...values,
+            description,
+            images,
+            category: values?.blog_category?.name,
+
+        };
+
+        console.log('Success:', blogData);
+
+        try {
+
+            dispatch(createBlog(blogData));
+
+            notification.success({
+                message: 'Blog Created',
+                description: 'The Blog has been created successfully!',
+                duration: 1,
+            });
+
+            setTimeout(() => {
+
+                navigate('/admin/blogs');
+
+            }, 1000);
+
+        } catch (error) {
+
+            console.log("error: ", error);
+            notification.error({
+                message: 'Creation Failed',
+                description: 'An error occurred while creating the blog. Please try again.',
+                duration: 1,
+            });
+        }
+
     };
 
-    const handleChange = (value) => {
-        console.log(`selected ${value}`);
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
     };
 
     const handleDescription = (e) => {
