@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BACKEND } from "../../utilities/base_url";
+import { BACKEND, config } from "../../utilities/base_url";
 
 const getAllBlogs = async (params) => {
 
@@ -22,9 +22,16 @@ const getAllBlogs = async (params) => {
     }
 }
 
+const createBlog = async (blog) => {
+
+    const response = await axios.post(`${BACKEND}/blog`, blog, config);
+    return response.data;
+}
+
 const blogService = {
 
-    getAllBlogs
+    getAllBlogs,
+    createBlog
 }
 
 export default blogService;
