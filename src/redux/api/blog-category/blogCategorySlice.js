@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CREATE_BLOG_CATEGORY, GET_ALL_BLOGS_CATEGORY, GET_ALL_BLOGS_CATEGORY_OPTION } from "../../../app-constants";
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { CREATE_BLOG_CATEGORY, GET_ALL_BLOGS_CATEGORY, GET_ALL_BLOGS_CATEGORY_OPTION, RESET_ALL } from "../../../app-constants";
 import blogCategoryService from "./blogCategoryService";
 
 const initialState = {
@@ -53,6 +53,8 @@ export const createBlogCategory = createAsyncThunk(CREATE_BLOG_CATEGORY, async (
         return thunkAPI.rejectWithValue(error);
     }
 });
+
+export const resetState = createAction(RESET_ALL);
 
 export const blogCategorySlice = createSlice({
 
@@ -126,6 +128,7 @@ export const blogCategorySlice = createSlice({
                 state.isSuccess = false;
                 state.message = action.error;
             })
+            .addCase(resetState, () => initialState);
     }
 });
 
