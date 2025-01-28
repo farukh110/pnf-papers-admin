@@ -4,7 +4,7 @@ import CustomButton from "../../components/global/custom-web-controls/custom-but
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { createBlogCategory } from "../../redux/api/blog-category/blogCategorySlice";
+import { createBlogCategory, resetState } from "../../redux/api/blog-category/blogCategorySlice";
 
 const AddBlogCategory = () => {
 
@@ -25,6 +25,7 @@ const AddBlogCategory = () => {
 
             setTimeout(() => {
 
+                dispatch(resetState());
                 navigate('/admin/blogs-categories');
 
             }, 1000);
