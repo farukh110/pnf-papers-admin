@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteImage, uploadImages } from "../../redux/api/upload/uploadSlice";
 import { getAllBlogCategoryOption } from "../../redux/api/blog-category/blogCategorySlice";
-import { createBlog } from "../../redux/api/blog/blogSlice";
+import { createBlog, resetState } from "../../redux/api/blog/blogSlice";
 
 const AddBlog = () => {
 
@@ -72,6 +72,7 @@ const AddBlog = () => {
 
             setTimeout(() => {
 
+                dispatch(resetState());
                 navigate('/admin/blogs');
 
             }, 1000);
