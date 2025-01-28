@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CREATE_BLOG, GET_ALL_BLOGS } from "../../../app-constants";
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { CREATE_BLOG, GET_ALL_BLOGS, RESET_ALL } from "../../../app-constants";
 import blogService from "./blogService";
 
 const initialState = {
@@ -40,6 +40,8 @@ export const createBlog = createAsyncThunk(CREATE_BLOG, async (blogData, thunkAP
     }
 
 });
+
+export const resetState = createAction(RESET_ALL);
 
 export const blogSlice = createSlice({
 
@@ -92,6 +94,7 @@ export const blogSlice = createSlice({
                 state.isSuccess = false;
                 state.message = action.payload;
             })
+            .addCase(resetState, () => initialState);
 
     }
 });
