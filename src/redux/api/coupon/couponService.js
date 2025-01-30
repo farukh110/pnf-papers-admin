@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BACKEND } from "../../utilities/base_url";
+import { BACKEND, config } from "../../utilities/base_url";
 
 const getAllCoupons = async (params) => {
 
@@ -15,7 +15,7 @@ const getAllCoupons = async (params) => {
 
     }).toString();
 
-    const response = await axios.get(`${BACKEND}/coupon?${queryString}`);
+    const response = await axios.get(`${BACKEND}/coupon?${queryString}`, config);
 
     if (response?.data) {
         return response?.data;
