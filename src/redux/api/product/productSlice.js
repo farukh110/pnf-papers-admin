@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CREATE_PRODUCT, GET_ALL_PRODUCTS } from "../../../app-constants";
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { CREATE_PRODUCT, GET_ALL_PRODUCTS, RESET_ALL } from "../../../app-constants";
 import productService from './productService';
 
 const initialState = {
@@ -41,6 +41,8 @@ export const createProduct = createAsyncThunk(CREATE_PRODUCT, async (productData
     }
 
 });
+
+export const resetState = createAction(RESET_ALL);
 
 // product slice
 
@@ -93,7 +95,8 @@ export const productSlice = createSlice({
                 state.isSuccess = false;
                 state.message = action.error;
 
-            });
+            })
+            .addCase(resetState, () => initialState);
 
     }
 });
