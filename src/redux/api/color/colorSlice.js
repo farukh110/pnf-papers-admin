@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CREATE_COLOR, GET_ALL_COLORS, GET_ALL_COLORS_OPTION } from "../../../app-constants";
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { CREATE_COLOR, GET_ALL_COLORS, GET_ALL_COLORS_OPTION, RESET_ALL } from "../../../app-constants";
 import colorService from "./colorService";
 
 const initialState = {
@@ -53,6 +53,8 @@ export const createColor = createAsyncThunk(CREATE_COLOR, async (colorData, thun
         return thunkAPI.rejectWithValue(error);
     }
 });
+
+export const resetState = createAction(RESET_ALL);
 
 export const colorSlice = createSlice({
 
@@ -129,6 +131,7 @@ export const colorSlice = createSlice({
                 state.message = action.error;
 
             })
+            .addCase(resetState, () => initialState);
 
     }
 });
