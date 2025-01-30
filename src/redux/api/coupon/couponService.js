@@ -22,9 +22,16 @@ const getAllCoupons = async (params) => {
     }
 }
 
+const createCoupon = async (coupon) => {
+
+    const response = await axios.post(`${BACKEND}/coupon`, coupon, config);
+    return response.data;
+}
+
 const couponService = {
 
-    getAllCoupons
+    getAllCoupons,
+    createCoupon
 }
 
 export default couponService;
