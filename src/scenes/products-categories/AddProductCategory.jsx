@@ -4,7 +4,7 @@ import CustomButton from "../../components/global/custom-web-controls/custom-but
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { createCategory } from "../../redux/api/product-categories/categoriesSlice";
+import { createCategory, resetState } from "../../redux/api/product-categories/categoriesSlice";
 
 const AddProductCategory = () => {
 
@@ -25,6 +25,7 @@ const AddProductCategory = () => {
 
             setTimeout(() => {
 
+                dispatch(resetState());
                 navigate('/admin/categories');
 
             }, 1000);

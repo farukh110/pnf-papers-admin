@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CREATE_PRODUCT_CATEGORY, GET_ALL_PRODUCTS_CATEGORY, GET_ALL_PRODUCTS_CATEGORY_OPTION } from "../../../app-constants";
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { CREATE_PRODUCT_CATEGORY, GET_ALL_PRODUCTS_CATEGORY, GET_ALL_PRODUCTS_CATEGORY_OPTION, RESET_ALL } from "../../../app-constants";
 import categoriesService from "./categoriesService";
 
 const initialState = {
@@ -53,6 +53,8 @@ export const createCategory = createAsyncThunk(CREATE_PRODUCT_CATEGORY, async (c
         return thunkAPI.rejectWithValue(error);
     }
 });
+
+export const resetState = createAction(RESET_ALL);
 
 export const categoriesSlice = createSlice({
 
@@ -125,7 +127,9 @@ export const categoriesSlice = createSlice({
                 state.isError = true;
                 state.isSuccess = false;
                 state.message = action.error;
+
             })
+            .addCase(resetState, () => initialState);
     }
 
 });
