@@ -4,7 +4,7 @@ import CustomButton from "../../components/global/custom-web-controls/custom-but
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createBrand } from "../../redux/api/brand/brandSlice";
+import { createBrand, resetState } from "../../redux/api/brand/brandSlice";
 
 const AddBrand = () => {
 
@@ -25,6 +25,7 @@ const AddBrand = () => {
 
             setTimeout(() => {
 
+                dispatch(resetState());
                 navigate('/admin/brands');
 
             }, 1000);
