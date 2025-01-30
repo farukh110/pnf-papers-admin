@@ -14,7 +14,7 @@ import "react-widgets/styles.css";
 import { getAllColorsOption } from "../../redux/api/color/colorSlice";
 import Dropzone from 'react-dropzone'
 import { deleteImage, uploadImages } from "../../redux/api/upload/uploadSlice";
-import { createProduct } from "../../redux/api/product/productSlice";
+import { createProduct, resetState } from "../../redux/api/product/productSlice";
 import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
@@ -102,6 +102,7 @@ const AddProduct = () => {
 
             setTimeout(() => {
 
+                dispatch(resetState());
                 navigate('/admin/products');
 
             }, 1000);
