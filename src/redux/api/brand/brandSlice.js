@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CREATE_BRAND, GET_ALL_BRANDS, GET_ALL_BRANDS_OPTION } from "../../../app-constants";
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { CREATE_BRAND, GET_ALL_BRANDS, GET_ALL_BRANDS_OPTION, RESET_ALL } from "../../../app-constants";
 import brandService from "./brandService";
 
 const initialState = {
@@ -54,6 +54,8 @@ export const createBrand = createAsyncThunk(CREATE_BRAND, async (brandData, thun
     }
 
 });
+
+export const resetState = createAction(RESET_ALL);
 
 export const brandSlice = createSlice({
 
@@ -127,7 +129,8 @@ export const brandSlice = createSlice({
                 state.isError = true;
                 state.isSuccess = false;
                 state.message = action.error;
-            });
+            })
+            .addCase(resetState, () => initialState);
 
     }
 });

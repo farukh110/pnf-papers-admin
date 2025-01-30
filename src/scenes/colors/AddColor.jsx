@@ -4,7 +4,7 @@ import CustomButton from '../../components/global/custom-web-controls/custom-but
 import './index.scss';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { createColor } from '../../redux/api/color/colorSlice';
+import { createColor, resetState } from '../../redux/api/color/colorSlice';
 
 const AddColor = () => {
 
@@ -25,6 +25,7 @@ const AddColor = () => {
 
             setTimeout(() => {
 
+                dispatch(resetState());
                 navigate('/admin/colors');
 
             }, 1000);

@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { GET_ALL_COLORS } from "../../../app-constants";
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { GET_ALL_COLORS, RESET_ALL } from "../../../app-constants";
 import couponService from "./couponService";
 
 const initialState = {
@@ -26,6 +26,8 @@ export const getAllCoupons = createAsyncThunk(GET_ALL_COLORS, async (params, thu
     }
 
 });
+
+export const resetState = createAction(RESET_ALL);
 
 export const couponSlice = createSlice({
 
@@ -57,6 +59,7 @@ export const couponSlice = createSlice({
                 state.message = action.payload;
 
             })
+            .addCase(resetState, () => initialState);
 
     }
 });
