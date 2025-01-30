@@ -49,7 +49,7 @@ const AddCoupon = () => {
                                     rules={[
                                         {
                                             required: true,
-                                            message: 'Please enter Coupon title',
+                                            message: 'Please enter Coupon name',
                                         },
                                     ]}
                                 >
@@ -66,7 +66,7 @@ const AddCoupon = () => {
                                 </label>
 
                                 <Form.Item
-                                    name="expiry_date"
+                                    name="expiry"
                                     className="mt-md-1"
                                     rules={[
                                         {
