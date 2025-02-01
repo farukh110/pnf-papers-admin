@@ -178,6 +178,7 @@ const Coupons = () => {
         {
             field: "expiry",
             header: "Expiry Date",
+            body: (rowData) => new Date(rowData.expiry).toLocaleString(),
             sortable: true,
             filter: true,
             visible: true,
