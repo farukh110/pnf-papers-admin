@@ -169,6 +169,7 @@ const Coupons = () => {
         {
             field: "discount",
             header: "Discount",
+            body: (rowData) => `${rowData.discount}%`,
             sortable: true,
             filter: true,
             visible: true,
@@ -177,6 +178,7 @@ const Coupons = () => {
         {
             field: "expiry",
             header: "Expiry Date",
+            body: (rowData) => new Date(rowData.expiry).toLocaleString(),
             sortable: true,
             filter: true,
             visible: true,
