@@ -169,6 +169,7 @@ const Coupons = () => {
         {
             field: "discount",
             header: "Discount",
+            body: (rowData) => `${rowData.discount}%`,
             sortable: true,
             filter: true,
             visible: true,
