@@ -1,25 +1,53 @@
-import { Form, Input } from "antd";
+import { Form, Input, notification } from "antd";
 import { Calendar } from 'primereact/calendar';
 import './index.scss';
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { createCoupon, resetState } from "../../redux/api/coupon/couponSlice";
 
 const AddCoupon = () => {
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const onFinish = (values) => {
-        console.log('Success:', values);
+
+        try {
+
+            console.log('form submit: ', values);
+
+            dispatch(createCoupon(values));
+
+            notification.success({
+                message: 'Coupon Created',
+                description: 'The Coupon has been created successfully!',
+                duration: 1,
+            });
+
+            setTimeout(() => {
+
+                dispatch(resetState());
+                navigate('/admin/coupons');
+
+            }, 1000);
+
+        } catch (error) {
+
+            console.log("error: ", error);
+            notification.error({
+                message: 'Creation Failed',
+                description: 'An error occurred while creating the Coupon. Please try again.',
+                duration: 1,
+            });
+        }
+
     };
+
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
-
-    // const handleKeyPress = (e) => {
-    //     const charCode = e.which ? e.which : e.keyCode;
-    //     // Allow only numeric characters (0-9)
-    //     if (charCode < 48 || charCode > 57) {
-    //         e.preventDefault();
-    //     }
-    // };
 
     return (
         <>
