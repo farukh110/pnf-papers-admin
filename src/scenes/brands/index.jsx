@@ -118,8 +118,12 @@ const Brands = () => {
     }, []);
 
     const editBrand = useCallback((brandId) => {
-        console.log("Edit brand:", brandId);
-    }, []);
+
+        // console.log("Edit brand:", brandId);
+
+        navigate(`/admin/brand/${brandId}`);
+
+    }, [navigate]);
 
     const deleteBrand = useCallback((brandId) => {
         console.log("Delete brand:", brandId);
