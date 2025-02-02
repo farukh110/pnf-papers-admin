@@ -47,6 +47,20 @@ const getAllBrandsOption = async () => {
     }
 }
 
+const getBrand = async (id) => {
+
+    try {
+
+        const response = await axios.get(`${BACKEND}/brand/${id}`, config);
+        return response.data;
+
+    } catch (error) {
+
+        console.error('Error:', error);
+        throw new Error(error.response?.data?.message || 'api error');
+    }
+}
+
 const createBrand = async (brand) => {
 
     const response = await axios.post(`${BACKEND}/brand`, brand, config);
@@ -57,6 +71,7 @@ const brandService = {
 
     getAllBrands,
     getAllBrandsOption,
+    getBrand,
     createBrand
 }
 
