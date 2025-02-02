@@ -24,5 +24,6 @@ export const DELETE_IMAGE = 'DELETE_IMAGE';
 export const CREATE_BRAND = 'CREATE_BRAND';
 export const CREATE_PRODUCT_CATEGORY = 'CREATE_PRODUCT_CATEGORY';
 export const GET_ALL_COUPONS = 'GET_ALL_COUPONS';
+export const GET_COUPON = 'GET_COUPON';
 export const CREATE_COUPON = 'CREATE_COUPON';
 export const RESET_ALL = 'RESET_ALL';
