@@ -22,6 +22,8 @@ import AddBrand from './scenes/brands/AddBrand';
 import Coupons from './scenes/coupons';
 import AddCoupon from './scenes/coupons/AddCoupon';
 import AddProduct from './scenes/products/AddProduct';
+import UpdateBrand from './scenes/brands/UpdateBrand';
+import UpdateColor from './scenes/colors/UpdateColor';
 
 const App = () => {
 
@@ -41,13 +43,14 @@ const App = () => {
             <Route path='blogs-categories' element={<BlogsCategories />} />
             <Route path='orders' element={<Orders />} />
             <Route path='customers' element={<Customers />} />
-            <Route path='add-color' element={<AddColor />} />
             <Route path='colors' element={<Colors />} />
+            <Route path='add-color' element={<AddColor />} />
+            <Route path='color/:id' element={<UpdateColor />} />
             <Route path='add-category' element={<AddProductCategory />} />
             <Route path='categories' element={<ProductsCategories />} />
             <Route path='brands' element={<Brands />} />
             <Route path='add-brand' element={<AddBrand />} />
-            <Route path='brand/:id' element={<Brands />} />
+            <Route path='brand/:id' element={<UpdateBrand />} />
             <Route path='add-product' element={<AddProduct />} />
             <Route path='products' element={<Products />} />
             <Route path='add-coupon' element={<AddCoupon />} />
