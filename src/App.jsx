@@ -45,8 +45,9 @@ const App = () => {
             <Route path='colors' element={<Colors />} />
             <Route path='add-category' element={<AddProductCategory />} />
             <Route path='categories' element={<ProductsCategories />} />
-            <Route path='add-brand' element={<AddBrand />} />
             <Route path='brands' element={<Brands />} />
+            <Route path='add-brand' element={<AddBrand />} />
+            <Route path='brand/:id' element={<Brands />} />
             <Route path='add-product' element={<AddProduct />} />
             <Route path='products' element={<Products />} />
             <Route path='add-coupon' element={<AddCoupon />} />
