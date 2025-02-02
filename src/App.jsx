@@ -24,6 +24,7 @@ import AddCoupon from './scenes/coupons/AddCoupon';
 import AddProduct from './scenes/products/AddProduct';
 import UpdateBrand from './scenes/brands/UpdateBrand';
 import UpdateColor from './scenes/colors/UpdateColor';
+import UpdateBlogCategory from './scenes/blogs-categories/UpdateBlogCategory';
 
 const App = () => {
 
@@ -39,15 +40,16 @@ const App = () => {
             <Route path='enquiries' element={<Enquiries />} />
             <Route path='add-blog' element={<AddBlog />} />
             <Route path='blogs' element={<Blogs />} />
-            <Route path='add-blog-category' element={<AddBlogCategory />} />
             <Route path='blogs-categories' element={<BlogsCategories />} />
+            <Route path='add-blog-category' element={<AddBlogCategory />} />
+            <Route path='blog-category/:id' element={<UpdateBlogCategory />} />
             <Route path='orders' element={<Orders />} />
             <Route path='customers' element={<Customers />} />
             <Route path='colors' element={<Colors />} />
             <Route path='add-color' element={<AddColor />} />
             <Route path='color/:id' element={<UpdateColor />} />
-            <Route path='add-category' element={<AddProductCategory />} />
             <Route path='categories' element={<ProductsCategories />} />
+            <Route path='add-category' element={<AddProductCategory />} />
             <Route path='brands' element={<Brands />} />
             <Route path='add-brand' element={<AddBrand />} />
             <Route path='brand/:id' element={<UpdateBrand />} />
