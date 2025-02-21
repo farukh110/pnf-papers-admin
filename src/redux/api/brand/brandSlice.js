@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CREATE_BRAND, GET_ALL_BRANDS, GET_ALL_BRANDS_OPTION, RESET_ALL } from "../../../app-constants";
+import { CREATE_BRAND, GET_ALL_BRANDS, GET_ALL_BRANDS_OPTION, GET_BRAND, RESET_ALL } from "../../../app-constants";
 import brandService from "./brandService";
 
 const initialState = {
@@ -40,6 +40,19 @@ export const getAllBrandsOption = createAsyncThunk(GET_ALL_BRANDS_OPTION, async 
         return thunkAPI.rejectWithValue(error?.response?.data || error.message);
     }
 
+});
+
+export const getBrand = createAsyncThunk(GET_BRAND, async (brandId, thunkAPI) => {
+
+    try {
+
+        const response = await brandService.getBrand(brandId);
+        return response;
+
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error?.response?.data || error.message);
+    }
 });
 
 export const createBrand = createAsyncThunk(CREATE_BRAND, async (brandData, thunkAPI) => {
@@ -103,6 +116,28 @@ export const brandSlice = createSlice({
 
             })
             .addCase(getAllBrandsOption.rejected, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.payload;
+
+            })
+            // get brand
+            .addCase(getBrand.pending, (state) => {
+
+                state.isLoading = true;
+
+            })
+            .addCase(getBrand.fulfilled, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.brands = action.payload.title;
+
+            })
+            .addCase(getBrand.rejected, (state, action) => {
 
                 state.isLoading = false;
                 state.isError = true;
