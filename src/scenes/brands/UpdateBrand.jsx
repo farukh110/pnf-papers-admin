@@ -3,13 +3,17 @@ import './index.scss';
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { createBrand, resetState } from "../../redux/api/brand/brandSlice";
 
 const UpdateBrand = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const params = useParams();
+
+    console.log('params: ', params);
 
     const onFinish = (values) => {
 
