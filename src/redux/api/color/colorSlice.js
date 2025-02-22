@@ -193,7 +193,7 @@ export const colorSlice = createSlice({
                 state.message = action.error;
 
             })
-            // update brand
+            // update color
             .addCase(updateColor.pending, (state) => {
 
                 state.isLoading = true;
@@ -213,7 +213,7 @@ export const colorSlice = createSlice({
                 state.isSuccess = false;
                 state.message = action.error;
             })
-            // delete brand
+            // delete color
             .addCase(deleteColor.pending, (state) => {
 
                 state.isLoading = true;

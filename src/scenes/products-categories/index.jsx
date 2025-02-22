@@ -119,8 +119,10 @@ const ProductsCategories = () => {
     }, []);
 
     const editCategory = useCallback((categoryId) => {
-        console.log("Edit brand:", categoryId);
-    }, []);
+
+        navigate(`/admin/category/${categoryId}`);
+
+    }, [navigate]);
 
     const deleteCategory = useCallback((categoryId) => {
         console.log("Delete brand:", categoryId);
