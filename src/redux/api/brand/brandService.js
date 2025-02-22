@@ -69,7 +69,7 @@ const createBrand = async (brand) => {
 
 const updateBrand = async (brand) => {
 
-    const response = await axios.put(`${BACKEND}/brand`, brand, config);
+    const response = await axios.put(`${BACKEND}/brand/${brand.id}`, { title: brand.title }, config);
     return response.data;
 }
 
