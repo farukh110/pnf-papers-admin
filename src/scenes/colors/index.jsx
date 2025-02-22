@@ -6,8 +6,11 @@ import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
 import { getAllColors } from './../../redux/api/color/colorSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Colors = () => {
+
+    const navigate = useNavigate();
 
     const dispatch = useDispatch();
     const { colors = [], totalRecords = 0, isLoading } = useSelector(state => state.colors);
@@ -100,8 +103,10 @@ const Colors = () => {
     }, []);
 
     const editColor = useCallback((colorId) => {
-        console.log("Edit color:", colorId);
-    }, []);
+
+        navigate(`/admin/color/${colorId}`);
+
+    }, [navigate]);
 
     const deleteColor = useCallback((colorId) => {
         console.log("Delete color:", colorId);
