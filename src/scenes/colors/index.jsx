@@ -5,8 +5,9 @@ import CustomPanel from '../../components/global/custom-web-controls/custom-butt
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { getAllColors } from './../../redux/api/color/colorSlice';
+import { deleteColor, getAllColors } from './../../redux/api/color/colorSlice';
 import { useNavigate } from 'react-router-dom';
+import { Modal, notification } from 'antd';
 
 const Colors = () => {
 
@@ -108,9 +109,32 @@ const Colors = () => {
 
     }, [navigate]);
 
-    const deleteColor = useCallback((colorId) => {
-        console.log("Delete color:", colorId);
-    }, []);
+    const deleteColorItem = useCallback((colorId) => {
+        Modal.confirm({
+            title: 'Are you sure you want to delete this color?',
+            content: 'This action cannot be undone.',
+            okText: 'Yes, Delete',
+            okType: 'danger',
+            cancelText: 'Cancel',
+            onOk: async () => {
+                try {
+                    await dispatch(deleteColor(colorId)).unwrap();
+                    notification.success({
+                        message: 'Color Deleted',
+                        description: 'The color has been deleted successfully!',
+                        duration: 2,
+                    });
+                    loadLazyData(); // Refresh list
+                } catch (error) {
+                    notification.error({
+                        message: 'Deletion Failed',
+                        description: 'An error occurred while deleting the color. Please try again.',
+                        duration: 2,
+                    });
+                }
+            },
+        });
+    }, [dispatch, loadLazyData]);
 
     const onSelectionChange = useCallback((event) => {
         const value = event.value;
@@ -147,12 +171,12 @@ const Colors = () => {
                     {
                         label: "Delete",
                         icon: "pi pi-trash",
-                        command: () => deleteColor(rowData._id),
+                        command: () => deleteColorItem(rowData._id),
                     },
                 ]}
             />
         );
-    }, [editColor, deleteColor]);
+    }, [editColor, deleteColorItem]);
 
     const columns = useMemo(() => [
         {
