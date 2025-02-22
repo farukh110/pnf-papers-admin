@@ -60,12 +60,26 @@ const createColor = async (color) => {
 
 }
 
+const updateColor = async (color) => {
+
+    const response = await axios.put(`${BACKEND}/color/${color.id}`, { title: color.title }, config);
+    return response.data;
+}
+
+const deleteColor = async (colorId) => {
+
+    const response = await axios.delete(`${BACKEND}/color/${colorId}`, config);
+    return response.data;
+}
+
 const colorService = {
 
     getAllColors,
     getAllColorsOption,
     getColor,
     createColor,
+    updateColor,
+    deleteColor
 }
 
 export default colorService;

@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CREATE_COLOR, GET_ALL_COLORS, GET_ALL_COLORS_OPTION, GET_COLOR, RESET_ALL } from "../../../app-constants";
+import { CREATE_COLOR, DELETE_COLOR, GET_ALL_COLORS, GET_ALL_COLORS_OPTION, GET_COLOR, RESET_ALL, UPDATE_COLOR } from "../../../app-constants";
 import colorService from "./colorService";
 
 const initialState = {
@@ -42,11 +42,11 @@ export const getAllColorsOption = createAsyncThunk(GET_ALL_COLORS_OPTION, async 
 
 });
 
-export const getColor = createAsyncThunk(GET_COLOR, async (thunkAPI) => {
+export const getColor = createAsyncThunk(GET_COLOR, async (colorId, thunkAPI) => {
 
     try {
 
-        const response = await colorService.getColor();
+        const response = await colorService.getColor(colorId);
         return response;
 
     } catch (error) {
@@ -66,6 +66,32 @@ export const createColor = createAsyncThunk(CREATE_COLOR, async (colorData, thun
 
         return thunkAPI.rejectWithValue(error);
     }
+});
+
+export const updateColor = createAsyncThunk(UPDATE_COLOR, async (colorData, thunkAPI) => {
+
+    try {
+
+        return await colorService.updateColor(colorData);
+
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error);
+    }
+
+});
+
+export const deleteColor = createAsyncThunk(DELETE_COLOR, async (brandId, thunkAPI) => {
+
+    try {
+
+        return await colorService.deleteColor(brandId);
+
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error);
+    }
+
 });
 
 export const resetState = createAction(RESET_ALL);
@@ -166,6 +192,46 @@ export const colorSlice = createSlice({
                 state.isSuccess = false;
                 state.message = action.error;
 
+            })
+            // update brand
+            .addCase(updateColor.pending, (state) => {
+
+                state.isLoading = true;
+
+            })
+            .addCase(updateColor.fulfilled, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.updatedColor = action.payload;
+            })
+            .addCase(updateColor.rejected, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            // delete brand
+            .addCase(deleteColor.pending, (state) => {
+
+                state.isLoading = true;
+
+            })
+            .addCase(deleteColor.fulfilled, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.deletedColor = action.payload;
+            })
+            .addCase(deleteColor.rejected, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
             })
             .addCase(resetState, () => initialState);
 
