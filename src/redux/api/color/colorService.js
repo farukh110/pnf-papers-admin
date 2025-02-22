@@ -39,6 +39,20 @@ const getAllColorsOption = async () => {
     }
 }
 
+const getColor = async (id) => {
+
+    try {
+
+        const response = await axios.get(`${BACKEND}/color/${id}`, config);
+        return response.data;
+
+    } catch (error) {
+
+        console.error('Error:', error);
+        throw new Error(error.response?.data?.message || 'api error');
+    }
+}
+
 const createColor = async (color) => {
 
     const response = await axios.post(`${BACKEND}/color`, color, config);
@@ -50,7 +64,8 @@ const colorService = {
 
     getAllColors,
     getAllColorsOption,
-    createColor
+    getColor,
+    createColor,
 }
 
 export default colorService;
