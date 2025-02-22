@@ -40,9 +40,35 @@ const getAllCategoryOption = async () => {
     }
 }
 
+const getCategory = async (id) => {
+
+    try {
+
+        const response = await axios.get(`${BACKEND}/category/${id}`, config);
+        return response.data;
+
+    } catch (error) {
+
+        console.error('Error:', error);
+        throw new Error(error.response?.data?.message || 'api error');
+    }
+}
+
 const createCategory = async (category) => {
 
     const response = await axios.post(`${BACKEND}/category`, category, config);
+    return response.data;
+}
+
+const updateCategory = async (category) => {
+
+    const response = await axios.put(`${BACKEND}/category/${category.id}`, { title: category.title }, config);
+    return response.data;
+}
+
+const deleteCategory = async (categoryId) => {
+
+    const response = await axios.delete(`${BACKEND}/category/${categoryId}`, config);
     return response.data;
 }
 
@@ -50,7 +76,10 @@ const categoriesService = {
 
     getAllProductsCategory,
     getAllCategoryOption,
-    createCategory
+    getCategory,
+    createCategory,
+    updateCategory,
+    deleteCategory
 }
 
 export default categoriesService;
