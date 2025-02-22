@@ -67,12 +67,19 @@ const createBrand = async (brand) => {
     return response.data;
 }
 
+const updateBrand = async (brand) => {
+
+    const response = await axios.put(`${BACKEND}/brand`, brand, config);
+    return response.data;
+}
+
 const brandService = {
 
     getAllBrands,
     getAllBrandsOption,
     getBrand,
-    createBrand
+    createBrand,
+    updateBrand
 }
 
 export default brandService;
