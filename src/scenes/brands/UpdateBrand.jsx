@@ -2,18 +2,41 @@ import { Form, notification } from "antd";
 import './index.scss';
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { createBrand, resetState } from "../../redux/api/brand/brandSlice";
+import { createBrand, getBrand, resetState } from "../../redux/api/brand/brandSlice";
+import { useEffect } from "react";
 
 const UpdateBrand = () => {
 
+    const [form] = Form.useForm();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
     const params = useParams();
+    const brandId = params.id;
 
-    console.log('params: ', params);
+    const { isSuccess, isError, isLoading, brandName } = useSelector(state => state.brands);
+
+    console.log('brandId: ', brandId);
+
+    useEffect(() => {
+
+        if (brandId !== undefined) {
+
+            dispatch(getBrand(brandId));
+
+        } else {
+
+            // dispatch(resetState());
+        }
+
+    }, [brandId, dispatch]);
+
+    useEffect(() => {
+        if (brandName) {
+            form.setFieldsValue({ title: brandName });
+        }
+    }, [brandName, form]);
 
     const onFinish = (values) => {
 
@@ -59,6 +82,7 @@ const UpdateBrand = () => {
                 <div className='col-md-12'>
 
                     <Form
+                        form={form}
                         className="mt-md-3"
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
@@ -67,7 +91,6 @@ const UpdateBrand = () => {
                             title: "",
                         }}
                     >
-
                         <div className="row">
 
                             <div className="col-md-3">
