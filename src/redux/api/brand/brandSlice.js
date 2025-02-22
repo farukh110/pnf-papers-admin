@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CREATE_BRAND, GET_ALL_BRANDS, GET_ALL_BRANDS_OPTION, GET_BRAND, RESET_ALL, UPDATE_BRAND } from "../../../app-constants";
+import { CREATE_BRAND, DELETE_BRAND, GET_ALL_BRANDS, GET_ALL_BRANDS_OPTION, GET_BRAND, RESET_ALL, UPDATE_BRAND } from "../../../app-constants";
 import brandService from "./brandService";
 
 const initialState = {
@@ -73,6 +73,19 @@ export const updateBrand = createAsyncThunk(UPDATE_BRAND, async (brandData, thun
     try {
 
         return await brandService.updateBrand(brandData);
+
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error);
+    }
+
+});
+
+export const deleteBrand = createAsyncThunk(DELETE_BRAND, async (brandId, thunkAPI) => {
+
+    try {
+
+        return await brandService.deleteBrand(brandId);
 
     } catch (error) {
 
@@ -192,6 +205,26 @@ export const brandSlice = createSlice({
                 state.updatedBrand = action.payload;
             })
             .addCase(updateBrand.rejected, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            // delete brand
+            .addCase(deleteBrand.pending, (state) => {
+
+                state.isLoading = true;
+
+            })
+            .addCase(deleteBrand.fulfilled, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.deletedBrand = action.payload;
+            })
+            .addCase(deleteBrand.rejected, (state, action) => {
 
                 state.isLoading = false;
                 state.isError = true;

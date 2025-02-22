@@ -6,7 +6,8 @@ import CustomPanel from '../../components/global/custom-web-controls/custom-butt
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { getAllBrands } from './../../redux/api/brand/brandSlice';
+import { deleteBrand, getAllBrands } from './../../redux/api/brand/brandSlice';
+import { Modal, notification } from 'antd';
 
 const Brands = () => {
 
@@ -125,9 +126,32 @@ const Brands = () => {
 
     }, [navigate]);
 
-    const deleteBrand = useCallback((brandId) => {
-        console.log("Delete brand:", brandId);
-    }, []);
+    const deleteBrandItem = useCallback((brandId) => {
+        Modal.confirm({
+            title: 'Are you sure you want to delete this brand?',
+            content: 'This action cannot be undone.',
+            okText: 'Yes, Delete',
+            okType: 'danger',
+            cancelText: 'Cancel',
+            onOk: async () => {
+                try {
+                    await dispatch(deleteBrand(brandId)).unwrap();
+                    notification.success({
+                        message: 'Brand Deleted',
+                        description: 'The brand has been deleted successfully!',
+                        duration: 2,
+                    });
+                    loadLazyData(); // Refresh list
+                } catch (error) {
+                    notification.error({
+                        message: 'Deletion Failed',
+                        description: 'An error occurred while deleting the brand. Please try again.',
+                        duration: 2,
+                    });
+                }
+            },
+        });
+    }, [dispatch, loadLazyData]);
 
     const onSelectionChange = useCallback((event) => {
         const value = event.value;
@@ -164,12 +188,12 @@ const Brands = () => {
                     {
                         label: "Delete",
                         icon: "pi pi-trash",
-                        command: () => deleteBrand(rowData._id),
+                        command: () => deleteBrandItem(rowData._id),
                     },
                 ]}
             />
         );
-    }, [editBrand, deleteBrand]);
+    }, [editBrand, deleteBrandItem]);
 
     const columns = useMemo(() => [
         {
