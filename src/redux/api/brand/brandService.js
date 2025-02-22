@@ -73,13 +73,20 @@ const updateBrand = async (brand) => {
     return response.data;
 }
 
+const deleteBrand = async (brandId) => {
+
+    const response = await axios.delete(`${BACKEND}/brand/${brandId}`, config);
+    return response.data;
+}
+
 const brandService = {
 
     getAllBrands,
     getAllBrandsOption,
     getBrand,
     createBrand,
-    updateBrand
+    updateBrand,
+    deleteBrand
 }
 
 export default brandService;
