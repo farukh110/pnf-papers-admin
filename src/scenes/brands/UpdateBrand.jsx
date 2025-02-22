@@ -4,7 +4,7 @@ import CustomButton from "../../components/global/custom-web-controls/custom-but
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { createBrand, getBrand, resetState } from "../../redux/api/brand/brandSlice";
+import { createBrand, getBrand, resetState, updateBrand } from "../../redux/api/brand/brandSlice";
 import { useEffect } from "react";
 
 const UpdateBrand = () => {
@@ -42,11 +42,18 @@ const UpdateBrand = () => {
 
         try {
 
-            dispatch(createBrand(values));
+            if (!brandId) {
+                console.error("Error: Brand ID is undefined");
+                return;
+            }
+
+            const brandData = { id: brandId, title: values.title };
+
+            dispatch(updateBrand(brandData));
 
             notification.success({
-                message: 'Brand Created',
-                description: 'The brand has been created successfully!',
+                message: 'Brand Updated',
+                description: 'The brand has been updated successfully!',
                 duration: 1,
             });
 
@@ -61,8 +68,8 @@ const UpdateBrand = () => {
 
             console.log("error: ", error);
             notification.error({
-                message: 'Creation Failed',
-                description: 'An error occurred while creating the brand. Please try again.',
+                message: 'Updation Failed',
+                description: 'An error occurred while updating the brand. Please try again.',
                 duration: 1,
             });
         }
