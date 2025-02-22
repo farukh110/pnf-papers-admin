@@ -2,24 +2,58 @@ import { Form, notification } from "antd";
 import './index.scss';
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { createCategory, resetState } from "../../redux/api/product-categories/categoriesSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { createCategory, getCategory, resetState, updateCategory } from "../../redux/api/product-categories/categoriesSlice";
+import { useEffect } from "react";
 
 const UpdateProductCategory = () => {
 
+    const [form] = Form.useForm();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const params = useParams();
+    const categoryId = params.id;
+
+    // console.log('categoryId: ', categoryId);
+
+    const { isSuccess, isError, isLoading, categoryName } = useSelector(state => state.productsCategory);
+
+    useEffect(() => {
+
+        if (categoryId !== undefined) {
+
+            dispatch(getCategory(categoryId));
+
+        } else {
+
+            // dispatch(resetState());
+        }
+
+    }, [categoryId, dispatch]);
+
+    useEffect(() => {
+        if (categoryName) {
+            form.setFieldsValue({ title: categoryName });
+        }
+    }, [categoryName, form]);
 
     const onFinish = (values) => {
 
         try {
 
-            dispatch(createCategory(values));
+            if (!categoryId) {
+                console.error("Error: Category ID is undefined");
+                return;
+            }
+
+            const categoryData = { id: categoryId, title: values.title };
+
+            dispatch(updateCategory(categoryData));
 
             notification.success({
-                message: 'Product Category Created',
-                description: 'The product category has been created successfully!',
+                message: 'Category Updated',
+                description: 'The category has been updated successfully!',
                 duration: 1,
             });
 
@@ -34,8 +68,8 @@ const UpdateProductCategory = () => {
 
             console.log("error: ", error);
             notification.error({
-                message: 'Creation Failed',
-                description: 'An error occurred while creating the product category. Please try again.',
+                message: 'Updation Failed',
+                description: 'An error occurred while updating the category. Please try again.',
                 duration: 1,
             });
         }
@@ -55,6 +89,7 @@ const UpdateProductCategory = () => {
                 <div className='col-md-12'>
 
                     <Form
+                        form={form}
                         className="mt-md-3"
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
