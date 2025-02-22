@@ -2,24 +2,56 @@ import { Form, notification } from 'antd';
 import { ColorPicker } from 'primereact/colorpicker';
 import CustomButton from '../../components/global/custom-web-controls/custom-button';
 import './index.scss';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { createColor, resetState } from '../../redux/api/color/colorSlice';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { createColor, getColor, resetState, updateColor } from '../../redux/api/color/colorSlice';
+import { useEffect } from 'react';
 
 const UpdateColor = () => {
 
-    const navigate = useNavigate();
+    const [form] = Form.useForm();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const params = useParams();
+    const colorId = params.id;
+
+    const { isSuccess, isError, isLoading, updatedColor, colorName } = useSelector(state => state.colors);
+
+    useEffect(() => {
+
+        if (colorId !== undefined) {
+
+            dispatch(getColor(colorId));
+
+        } else {
+
+            // dispatch(resetState());
+        }
+
+    }, [colorId, dispatch]);
+
+    useEffect(() => {
+        if (colorName) {
+            form.setFieldsValue({ title: colorName });
+        }
+    }, [colorName, form]);
 
     const onFinish = (values) => {
 
         try {
 
-            dispatch(createColor(values));
+            if (!colorId) {
+                console.error("Error: Color ID is undefined");
+                return;
+            }
+
+            const colorData = { id: colorId, title: values.title };
+
+            dispatch(updateColor(colorData));
 
             notification.success({
-                message: 'Color Created',
-                description: 'The color has been created successfully!',
+                message: 'Color Updated',
+                description: 'The color has been updated successfully!',
                 duration: 1,
             });
 
@@ -34,8 +66,8 @@ const UpdateColor = () => {
 
             console.log("error: ", error);
             notification.error({
-                message: 'Creation Failed',
-                description: 'An error occurred while creating the color. Please try again.',
+                message: 'Updation Failed',
+                description: 'An error occurred while updating the color. Please try again.',
                 duration: 1,
             });
         }
@@ -54,6 +86,7 @@ const UpdateColor = () => {
             <div className='col-md-12'>
 
                 <Form
+                    form={form}
                     className="mt-md-3"
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
