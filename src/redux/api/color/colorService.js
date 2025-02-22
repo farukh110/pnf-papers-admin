@@ -39,6 +39,20 @@ const getAllColorsOption = async () => {
     }
 }
 
+const getColor = async (id) => {
+
+    try {
+
+        const response = await axios.get(`${BACKEND}/color/${id}`, config);
+        return response.data;
+
+    } catch (error) {
+
+        console.error('Error:', error);
+        throw new Error(error.response?.data?.message || 'api error');
+    }
+}
+
 const createColor = async (color) => {
 
     const response = await axios.post(`${BACKEND}/color`, color, config);
@@ -46,11 +60,26 @@ const createColor = async (color) => {
 
 }
 
+const updateColor = async (color) => {
+
+    const response = await axios.put(`${BACKEND}/color/${color.id}`, { title: color.title }, config);
+    return response.data;
+}
+
+const deleteColor = async (colorId) => {
+
+    const response = await axios.delete(`${BACKEND}/color/${colorId}`, config);
+    return response.data;
+}
+
 const colorService = {
 
     getAllColors,
     getAllColorsOption,
-    createColor
+    getColor,
+    createColor,
+    updateColor,
+    deleteColor
 }
 
 export default colorService;
