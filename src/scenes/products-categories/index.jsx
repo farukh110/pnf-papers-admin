@@ -6,7 +6,8 @@ import CustomPanel from '../../components/global/custom-web-controls/custom-butt
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { getAllProductsCategory } from './../../redux/api/product-categories/categoriesSlice';
+import { deleteCategory, getAllProductsCategory } from './../../redux/api/product-categories/categoriesSlice';
+import { Modal, notification } from 'antd';
 
 const ProductsCategories = () => {
 
@@ -124,9 +125,32 @@ const ProductsCategories = () => {
 
     }, [navigate]);
 
-    const deleteCategory = useCallback((categoryId) => {
-        console.log("Delete brand:", categoryId);
-    }, []);
+    const deleteCategoryItem = useCallback((categoryId) => {
+        Modal.confirm({
+            title: 'Are you sure you want to delete this category?',
+            content: 'This action cannot be undone.',
+            okText: 'Yes, Delete',
+            okType: 'danger',
+            cancelText: 'Cancel',
+            onOk: async () => {
+                try {
+                    await dispatch(deleteCategory(categoryId)).unwrap();
+                    notification.success({
+                        message: 'Category Deleted',
+                        description: 'The category has been deleted successfully!',
+                        duration: 2,
+                    });
+                    loadLazyData(); // Refresh list
+                } catch (error) {
+                    notification.error({
+                        message: 'Deletion Failed',
+                        description: 'An error occurred while deleting the category. Please try again.',
+                        duration: 2,
+                    });
+                }
+            },
+        });
+    }, [dispatch, loadLazyData]);
 
     const onSelectionChange = useCallback((event) => {
         const value = event.value;
@@ -163,12 +187,12 @@ const ProductsCategories = () => {
                     {
                         label: "Delete",
                         icon: "pi pi-trash",
-                        command: () => deleteCategory(rowData._id),
+                        command: () => deleteCategoryItem(rowData._id),
                     },
                 ]}
             />
         );
-    }, [editCategory, deleteCategory]);
+    }, [editCategory, deleteCategoryItem]);
 
     const columns = useMemo(() => [
         {
