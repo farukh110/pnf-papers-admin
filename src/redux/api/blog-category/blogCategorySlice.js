@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CREATE_BLOG_CATEGORY, GET_ALL_BLOGS_CATEGORY, GET_ALL_BLOGS_CATEGORY_OPTION, GET_BLOG_CATEGORY, RESET_ALL, UPDATE_BLOG_CATEGORY } from "../../../app-constants";
+import { CREATE_BLOG_CATEGORY, DELETE_BLOG_CATEGORY, GET_ALL_BLOGS_CATEGORY, GET_ALL_BLOGS_CATEGORY_OPTION, GET_BLOG_CATEGORY, RESET_ALL, UPDATE_BLOG_CATEGORY } from "../../../app-constants";
 import blogCategoryService from "./blogCategoryService";
 
 const initialState = {
@@ -72,6 +72,19 @@ export const updateBlogCategory = createAsyncThunk(UPDATE_BLOG_CATEGORY, async (
     try {
 
         return await blogCategoryService.updateBlogCategory(brandData);
+
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error);
+    }
+
+});
+
+export const deleteBlogCategory = createAsyncThunk(DELETE_BLOG_CATEGORY, async (categoryId, thunkAPI) => {
+
+    try {
+
+        return await blogCategoryService.deleteBlogCategory(categoryId);
 
     } catch (error) {
 
@@ -190,6 +203,26 @@ export const blogCategorySlice = createSlice({
                 state.updatedBlogCategory = action.payload;
             })
             .addCase(updateBlogCategory.rejected, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            // delete category
+            .addCase(deleteBlogCategory.pending, (state) => {
+
+                state.isLoading = true;
+
+            })
+            .addCase(deleteBlogCategory.fulfilled, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.deletedBlogCategory = action.payload;
+            })
+            .addCase(deleteBlogCategory.rejected, (state, action) => {
 
                 state.isLoading = false;
                 state.isError = true;
