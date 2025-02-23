@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CREATE_BLOG_CATEGORY, GET_ALL_BLOGS_CATEGORY, GET_ALL_BLOGS_CATEGORY_OPTION, GET_BLOG_CATEGORY, RESET_ALL } from "../../../app-constants";
+import { CREATE_BLOG_CATEGORY, GET_ALL_BLOGS_CATEGORY, GET_ALL_BLOGS_CATEGORY_OPTION, GET_BLOG_CATEGORY, RESET_ALL, UPDATE_BLOG_CATEGORY } from "../../../app-constants";
 import blogCategoryService from "./blogCategoryService";
 
 const initialState = {
@@ -65,6 +65,19 @@ export const createBlogCategory = createAsyncThunk(CREATE_BLOG_CATEGORY, async (
 
         return thunkAPI.rejectWithValue(error);
     }
+});
+
+export const updateBlogCategory = createAsyncThunk(UPDATE_BLOG_CATEGORY, async (brandData, thunkAPI) => {
+
+    try {
+
+        return await blogCategoryService.updateBlogCategory(brandData);
+
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error);
+    }
+
 });
 
 export const resetState = createAction(RESET_ALL);
@@ -157,6 +170,26 @@ export const blogCategorySlice = createSlice({
 
             })
             .addCase(createBlogCategory.rejected, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            // update category
+            .addCase(updateBlogCategory.pending, (state) => {
+
+                state.isLoading = true;
+
+            })
+            .addCase(updateBlogCategory.fulfilled, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.updatedBlogCategory = action.payload;
+            })
+            .addCase(updateBlogCategory.rejected, (state, action) => {
 
                 state.isLoading = false;
                 state.isError = true;

@@ -59,12 +59,26 @@ const createBlogCategory = async (blogCategory) => {
     return response.data;
 }
 
+const updateBlogCategory = async (brand) => {
+
+    const response = await axios.put(`${BACKEND}/blog-category/${brand.id}`, { title: brand.title }, config);
+    return response.data;
+}
+
+const deleteBlogCategory = async (brandId) => {
+
+    const response = await axios.delete(`${BACKEND}/blog-category/${brandId}`, config);
+    return response.data;
+}
+
 const blogCategoryService = {
 
     getAllBlogCategories,
     getAllBlogCategoryOption,
+    getBlogCategory,
     createBlogCategory,
-    getBlogCategory
+    updateBlogCategory,
+    deleteBlogCategory
 }
 
 export default blogCategoryService;
