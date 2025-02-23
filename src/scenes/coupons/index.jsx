@@ -5,10 +5,13 @@ import CustomPanel from '../../components/global/custom-web-controls/custom-butt
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { getAllCoupons } from '../../redux/api/coupon/couponSlice';
+import { deleteCoupon, getAllCoupons } from '../../redux/api/coupon/couponSlice';
+import { Modal, notification } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 const Coupons = () => {
 
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const { coupons = [], totalRecords = 0, isLoading } = useSelector(state => state.coupons);
 
@@ -99,13 +102,39 @@ const Coupons = () => {
         }));
     }, []);
 
-    const editCoupon = useCallback((colorId) => {
-        console.log("Edit coupon:", colorId);
+    const editCoupon = useCallback((couponId) => {
+
+        navigate(`/admin/coupon/${couponId}`);
+
     }, []);
 
-    const deleteCoupon = useCallback((colorId) => {
-        console.log("Delete coupon:", colorId);
-    }, []);
+    const deleteCouponItem = useCallback((couponId) => {
+
+        Modal.confirm({
+            title: 'Are you sure you want to delete this coupon?',
+            content: 'This action cannot be undone.',
+            okText: 'Yes, Delete',
+            okType: 'danger',
+            cancelText: 'Cancel',
+            onOk: async () => {
+                try {
+                    await dispatch(deleteCoupon(couponId)).unwrap();
+                    notification.success({
+                        message: 'Coupon Deleted',
+                        description: 'The coupon has been deleted successfully!',
+                        duration: 2,
+                    });
+                    loadLazyData(); // Refresh list
+                } catch (error) {
+                    notification.error({
+                        message: 'Deletion Failed',
+                        description: 'An error occurred while deleting the coupon. Please try again.',
+                        duration: 2,
+                    });
+                }
+            },
+        });
+    }, [dispatch, loadLazyData]);
 
     const onSelectionChange = useCallback((event) => {
         const value = event.value;
@@ -142,12 +171,12 @@ const Coupons = () => {
                     {
                         label: "Delete",
                         icon: "pi pi-trash",
-                        command: () => deleteCoupon(rowData._id),
+                        command: () => deleteCouponItem(rowData._id),
                     },
                 ]}
             />
         );
-    }, [editCoupon, deleteCoupon]);
+    }, [editCoupon, deleteCouponItem]);
 
     const columns = useMemo(() => [
         {
