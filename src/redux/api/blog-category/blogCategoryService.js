@@ -39,6 +39,20 @@ const getAllBlogCategoryOption = async () => {
     }
 }
 
+const getBlogCategory = async (id) => {
+
+    try {
+
+        const response = await axios.get(`${BACKEND}/blog-category/${id}`, config);
+        return response.data;
+
+    } catch (error) {
+
+        console.error('Error:', error);
+        throw new Error(error.response?.data?.message || 'api error');
+    }
+}
+
 const createBlogCategory = async (blogCategory) => {
 
     const response = await axios.post(`${BACKEND}/blog-category`, blogCategory, config);
@@ -49,7 +63,8 @@ const blogCategoryService = {
 
     getAllBlogCategories,
     getAllBlogCategoryOption,
-    createBlogCategory
+    createBlogCategory,
+    getBlogCategory
 }
 
 export default blogCategoryService;

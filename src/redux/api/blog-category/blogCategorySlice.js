@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CREATE_BLOG_CATEGORY, GET_ALL_BLOGS_CATEGORY, GET_ALL_BLOGS_CATEGORY_OPTION, RESET_ALL } from "../../../app-constants";
+import { CREATE_BLOG_CATEGORY, GET_ALL_BLOGS_CATEGORY, GET_ALL_BLOGS_CATEGORY_OPTION, GET_BLOG_CATEGORY, RESET_ALL } from "../../../app-constants";
 import blogCategoryService from "./blogCategoryService";
 
 const initialState = {
@@ -40,6 +40,19 @@ export const getAllBlogCategoryOption = createAsyncThunk(GET_ALL_BLOGS_CATEGORY_
         return thunkAPI.rejectWithValue(error?.response?.data || error.message);
     }
 
+});
+
+export const getBlogCategory = createAsyncThunk(GET_BLOG_CATEGORY, async (blogCategoryId, thunkAPI) => {
+
+    try {
+
+        const response = await blogCategoryService.getBlogCategory(blogCategoryId);
+        return response;
+
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error?.response?.data || error.message);
+    }
 });
 
 export const createBlogCategory = createAsyncThunk(CREATE_BLOG_CATEGORY, async (blogCategoryData, thunkAPI) => {
@@ -106,6 +119,28 @@ export const blogCategorySlice = createSlice({
                 state.isError = true;
                 state.isSuccess = false;
                 state.message = action.payload;
+            })
+            // get blog category
+            .addCase(getBlogCategory.pending, (state) => {
+
+                state.isLoading = true;
+
+            })
+            .addCase(getBlogCategory.fulfilled, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.blogCategoryName = action.payload.title;
+
+            })
+            .addCase(getBlogCategory.rejected, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.payload;
+
             })
             // create category
             .addCase(createBlogCategory.pending, (state) => {
