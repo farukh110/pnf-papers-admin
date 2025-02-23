@@ -5,10 +5,13 @@ import CustomPanel from '../../components/global/custom-web-controls/custom-butt
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { getAllBlogCategories } from './../../redux/api/blog-category/blogCategorySlice';
+import { deleteBlogCategory, getAllBlogCategories } from './../../redux/api/blog-category/blogCategorySlice';
+import { Modal, notification } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 const BlogsCategories = () => {
 
+    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const { blogCategory = [], totalRecords = 0, isLoading } = useSelector(state => state.blogCategory);
@@ -101,12 +104,38 @@ const BlogsCategories = () => {
     }, []);
 
     const editBlogCategory = useCallback((blogCategoryId) => {
-        console.log("Edit blogCategory:", blogCategoryId);
-    }, []);
 
-    const deleteBlogCategory = useCallback((blogCategoryId) => {
-        console.log("Delete blogCategory:", blogCategoryId);
-    }, []);
+        navigate(`/admin/blog-category/${blogCategoryId}`);
+
+    }, [navigate]);
+
+    const deleteBlogCategoryItem = useCallback((blogCategoryId) => {
+
+        Modal.confirm({
+            title: 'Are you sure you want to delete this blog category?',
+            content: 'This action cannot be undone.',
+            okText: 'Yes, Delete',
+            okType: 'danger',
+            cancelText: 'Cancel',
+            onOk: async () => {
+                try {
+                    await dispatch(deleteBlogCategory(blogCategoryId)).unwrap();
+                    notification.success({
+                        message: 'Blog Category Deleted',
+                        description: 'The blog category has been deleted successfully!',
+                        duration: 2,
+                    });
+                    loadLazyData(); // Refresh list
+                } catch (error) {
+                    notification.error({
+                        message: 'Deletion Failed',
+                        description: 'An error occurred while deleting the blog category. Please try again.',
+                        duration: 2,
+                    });
+                }
+            },
+        });
+    }, [dispatch, loadLazyData]);
 
     const onSelectionChange = useCallback((event) => {
         const value = event.value;
@@ -143,12 +172,12 @@ const BlogsCategories = () => {
                     {
                         label: "Delete",
                         icon: "pi pi-trash",
-                        command: () => deleteBlogCategory(rowData._id),
+                        command: () => deleteBlogCategoryItem(rowData._id),
                     },
                 ]}
             />
         );
-    }, [editBlogCategory, deleteBlogCategory]);
+    }, [editBlogCategory, deleteBlogCategoryItem]);
 
     const columns = useMemo(() => [
         {

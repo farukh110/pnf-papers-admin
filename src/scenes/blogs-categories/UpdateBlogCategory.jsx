@@ -2,24 +2,56 @@ import { Form, notification } from "antd";
 import './index.scss';
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { createBlogCategory, resetState } from "../../redux/api/blog-category/blogCategorySlice";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { createBlogCategory, getBlogCategory, resetState, updateBlogCategory } from "../../redux/api/blog-category/blogCategorySlice";
+import { useEffect } from "react";
 
 const UpdateBlogCategory = () => {
 
-    const navigate = useNavigate();
+    const [form] = Form.useForm();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const params = useParams();
+    const blogCategoryId = params.id;
+
+    const { isSuccess, isError, isLoading, blogCategoryName } = useSelector(state => state.blogCategory);
+
+    useEffect(() => {
+
+        if (blogCategoryId !== undefined) {
+
+            dispatch(getBlogCategory(blogCategoryId));
+
+        } else {
+
+            // dispatch(resetState());
+        }
+
+    }, [blogCategoryId, dispatch]);
+
+    useEffect(() => {
+        if (blogCategoryName) {
+            form.setFieldsValue({ title: blogCategoryName });
+        }
+    }, [blogCategoryName, form]);
 
     const onFinish = (values) => {
 
         try {
 
-            dispatch(createBlogCategory(values));
+            if (!blogCategoryId) {
+                console.error("Error: blog Category ID is undefined");
+                return;
+            }
+
+            const blogCategoryData = { id: blogCategoryId, title: values.title };
+
+            dispatch(updateBlogCategory(blogCategoryData));
 
             notification.success({
-                message: 'Blog Category Created',
-                description: 'The blog category has been created successfully!',
+                message: 'Blog Category Updated',
+                description: 'The blog category has been updated successfully!',
                 duration: 1,
             });
 
@@ -34,11 +66,12 @@ const UpdateBlogCategory = () => {
 
             console.log("error: ", error);
             notification.error({
-                message: 'Creation Failed',
-                description: 'An error occurred while creating the blog category. Please try again.',
+                message: 'Updation Failed',
+                description: 'An error occurred while updating the blog category. Please try again.',
                 duration: 1,
             });
         }
+
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -54,6 +87,7 @@ const UpdateBlogCategory = () => {
                 <div className='col-md-12'>
 
                     <Form
+                        form={form}
                         className="mt-md-3"
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
