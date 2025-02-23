@@ -3,26 +3,63 @@ import { Calendar } from 'primereact/calendar';
 import './index.scss';
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { createCoupon, resetState } from "../../redux/api/coupon/couponSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { createCoupon, getCoupon, resetState, updateCoupon } from "../../redux/api/coupon/couponSlice";
+import { useEffect } from "react";
 
 const UpdateCoupon = () => {
 
+    const [form] = Form.useForm();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const params = useParams();
+    const couponId = params.id;
+
+    const { isSuccess, isError, isLoading, couponDetails } = useSelector(state => state.coupons);
+
+    console.log('couponDetails: ', couponDetails);
+
+    useEffect(() => {
+
+        if (couponId !== undefined) {
+
+            dispatch(getCoupon(couponId));
+
+        } else {
+
+            // dispatch(resetState());
+        }
+
+    }, [couponId, dispatch]);
+
+    useEffect(() => {
+        if (couponDetails) {
+            form.setFieldsValue({
+                name: couponDetails.name,
+                expiry: couponDetails.expiry ? new Date(couponDetails.expiry) : null,
+                discount: couponDetails.discount
+            });
+        }
+    }, [couponDetails, form]);
+
 
     const onFinish = (values) => {
 
         try {
 
-            console.log('form submit: ', values);
+            if (!couponId) {
+                console.error("Error: coupon ID is undefined");
+                return;
+            }
 
-            dispatch(createCoupon(values));
+            const couponData = { id: couponId, name: values.name, expiry: values.expiry, discount: values.discount };
+
+            dispatch(updateCoupon(couponData));
 
             notification.success({
-                message: 'Coupon Created',
-                description: 'The Coupon has been created successfully!',
+                message: 'Coupon Updated',
+                description: 'The coupon has been updated successfully!',
                 duration: 1,
             });
 
@@ -37,8 +74,8 @@ const UpdateCoupon = () => {
 
             console.log("error: ", error);
             notification.error({
-                message: 'Creation Failed',
-                description: 'An error occurred while creating the Coupon. Please try again.',
+                message: 'Updation Failed',
+                description: 'An error occurred while updating the coupon. Please try again.',
                 duration: 1,
             });
         }
@@ -58,10 +95,16 @@ const UpdateCoupon = () => {
                 <div className='col-md-12'>
 
                     <Form
+                        form={form}
                         className="mt-md-3"
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
                         autoComplete="off"
+                        initialValues={{
+                            name: "",
+                            expiry: null,
+                            discount: null
+                        }}
                     >
 
                         <div className="row">
