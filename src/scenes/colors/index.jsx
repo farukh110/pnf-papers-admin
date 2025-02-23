@@ -153,6 +153,13 @@ const Colors = () => {
         }
     }, [colors]);
 
+    const colorTemplate = useCallback((rowData) => {
+        return (
+            <div style={{ width: '50px', height: '50px', borderRadius: '100px', backgroundColor: `#${rowData.title}` }}></div>
+        );
+    }, []);
+
+
     const actionTemplate = useCallback((rowData) => {
         return (
             <SplitButton
@@ -189,7 +196,8 @@ const Colors = () => {
         },
         {
             field: "title",
-            header: "Title",
+            header: "Color",
+            body: colorTemplate,
             sortable: true,
             filter: true,
             visible: true,
