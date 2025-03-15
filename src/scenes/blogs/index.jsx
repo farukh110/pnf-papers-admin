@@ -5,7 +5,9 @@ import CustomPanel from '../../components/global/custom-web-controls/custom-butt
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { getAllBlogs } from './../../redux/api/blog/blogSlice';
+import { deleteBlog, getAllBlogs } from './../../redux/api/blog/blogSlice';
+import { Modal, notification } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 const Blogs = () => {
 
@@ -14,6 +16,8 @@ const Blogs = () => {
     const { blogs = [], totalRecords = 0, isLoading } = useSelector(state => state.blogs);
 
     const [dataSource, setDataSource] = useState([]);
+
+    const navigate = useNavigate();
 
     const [lazyState, setLazyState] = useState({
         first: 0,
@@ -101,12 +105,38 @@ const Blogs = () => {
     }, []);
 
     const editBlog = useCallback((blogId) => {
-        console.log("Edit blog:", blogId);
+
+        navigate(`/admin/blog/${blogId}`);
+
     }, []);
 
-    const deleteColor = useCallback((blogId) => {
-        console.log("Delete blog:", blogId);
-    }, []);
+    const deleteBlogItem = useCallback((blogId) => {
+
+        Modal.confirm({
+            title: 'Are you sure you want to delete this blog?',
+            content: 'This action cannot be undone.',
+            okText: 'Yes, Delete',
+            okType: 'danger',
+            cancelText: 'Cancel',
+            onOk: async () => {
+                try {
+                    await dispatch(deleteBlog(blogId)).unwrap();
+                    notification.success({
+                        message: 'Blog Deleted',
+                        description: 'The blog has been deleted successfully!',
+                        duration: 2,
+                    });
+                    loadLazyData(); // Refresh list
+                } catch (error) {
+                    notification.error({
+                        message: 'Deletion Failed',
+                        description: 'An error occurred while deleting the blog. Please try again.',
+                        duration: 2,
+                    });
+                }
+            },
+        });
+    }, [dispatch, loadLazyData]);
 
     const onSelectionChange = useCallback((event) => {
         const value = event.value;
@@ -143,12 +173,12 @@ const Blogs = () => {
                     {
                         label: "Delete",
                         icon: "pi pi-trash",
-                        command: () => deleteColor(rowData._id),
+                        command: () => deleteBlogItem(rowData._id),
                     },
                 ]}
             />
         );
-    }, [editBlog, deleteColor]);
+    }, [editBlog, deleteBlogItem]);
 
     const columns = useMemo(() => [
         {
