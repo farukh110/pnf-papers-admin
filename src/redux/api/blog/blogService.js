@@ -28,10 +28,44 @@ const createBlog = async (blog) => {
     return response.data;
 }
 
+const getBlog = async (id) => {
+
+    try {
+
+        const response = await axios.get(`${BACKEND}/blog/${id}`, config);
+        return response.data;
+
+    } catch (error) {
+
+        console.error('Error:', error);
+        throw new Error(error.response?.data?.message || 'api error');
+    }
+}
+
+const updateBlog = async (blog) => {
+
+    const response = await axios.put(`${BACKEND}/blog/${blog.id}`,
+        {
+            title: blog.title,
+            category: blog.category,
+            description: blog.description
+        }, config);
+    return response.data;
+}
+
+const deleteBlog = async (blogId) => {
+
+    const response = await axios.delete(`${BACKEND}/blog/${blogId}`, config);
+    return response.data;
+}
+
 const blogService = {
 
     getAllBlogs,
-    createBlog
+    createBlog,
+    getBlog,
+    updateBlog,
+    deleteBlog
 }
 
 export default blogService;
