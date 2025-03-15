@@ -27,6 +27,7 @@ import UpdateColor from './scenes/colors/UpdateColor';
 import UpdateBlogCategory from './scenes/blogs-categories/UpdateBlogCategory';
 import UpdateCoupon from './scenes/coupons/UpdateCoupon';
 import UpdateProductCategory from './scenes/products-categories/UpdateProductCategory';
+import UpdateBlog from './scenes/blogs/UpdateBlog';
 
 const App = () => {
 
@@ -42,6 +43,7 @@ const App = () => {
             <Route path='enquiries' element={<Enquiries />} />
             <Route path='add-blog' element={<AddBlog />} />
             <Route path='blogs' element={<Blogs />} />
+            <Route path='blog/:id' element={<UpdateBlog />} />
             <Route path='blogs-categories' element={<BlogsCategories />} />
             <Route path='add-blog-category' element={<AddBlogCategory />} />
             <Route path='blog-category/:id' element={<UpdateBlogCategory />} />
