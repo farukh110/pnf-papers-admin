@@ -5,7 +5,8 @@ import CustomPanel from '../../components/global/custom-web-controls/custom-butt
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { getAllEnquiries } from '../../redux/api/enquiry/enquirySlice';
+import { deleteEnquiry, getAllEnquiries } from '../../redux/api/enquiry/enquirySlice';
+import { Modal, notification } from 'antd';
 
 const Enquiries = () => {
 
@@ -104,9 +105,33 @@ const Enquiries = () => {
         console.log("Edit enquiry:", enquiryId);
     }, []);
 
-    const deleteEnquiry = useCallback((enquiryId) => {
-        console.log("Delete enquiry:", enquiryId);
-    }, []);
+    const deleteEnquiryItem = useCallback((enquiryId) => {
+
+        Modal.confirm({
+            title: 'Are you sure you want to delete this enquiry?',
+            content: 'This action cannot be undone.',
+            okText: 'Yes, Delete',
+            okType: 'danger',
+            cancelText: 'Cancel',
+            onOk: async () => {
+                try {
+                    await dispatch(deleteEnquiry(enquiryId)).unwrap();
+                    notification.success({
+                        message: 'Enquiry Deleted',
+                        description: 'The enquiry has been deleted successfully!',
+                        duration: 2,
+                    });
+                    loadLazyData(); // Refresh list
+                } catch (error) {
+                    notification.error({
+                        message: 'Deletion Failed',
+                        description: 'An error occurred while deleting the enquiry. Please try again.',
+                        duration: 2,
+                    });
+                }
+            },
+        });
+    }, [dispatch, loadLazyData]);
 
     const onSelectionChange = useCallback((event) => {
         const value = event.value;
@@ -136,19 +161,19 @@ const Enquiries = () => {
                 severity="success"
                 model={[
                     {
-                        label: "Edit",
-                        icon: "pi pi-pencil",
+                        label: "View",
+                        icon: "pi pi-eye",
                         command: () => editEnquiry(rowData._id),
                     },
                     {
                         label: "Delete",
                         icon: "pi pi-trash",
-                        command: () => deleteEnquiry(rowData._id),
+                        command: () => deleteEnquiryItem(rowData._id),
                     },
                 ]}
             />
         );
-    }, [editEnquiry, deleteEnquiry]);
+    }, [editEnquiry, deleteEnquiryItem]);
 
     const columns = useMemo(() => [
         {

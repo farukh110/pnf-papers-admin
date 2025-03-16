@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BACKEND } from "../../utilities/base_url";
+import { BACKEND, config } from "../../utilities/base_url";
 
 const getAllEnquiries = async (params) => {
 
@@ -22,9 +22,16 @@ const getAllEnquiries = async (params) => {
     }
 }
 
+const deleteEnquiry = async (enquiryId) => {
+
+    const response = await axios.delete(`${BACKEND}/enquiry/${enquiryId}`, config);
+    return response.data;
+}
+
 const enquiryService = {
 
-    getAllEnquiries
+    getAllEnquiries,
+    deleteEnquiry
 }
 
 export default enquiryService;
