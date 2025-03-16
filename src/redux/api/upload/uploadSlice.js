@@ -47,7 +47,11 @@ export const deleteImage = createAsyncThunk(DELETE_IMAGE, async (id, thunkAPI) =
 export const uploadSlice = createSlice({
     name: "uploadImages",
     initialState,
-    reducers: {},
+    reducers: {
+        setUploadedImages: (state, action) => {
+            state.images = action.payload;
+        },
+    },
     extraReducers: (builder) => {
 
 
@@ -97,4 +101,5 @@ export const uploadSlice = createSlice({
     }
 });
 
+export const { setUploadedImages } = uploadSlice.actions;
 export default uploadSlice.reducer;
