@@ -10,16 +10,19 @@ import { Dropdown } from 'primereact/dropdown';
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
 import Dropzone from 'react-dropzone';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteImage, uploadImages } from "../../redux/api/upload/uploadSlice";
+import { deleteImage, setUploadedImages, uploadImages } from "../../redux/api/upload/uploadSlice";
 import { getAllBlogCategoryOption } from "../../redux/api/blog-category/blogCategorySlice";
-import { createBlog, resetState } from "../../redux/api/blog/blogSlice";
+import { createBlog, getBlog, resetState, updateBlog } from "../../redux/api/blog/blogSlice";
 
 const UpdateBlog = () => {
 
+    const [form] = Form.useForm();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const params = useParams();
+    const blogId = params.id;
 
     const [description, setDescription] = useState('');
 
@@ -29,7 +32,50 @@ const UpdateBlog = () => {
 
     const { blogCategory = [] } = useSelector(state => state.blogCategory);
 
-    // console.log('blogCategory: ', blogCategory);
+    const { isSuccess, isError, isLoading, blogDetails } = useSelector(state => state.blogs);
+
+    useEffect(() => {
+
+        if (blogId !== undefined) {
+
+            dispatch(getBlog(blogId));
+
+        } else {
+
+            // dispatch(resetState());
+        }
+
+    }, [blogId, dispatch]);
+
+    console.log('blogDetails: ', blogDetails);
+
+    useEffect(() => {
+        if (blogDetails && blogId && blogCategory.length > 0) {
+
+            // ✅ Flexible matching
+            const matchedCategory = blogCategory.find(cat => blogDetails.category.includes(cat.title));
+
+            const categoryValue = matchedCategory
+                ? { name: matchedCategory.title, code: matchedCategory._id }
+                : null;
+
+            console.log('blog images:', blogCategory.images);
+
+            form.setFieldsValue({
+                title: blogDetails.title,
+                blog_category: categoryValue,
+                blog_description: blogDetails.description,
+            });
+
+            setDescription(blogDetails.description);
+            setCategoryOption(categoryValue);
+
+            if (blogDetails.images && blogDetails.images.length > 0) {
+                dispatch(setUploadedImages(blogDetails.images));
+            }
+        }
+    }, [blogDetails, form, blogId, blogCategory, dispatch]);
+
 
     useEffect(() => {
 
@@ -48,45 +94,43 @@ const UpdateBlog = () => {
         return Promise.resolve();
     };
 
-    const onFinish = (values) => {
+    const onFinish = async (values) => {
 
         const blogData = {
-            ...values,
+            id: blogId,
+            title: values.title,
             description,
             images,
             category: values?.blog_category?.name,
-
         };
 
-        console.log('Success:', blogData);
+        console.log('Submitting Blog Data:', blogData);
 
         try {
+            const resultAction = await dispatch(updateBlog(blogData));
 
-            dispatch(createBlog(blogData));
+            if (updateBlog.fulfilled.match(resultAction)) {
+                notification.success({
+                    message: 'Blog Updated',
+                    description: 'The blog has been updated successfully!',
+                    duration: 1,
+                });
 
-            notification.success({
-                message: 'Blog Created',
-                description: 'The Blog has been created successfully!',
-                duration: 1,
-            });
-
-            setTimeout(() => {
-
-                dispatch(resetState());
-                navigate('/admin/blogs');
-
-            }, 1000);
+                setTimeout(() => {
+                    navigate('/admin/blogs');
+                }, 1000);
+            } else {
+                throw new Error('Failed to update blog');
+            }
 
         } catch (error) {
-
-            console.log("error: ", error);
+            console.error("Update Blog Error: ", error);
             notification.error({
-                message: 'Creation Failed',
-                description: 'An error occurred while creating the blog. Please try again.',
-                duration: 1,
+                message: 'Update Failed',
+                description: 'An error occurred while updating the blog. Please try again.',
+                duration: 2,
             });
         }
-
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -109,6 +153,7 @@ const UpdateBlog = () => {
                 <div className='col-md-12'>
 
                     <Form
+                        form={form}
                         className="mt-md-3"
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
@@ -155,17 +200,23 @@ const UpdateBlog = () => {
                                     ]}
                                 >
                                     <Dropdown
-                                        value={categoryOption}
-                                        onChange={(e) => setCategoryOption(e.value)}
-                                        options={blogCategory.map((item) => ({ name: item?.title, code: item?._id }))}
+                                        value={form.getFieldValue("blog_category")} // 🚨 Ensure selected value is taken from form
+                                        onChange={(e) => {
+                                            setCategoryOption(e.value);
+                                            form.setFieldsValue({ blog_category: e.value });
+                                        }}
+                                        options={blogCategory.map((item) => ({
+                                            name: item?.title,
+                                            code: item?._id
+                                        }))}
                                         optionLabel="name"
                                         placeholder="Select Blog Category"
                                         filter
                                         showClear
                                         className="w-full custom-dropdown"
                                     />
-
                                 </Form.Item>
+
                             </div>
 
                             <div className="col-md-12 mt-md-2">
@@ -259,7 +310,7 @@ const UpdateBlog = () => {
                                     severity="help"
                                     type="submit"
                                     className="rounded p-2 ps-3 pe-3"
-                                    label="Add Blog"
+                                    label="Update Blog"
                                 />
                             </Form.Item>
 
