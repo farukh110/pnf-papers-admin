@@ -7,10 +7,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
 import { deleteEnquiry, getAllEnquiries } from '../../redux/api/enquiry/enquirySlice';
 import { Modal, notification } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 const Enquiries = () => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const { enquiries = [], totalRecords = 0, isLoading } = useSelector(state => state.enquiries);
 
@@ -101,8 +103,10 @@ const Enquiries = () => {
         }));
     }, []);
 
-    const editEnquiry = useCallback((enquiryId) => {
-        console.log("Edit enquiry:", enquiryId);
+    const viewEnquiry = useCallback((enquiryId) => {
+
+        navigate(`/admin/enquiry/${enquiryId}`);
+
     }, []);
 
     const deleteEnquiryItem = useCallback((enquiryId) => {
@@ -163,7 +167,7 @@ const Enquiries = () => {
                     {
                         label: "View",
                         icon: "pi pi-eye",
-                        command: () => editEnquiry(rowData._id),
+                        command: () => viewEnquiry(rowData._id),
                     },
                     {
                         label: "Delete",
@@ -173,7 +177,7 @@ const Enquiries = () => {
                 ]}
             />
         );
-    }, [editEnquiry, deleteEnquiryItem]);
+    }, [viewEnquiry, deleteEnquiryItem]);
 
     const columns = useMemo(() => [
         {
