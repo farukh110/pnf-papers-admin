@@ -28,6 +28,7 @@ import UpdateBlogCategory from './scenes/blogs-categories/UpdateBlogCategory';
 import UpdateCoupon from './scenes/coupons/UpdateCoupon';
 import UpdateProductCategory from './scenes/products-categories/UpdateProductCategory';
 import UpdateBlog from './scenes/blogs/UpdateBlog';
+import ViewEnquiry from './scenes/Enquiries/ViewEnquiry';
 
 const App = () => {
 
@@ -41,6 +42,7 @@ const App = () => {
           <Route path='/admin' element={<MainLayout />}>
             <Route index element={<Dashboard />} />
             <Route path='enquiries' element={<Enquiries />} />
+            <Route path='enquiry/:id' element={<ViewEnquiry />} />
             <Route path='add-blog' element={<AddBlog />} />
             <Route path='blogs' element={<Blogs />} />
             <Route path='blog/:id' element={<UpdateBlog />} />

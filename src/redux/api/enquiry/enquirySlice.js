@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { DELETE_ENQUIRY, GET_ALL_ENQUIRIES, RESET_ALL } from "../../../app-constants";
+import { DELETE_ENQUIRY, GET_ALL_ENQUIRIES, GET_ENQUIRY, RESET_ALL } from "../../../app-constants";
 import enquiryService from "./enquiryService";
 
 const initialState = {
@@ -36,6 +36,20 @@ export const deleteEnquiry = createAsyncThunk(DELETE_ENQUIRY, async (enquiryId, 
     } catch (error) {
 
         return thunkAPI.rejectWithValue(error);
+    }
+
+});
+
+export const getEnquiry = createAsyncThunk(GET_ENQUIRY, async (enquiryId, thunkAPI) => {
+
+    try {
+
+        const response = await enquiryService.getEnquiry(enquiryId);
+        return response;
+
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error?.response?.data || error.message);
     }
 
 });
@@ -87,6 +101,26 @@ export const enquirySlice = createSlice({
                 state.deletedEnquiry = action.payload;
             })
             .addCase(deleteEnquiry.rejected, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+            })
+            // get enquiry
+            .addCase(getEnquiry.pending, (state) => {
+
+                state.isLoading = true;
+
+            })
+            .addCase(getEnquiry.fulfilled, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.enquiryDetail = action.payload;
+            })
+            .addCase(getEnquiry.rejected, (state, action) => {
 
                 state.isLoading = false;
                 state.isError = true;
