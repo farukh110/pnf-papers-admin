@@ -48,8 +48,10 @@ const updateBlog = async (blog) => {
         {
             title: blog.title,
             category: blog.category,
-            description: blog.description
+            description: blog.description,
+            images: blog.images
         }, config);
+
     return response.data;
 }
 
