@@ -34,11 +34,18 @@ const getEnquiry = async (enquiryId) => {
     return response.data;
 }
 
+const updateEnquiry = async (enquiry) => {
+
+    const response = await axios.put(`${BACKEND}/enquiry/${enquiry.id}`, { status: enquiry.data }, config);
+    return response.data;
+}
+
 const enquiryService = {
 
     getAllEnquiries,
     deleteEnquiry,
-    getEnquiry
+    getEnquiry,
+    updateEnquiry
 }
 
 export default enquiryService;
