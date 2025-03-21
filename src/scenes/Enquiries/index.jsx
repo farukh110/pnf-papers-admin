@@ -5,7 +5,7 @@ import CustomPanel from '../../components/global/custom-web-controls/custom-butt
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { deleteEnquiry, getAllEnquiries } from '../../redux/api/enquiry/enquirySlice';
+import { deleteEnquiry, getAllEnquiries, updateEnquiry } from '../../redux/api/enquiry/enquirySlice';
 import { Modal, notification } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
@@ -154,6 +154,54 @@ const Enquiries = () => {
         }
     }, [enquiries]);
 
+    const setEnquiryStatus = useCallback((statusName, enquiryId) => {
+        const data = { id: enquiryId, status: statusName }; // Correct key name
+
+        console.log('data: ', data);
+
+        dispatch(updateEnquiry(data))
+            .unwrap()
+            .then(() => {
+                notification.success({
+                    message: "Enquiry Updated",
+                    description: "The enquiry status has been updated successfully!",
+                    duration: 2,
+                });
+                loadLazyData(); // Refresh the list
+            })
+            .catch((error) => {
+                notification.error({
+                    message: "Update Failed",
+                    description: error.message || "An error occurred while updating the enquiry.",
+                    duration: 2,
+                });
+            });
+    }, [dispatch, loadLazyData]);
+
+
+    const statusTemplate = useCallback((rowData) => {
+
+        console.log('rowData: ', rowData._id);
+
+        return (
+
+            <select
+                name=""
+                defaultValue={rowData.status ? rowData.status : "Submitted"}
+                className="form-control"
+                onChange={(e) => setEnquiryStatus(e.target.value, rowData._id)}
+                id=""
+            >
+                <option value="Submitted">Submitted</option>
+                <option value="Contacted">Contacted</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+
+            </select>
+        );
+
+    }, []);
+
     const actionTemplate = useCallback((rowData) => {
         return (
             <SplitButton
@@ -223,6 +271,7 @@ const Enquiries = () => {
         {
             field: "status",
             header: "Status",
+            body: statusTemplate,
             sortable: true,
             filter: true,
             visible: true,

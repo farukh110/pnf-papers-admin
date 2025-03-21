@@ -35,10 +35,11 @@ const getEnquiry = async (enquiryId) => {
 }
 
 const updateEnquiry = async (enquiry) => {
-
-    const response = await axios.put(`${BACKEND}/enquiry/${enquiry.id}`, { status: enquiry.data }, config);
+    console.log("Sending Payload:", { status: enquiry.status }); // Debugging
+    const response = await axios.put(`${BACKEND}/enquiry/${enquiry.id}`, { status: enquiry.status }, config);
     return response.data;
-}
+};
+
 
 const enquiryService = {
 
