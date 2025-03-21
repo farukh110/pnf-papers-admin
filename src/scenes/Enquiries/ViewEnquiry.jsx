@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { getEnquiry } from '../../redux/api/enquiry/enquirySlice';
+import { getEnquiry, resetState, updateEnquiry } from '../../redux/api/enquiry/enquirySlice';
 import { Dropdown } from 'primereact/dropdown';
 
 const ViewEnquiry = () => {
@@ -35,7 +35,25 @@ const ViewEnquiry = () => {
         }
     }, [status]);
 
-    console.log('enquiryDetail: ', enquiryDetail);
+    const setEnquiryStatus = (statusObj, enquiryId) => {
+
+        if (!statusObj || !statusObj.name) {
+            console.error("Invalid status object:", statusObj);
+            return;
+        }
+
+        const data = { id: enquiryId, status: statusObj.name };
+        dispatch(updateEnquiry(data))
+            .unwrap()
+            .then(() => {
+                setTimeout(() => {
+                    dispatch(getEnquiry(enquiryId)); // Refresh the enquiry data
+                }, 100);
+            })
+            .catch((error) => {
+                console.error("Update failed:", error);
+            });
+    };
 
     return (
         <>
@@ -64,7 +82,7 @@ const ViewEnquiry = () => {
                                     <td>
                                         <Dropdown
                                             value={selectedStatus}
-                                            onChange={(e) => setSelectedStatus(e.value)}
+                                            onChange={(e) => setEnquiryStatus(e.value, enquiryId)}
                                             options={statuses}
                                             optionLabel="name"
                                             placeholder="Select Status"
