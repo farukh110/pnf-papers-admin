@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
 import { getAllOrders } from '../../redux/api/auth/authSlice';
 
-const Orders = () => {
+const ViewOrder = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -151,7 +151,7 @@ const Orders = () => {
         {
             field: "order",
             header: "Order",
-            body: (rowData) => (<Link to={`/admin/order/${rowData?.orderBy?._id}`}> View Orders </Link>),
+            body: (rowData) => (<Link to={`/admin/order/${rowData?.orderBy?._id}`}> View User Order </Link>),
             sortable: true,
             filter: true,
             visible: true,
@@ -228,7 +228,7 @@ const Orders = () => {
     return (
         <div className='row'>
             <div className='col-md-12'>
-                <h4 className='mt-md-2'>Orders List</h4>
+                <h4 className='mt-md-2'>View Order</h4>
                 <div className="row justify-content-between my-md-3">
                     <div className="col-md-5"></div>
                     <div className="col-md-3">
@@ -263,4 +263,4 @@ const Orders = () => {
     );
 }
 
-export default Orders;
+export default ViewOrder;
