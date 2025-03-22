@@ -1,20 +1,27 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link, useParams } from 'react-router-dom';
 import { SplitButton } from 'primereact/splitbutton';
 import CustomDataTable from '../../components/global/custom-web-controls/custom-data-table';
 import CustomPanel from '../../components/global/custom-web-controls/custom-button-panel';
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { getAllOrders } from '../../redux/api/auth/authSlice';
+import { getAllOrders, getOrderByUser } from '../../redux/api/auth/authSlice';
 
 const ViewOrder = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
+    const params = useParams();
 
-    const { orders = [], totalRecords = 0, isLoading } = useSelector(state => state.auth);
+    const userId = params.id;
+
+    console.log('userId: ', userId);
+
+    const { orderByUser = {}, totalRecords = 0, isLoading } = useSelector(state => state.auth);
+
+    console.log('products of order user : ', orderByUser.products);
 
     const queryParams = new URLSearchParams(location.search);
     const initialPage = parseInt(queryParams.get('page'), 10) || 1;
@@ -48,7 +55,7 @@ const ViewOrder = () => {
             sortOrder: sortOrder === 1 ? 'asc' : 'desc',
         };
 
-        dispatch(getAllOrders(params))
+        dispatch(getOrderByUser(userId))
             .unwrap()
             .catch((error) => {
                 console.log(`Error: ${error.message}`);
@@ -60,15 +67,15 @@ const ViewOrder = () => {
     }, [loadLazyData]);
 
     useEffect(() => {
-        if (Array.isArray(orders)) {
-            const ordersWithSerialNumbers = orders.map((order, index) => ({
+        if (Array.isArray(orderByUser?.products)) {
+            const ordersWithSerialNumbers = orderByUser?.products.map((order, index) => ({
                 ...order,
                 serialNumber: lazyState.first + index + 1,
             }));
 
             setDataSource(ordersWithSerialNumbers);
         }
-    }, [orders, lazyState.first]);
+    }, [orderByUser?.products, lazyState.first]);
 
     const onPage = useCallback((event) => {
         const { first, rows } = event;
@@ -123,12 +130,12 @@ const ViewOrder = () => {
         const selectAll = event.checked;
         if (selectAll) {
             setSelectAll(true);
-            setSelectedItems(orders);
+            setSelectedItems(orderByUser.products);
         } else {
             setSelectAll(false);
             setSelectedItems([]);
         }
-    }, [orders]);
+    }, [orderByUser.products]);
 
     const columns = useMemo(() => [
         {
@@ -141,27 +148,36 @@ const ViewOrder = () => {
         },
         {
             field: "name",
-            header: "Name",
-            body: (rowData) => (`${rowData?.orderBy?.firstname} ${rowData?.orderBy?.lastname}`),
+            header: "Product Name",
+            body: (rowData) => (`${rowData?.product?.title}`),
             sortable: true,
             filter: true,
             visible: true,
             width: "100px",
         },
         {
-            field: "order",
-            header: "Order",
-            body: (rowData) => (<Link to={`/admin/order/${rowData?.orderBy?._id}`}> View User Order </Link>),
+            field: "brand",
+            header: "Brand",
+            body: (rowData) => (`${rowData?.product?.brand}`),
+            sortable: true,
+            filter: true,
+            visible: true,
+            width: "100px",
+        },
+        {
+            field: "count",
+            header: "Count",
+            body: (rowData) => (`${rowData?.count}`),
             sortable: true,
             filter: true,
             visible: true,
             width: "50px",
         },
         {
-            field: "product",
-            header: "Product",
-            body: (rowData) => (rowData?.products?.map((productItem, idx) => (
-                <p key={idx}>{productItem?.product?.title}</p>
+            field: "color",
+            header: "Color",
+            body: (rowData) => (rowData?.product?.color?.map((colorItem, idx) => (
+                <p key={idx}>{colorItem}</p>
             ))),
             sortable: true,
             filter: true,
@@ -171,16 +187,16 @@ const ViewOrder = () => {
         {
             field: "amount",
             header: "Amount",
-            body: (rowData) => (`${rowData?.paymentIntent?.amount ? rowData?.paymentIntent?.amount : ""}`),
+            body: (rowData) => (`${rowData?.product?.price ? rowData?.product?.price : ""}`),
             sortable: true,
             filter: true,
             visible: true,
             width: "80px",
         },
         {
-            field: "createdAt",
+            field: "updatedAt",
             header: "Date",
-            body: (rowData) => (new Date(rowData?.createdAt).toLocaleString()),
+            body: (rowData) => (new Date(rowData?.product?.updatedAt).toLocaleString()),
             sortable: true,
             filter: true,
             visible: true,
