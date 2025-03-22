@@ -29,6 +29,7 @@ import UpdateCoupon from './scenes/coupons/UpdateCoupon';
 import UpdateProductCategory from './scenes/products-categories/UpdateProductCategory';
 import UpdateBlog from './scenes/blogs/UpdateBlog';
 import ViewEnquiry from './scenes/Enquiries/ViewEnquiry';
+import ViewOrder from './scenes/orders/ViewOrder';
 
 const App = () => {
 
@@ -50,6 +51,7 @@ const App = () => {
             <Route path='add-blog-category' element={<AddBlogCategory />} />
             <Route path='blog-category/:id' element={<UpdateBlogCategory />} />
             <Route path='orders' element={<Orders />} />
+            <Route path='order/:id' element={<ViewOrder />} />
             <Route path='customers' element={<Customers />} />
             <Route path='colors' element={<Colors />} />
             <Route path='add-color' element={<AddColor />} />
