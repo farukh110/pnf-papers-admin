@@ -76,4 +76,4 @@ This project is licensed under the **MIT License**.
 ## 📞 Contact  
 📧 Email: [farukhsajjad110@gmail.com](mailto:farukhsajjad110@gmail.com)  
 <!-- 🌐 Website: [www.pnfpapers.com](https://www.pnfpapers.com)  -->
-📱 Phone: [+92341-4285511](tel:+923414285511)
+📱 Phone: [+923414285511](tel:+923414285511)
