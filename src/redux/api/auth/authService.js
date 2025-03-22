@@ -76,12 +76,20 @@ const getAllOrders = async (params) => {
         console.error('Error during login:', error);
         throw new Error(error.response?.data?.message || 'Login failed');
     }
-}
+};
+
+const getOrderByUser = async (id) => {
+
+    const response = await axios.post(`${BACKEND}/user/order-by-user/${id}`, "", config);
+    return response.data;
+
+};
 
 const authService = {
 
     login,
-    getAllOrders
+    getAllOrders,
+    getOrderByUser
 
 };
 
