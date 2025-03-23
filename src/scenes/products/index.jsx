@@ -6,7 +6,8 @@ import CustomPanel from '../../components/global/custom-web-controls/custom-butt
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { getAllProducts } from '../../redux/api/product/productSlice';
+import { deleteProduct, getAllProducts } from '../../redux/api/product/productSlice';
+import { Modal, notification } from 'antd';
 
 const Products = () => {
 
@@ -129,9 +130,33 @@ const Products = () => {
         console.log("Edit product:", productId);
     }, []);
 
-    const deleteProduct = useCallback((productId) => {
-        console.log("Delete product:", productId);
-    }, []);
+    const deleteProductItem = useCallback((productId) => {
+
+        Modal.confirm({
+            title: 'Are you sure you want to delete this product?',
+            content: 'This action cannot be undone.',
+            okText: 'Yes, Delete',
+            okType: 'danger',
+            cancelText: 'Cancel',
+            onOk: async () => {
+                try {
+                    await dispatch(deleteProduct(productId)).unwrap();
+                    notification.success({
+                        message: 'Product Deleted',
+                        description: 'The product has been deleted successfully!',
+                        duration: 2,
+                    });
+                    loadLazyData(); // Refresh list
+                } catch (error) {
+                    notification.error({
+                        message: 'Deletion Failed',
+                        description: 'An error occurred while deleting the product. Please try again.',
+                        duration: 2,
+                    });
+                }
+            },
+        });
+    }, [dispatch, loadLazyData]);
 
     const onSelectionChange = useCallback((event) => {
         const value = event.value;
@@ -168,12 +193,12 @@ const Products = () => {
                     {
                         label: "Delete",
                         icon: "pi pi-trash",
-                        command: () => deleteProduct(rowData._id),
+                        command: () => deleteProductItem(rowData._id),
                     },
                 ]}
             />
         );
-    }, [editProduct, deleteProduct]);
+    }, [editProduct, deleteProductItem]);
 
     const columns = useMemo(() => [
         {
