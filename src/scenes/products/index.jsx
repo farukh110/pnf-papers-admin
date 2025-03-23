@@ -127,7 +127,7 @@ const Products = () => {
     }, []);
 
     const editProduct = useCallback((productId) => {
-        console.log("Edit product:", productId);
+        navigate(`/admin/product/${productId}`);
     }, []);
 
     const deleteProductItem = useCallback((productId) => {
