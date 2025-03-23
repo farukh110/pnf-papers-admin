@@ -7,18 +7,20 @@ import { Dropdown } from "primereact/dropdown";
 import CustomButton from "../../components/global/custom-web-controls/custom-button";
 import CustomInputText from "../../components/global/custom-web-controls/custom-input-text";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllBrandsOption } from './../../redux/api/brand/brandSlice';
+import { getAllBrandsOption } from '../../redux/api/brand/brandSlice';
 import { getAllCategoryOption } from "../../redux/api/product-categories/categoriesSlice";
 import { DropdownList, Multiselect } from "react-widgets";
 import "react-widgets/styles.css";
 import { getAllColorsOption } from "../../redux/api/color/colorSlice";
 import Dropzone from 'react-dropzone'
-import { deleteImage, uploadImages } from "../../redux/api/upload/uploadSlice";
-import { createProduct, resetState } from "../../redux/api/product/productSlice";
-import { useNavigate } from "react-router-dom";
+import { deleteImage, setUploadedImages, uploadImages } from "../../redux/api/upload/uploadSlice";
+import { createProduct, getProduct, resetState } from "../../redux/api/product/productSlice";
+import { useNavigate, useParams } from "react-router-dom";
 
-const EditProduct = () => {
+const UpdateProduct = () => {
 
+    const [form] = Form.useForm();
+    const params = useParams();
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
@@ -32,6 +34,53 @@ const EditProduct = () => {
     const { categories = [] } = useSelector(state => state.productsCategory);
     const { colors = [] } = useSelector(state => state.colors);
     const images = useSelector((state) => state.upload.images);
+
+    const { isSuccess, isError, isLoading, productDetails } = useSelector(state => state.products);
+
+
+    const productId = params.id;
+
+    useEffect(() => {
+
+        if (productId !== undefined) {
+
+            dispatch(getProduct(productId));
+
+        } else {
+
+            // dispatch(resetState());
+        }
+
+    }, [productId, dispatch]);
+
+    useEffect(() => {
+
+        if (productDetails && productId && brands.length > 0) {
+
+            const matchedBrand = brands.find(item => item.title === productDetails.brand);
+
+            console.log('matchedBrand:', matchedBrand);
+            console.log('productDetails.brand: ', productDetails.brand);
+
+            const brandValue = matchedBrand
+                ? { name: matchedBrand.title, code: matchedBrand._id }
+                : null;
+
+            form.setFieldsValue({
+                title: productDetails.title,
+                price: productDetails.price,
+                product_brand: brandValue
+                // blog_description: blogDetails.description,
+            });
+
+            setDescription(productDetails.description);
+            setBrandsOption(brandValue);
+
+            if (productDetails.images && productDetails.images.length > 0) {
+                dispatch(setUploadedImages(productDetails.images));
+            }
+        }
+    }, [productDetails, form, productId, brands, dispatch]);
 
     useEffect(() => {
 
@@ -127,11 +176,12 @@ const EditProduct = () => {
         <>
             <div className='row'>
 
-                <h4 className='mt-md-2'> Edit Product </h4>
+                <h4 className='mt-md-2'> Update Product </h4>
 
                 <div className='col-md-12'>
 
                     <Form
+                        form={form}
                         className="mt-md-3"
                         onFinish={onFinish}
                         onFinishFailed={onFinishFailed}
@@ -205,8 +255,11 @@ const EditProduct = () => {
                                     ]}
                                 >
                                     <Dropdown
-                                        value={brandsOption}
-                                        onChange={(e) => setBrandsOption(e.value)}
+                                        value={form.getFieldValue("product_brand")}
+                                        onChange={(e) => {
+                                            setBrandsOption(e.value);
+                                            form.setFieldsValue({ brands: e.value });
+                                        }}
                                         options={brands.map((item) => ({ name: item?.title, code: item?._id }))}
                                         optionLabel="name"
                                         placeholder="Select Product Brand"
@@ -542,4 +595,4 @@ const EditProduct = () => {
     )
 }
 
-export default EditProduct;
+export default UpdateProduct;
