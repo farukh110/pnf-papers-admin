@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CREATE_PRODUCT, GET_ALL_PRODUCTS, RESET_ALL } from "../../../app-constants";
+import { CREATE_PRODUCT, DELETE_PRODUCT, GET_ALL_PRODUCTS, RESET_ALL } from "../../../app-constants";
 import productService from './productService';
 
 const initialState = {
@@ -34,6 +34,19 @@ export const createProduct = createAsyncThunk(CREATE_PRODUCT, async (productData
     try {
 
         return await productService.createProduct(productData);
+
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error);
+    }
+
+});
+
+export const deleteProduct = createAsyncThunk(DELETE_PRODUCT, async (productId, thunkAPI) => {
+
+    try {
+
+        return await productService.deleteProduct(productId);
 
     } catch (error) {
 
@@ -95,6 +108,26 @@ export const productSlice = createSlice({
                 state.isSuccess = false;
                 state.message = action.error;
 
+            })
+            // delete product
+            .addCase(deleteProduct.pending, (state) => {
+
+                state.isLoading = true;
+
+            })
+            .addCase(deleteProduct.fulfilled, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.deleteProduct = action.payload;
+            })
+            .addCase(deleteProduct.rejected, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
             })
             .addCase(resetState, () => initialState);
 
