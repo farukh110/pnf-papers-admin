@@ -315,7 +315,10 @@ const UpdateProduct = () => {
 
                                     <Dropdown
                                         value={categoryOption}
-                                        onChange={(e) => setCategoryOption(e.value)}
+                                        onChange={(e) => {
+                                            setCategoryOption(e.value);
+                                            form.setFieldsValue({ product_category: e.value });
+                                        }}
                                         options={categories.map((item) => ({ name: item?.title, code: item?._id }))}
                                         optionLabel="name"
                                         placeholder="Select Product Category"
