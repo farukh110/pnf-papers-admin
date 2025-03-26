@@ -53,34 +53,60 @@ const UpdateProduct = () => {
 
     }, [productId, dispatch]);
 
+    console.log('productDetails: ', productDetails);
+
     useEffect(() => {
 
-        if (productDetails && productId && brands.length > 0) {
+        if (productDetails && productId && brands.length > 0 && categories.length > 0) {
 
             const matchedBrand = brands.find(item => item.title === productDetails.brand);
 
             console.log('matchedBrand:', matchedBrand);
             console.log('productDetails.brand: ', productDetails.brand);
+            console.log('productDetails.tags: ', productDetails.tags);
 
             const brandValue = matchedBrand
                 ? { name: matchedBrand.title, code: matchedBrand._id }
                 : null;
 
+            const matchedCategory = categories.find(item => item.title === productDetails.category);
+
+            const categoryValue = matchedCategory
+                ? { name: matchedCategory.title, code: matchedCategory._id }
+                : null;
+
+            const matchedTag = [
+                { tag: "Featured", id: "featured" },
+                { tag: "Popular", id: "popular" },
+                { tag: "Special", id: "special" }
+            ].find(item => item.tag === productDetails.tags) || { tag: "Featured", id: "featured" };
+
+            console.log('matchedTag: ', matchedTag);
+            setTagsOption(matchedTag);
+
             form.setFieldsValue({
                 title: productDetails.title,
                 price: productDetails.price,
-                product_brand: brandValue
-                // blog_description: blogDetails.description,
+                product_description: productDetails.description,
+                product_brand: brandValue,
+                product_category: categoryValue,
+                tags: matchedTag,
+                length: productDetails.length,
+                width: productDetails.width,
+                height: productDetails.height,
+                quantity: productDetails.quantity,
+                weight: productDetails.weight
             });
 
             setDescription(productDetails.description);
             setBrandsOption(brandValue);
+            setCategoryOption(categoryValue);
 
             if (productDetails.images && productDetails.images.length > 0) {
                 dispatch(setUploadedImages(productDetails.images));
             }
         }
-    }, [productDetails, form, productId, brands, dispatch]);
+    }, [productDetails, form, productId, brands, categories, dispatch]);
 
     useEffect(() => {
 
@@ -255,10 +281,10 @@ const UpdateProduct = () => {
                                     ]}
                                 >
                                     <Dropdown
-                                        value={form.getFieldValue("product_brand")}
+                                        value={brandsOption}
                                         onChange={(e) => {
                                             setBrandsOption(e.value);
-                                            form.setFieldsValue({ brands: e.value });
+                                            form.setFieldsValue({ product_brand: e.value });
                                         }}
                                         options={brands.map((item) => ({ name: item?.title, code: item?._id }))}
                                         optionLabel="name"
@@ -307,7 +333,7 @@ const UpdateProduct = () => {
                                 </label>
 
                                 <Form.Item
-                                    name="blog_description"
+                                    name="product_description"
                                     className="mt-md-1"
                                     rules={[
                                         {
