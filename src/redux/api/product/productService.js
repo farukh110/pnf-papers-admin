@@ -43,11 +43,18 @@ const getProduct = async (productId) => {
     return response.data;
 }
 
+const updateProduct = async (product) => {
+
+    const response = await axios.post(`${BACKEND}/product/`, product, config);
+    return response.data;
+};
+
 const productService = {
     getAllProducts,
     createProduct,
     deleteProduct,
-    getProduct
+    getProduct,
+    updateProduct
 };
 
 export default productService;

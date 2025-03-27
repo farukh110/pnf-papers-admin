@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { CREATE_PRODUCT, DELETE_PRODUCT, GET_ALL_PRODUCTS, GET_PRODUCT, RESET_ALL } from "../../../app-constants";
+import { CREATE_PRODUCT, DELETE_PRODUCT, GET_ALL_PRODUCTS, GET_PRODUCT, RESET_ALL, UPDATE_PRODUCT } from "../../../app-constants";
 import productService from './productService';
 
 const initialState = {
@@ -68,6 +68,21 @@ export const getProduct = createAsyncThunk(GET_PRODUCT, async (productId, thunkA
 
     } catch (error) {
         return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+
+});
+
+// update product
+
+export const updateProduct = createAsyncThunk(UPDATE_PRODUCT, async (productData, thunkAPI) => {
+
+    try {
+
+        return await productService.updateProduct(productData);
+
+    } catch (error) {
+
+        return thunkAPI.rejectWithValue(error);
     }
 
 });
@@ -165,6 +180,28 @@ export const productSlice = createSlice({
                 state.isError = true;
                 state.isSuccess = false;
                 state.message = action.payload;
+            })
+            // update product
+            .addCase(updateProduct.pending, (state) => {
+
+                state.isLoading = true;
+
+            })
+            .addCase(updateProduct.fulfilled, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = false;
+                state.isSuccess = true;
+                state.updatedProduct = action.payload;
+
+            })
+            .addCase(updateProduct.rejected, (state, action) => {
+
+                state.isLoading = false;
+                state.isError = true;
+                state.isSuccess = false;
+                state.message = action.error;
+
             })
             .addCase(resetState, () => initialState);
 
