@@ -14,7 +14,7 @@ import "react-widgets/styles.css";
 import { getAllColorsOption } from "../../redux/api/color/colorSlice";
 import Dropzone from 'react-dropzone'
 import { deleteImage, setUploadedImages, uploadImages } from "../../redux/api/upload/uploadSlice";
-import { createProduct, getProduct, resetState } from "../../redux/api/product/productSlice";
+import { createProduct, getProduct, resetState, updateProduct } from "../../redux/api/product/productSlice";
 import { useNavigate, useParams } from "react-router-dom";
 
 const UpdateProduct = () => {
@@ -57,13 +57,14 @@ const UpdateProduct = () => {
 
     useEffect(() => {
 
-        if (productDetails && productId && brands.length > 0 && categories.length > 0) {
+        if (productDetails && productId && brands.length > 0 && categories.length > 0 && colors.length) {
 
             const matchedBrand = brands.find(item => item.title === productDetails.brand);
 
             console.log('matchedBrand:', matchedBrand);
             console.log('productDetails.brand: ', productDetails.brand);
             console.log('productDetails.tags: ', productDetails.tags);
+            console.log('productDetails.color: ', productDetails.color);
 
             const brandValue = matchedBrand
                 ? { name: matchedBrand.title, code: matchedBrand._id }
@@ -84,6 +85,14 @@ const UpdateProduct = () => {
             console.log('matchedTag: ', matchedTag);
             setTagsOption(matchedTag);
 
+            // Handle color selection from API response
+            const selectedColors = productDetails.color && productDetails.color.length > 0
+                ? productDetails.color.map(item => ({ color: item.color, id: item.id }))
+                : [];
+
+            console.log('selectedColors: ', selectedColors);
+            setColorsOption(selectedColors);
+
             form.setFieldsValue({
                 title: productDetails.title,
                 price: productDetails.price,
@@ -91,6 +100,7 @@ const UpdateProduct = () => {
                 product_brand: brandValue,
                 product_category: categoryValue,
                 tags: matchedTag,
+                color: selectedColors,
                 length: productDetails.length,
                 width: productDetails.width,
                 height: productDetails.height,
@@ -106,7 +116,7 @@ const UpdateProduct = () => {
                 dispatch(setUploadedImages(productDetails.images));
             }
         }
-    }, [productDetails, form, productId, brands, categories, dispatch]);
+    }, [productDetails, form, productId, brands, categories, colors, dispatch]);
 
     useEffect(() => {
 
@@ -167,11 +177,11 @@ const UpdateProduct = () => {
 
         try {
 
-            dispatch(createProduct(productData));
+            dispatch(updateProduct(productData));
 
             notification.success({
-                message: 'Product Created',
-                description: 'The product has been created successfully!',
+                message: 'Product Updated',
+                description: 'The product has been updated successfully!',
                 duration: 1,
             });
 
@@ -187,7 +197,7 @@ const UpdateProduct = () => {
             console.log("error: ", error);
             notification.error({
                 message: 'Creation Failed',
-                description: 'An error occurred while creating the product. Please try again.',
+                description: 'An error occurred while updating the product. Please try again.',
                 duration: 1,
             });
         }
@@ -378,10 +388,11 @@ const UpdateProduct = () => {
                                         dataKey="id"
                                         onChange={(e) => {
                                             console.log(e);
-                                            setColorsOption(e.value)
+                                            setColorsOption(e);
+                                            form.setFieldsValue({ color: e });
                                         }}
                                         textField="color"
-                                        value={["Red"]}
+                                        value={colorsOption}
                                         data={colors.map((item) => ({ color: item?.title, id: item?._id }))}
                                     />
 
