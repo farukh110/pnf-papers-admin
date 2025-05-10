@@ -84,7 +84,8 @@ const AddProduct = () => {
             images,
             brand: values?.product_brand?.name,
             category: values?.product_category?.name,
-            tags: values?.tags?.tag
+            tags: values?.tags?.tag,
+            color: values?.color?.map((c) => c.id),
 
         };
 
