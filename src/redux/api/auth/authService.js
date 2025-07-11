@@ -80,7 +80,35 @@ const getAllOrders = async (params) => {
 
 const getOrderByUser = async (id) => {
 
-    const response = await axios.post(`${BACKEND}/user/order-by-user/${id}`, "", config);
+    const response = await axios.post(`${BACKEND}/user/order-by-user/${id}`, config);
+    return response.data;
+
+};
+
+const getMonthlyOrders = async () => {
+
+    const response = await axios.get(`${BACKEND}/user/month-wise-order-income`, config);
+    return response.data;
+
+};
+
+const getYearlyStats = async () => {
+
+    const response = await axios.get(`${BACKEND}/user/yearly-total-orders`, config);
+    return response.data;
+
+};
+
+const getOrder = async (id) => {
+
+    const response = await axios.get(`${BACKEND}/user/order/${id}`, config);
+    return response.data;
+
+};
+
+const updateOrder = async (data) => {
+
+    const response = await axios.put(`${BACKEND}/user/update-order/${data.id}`, { status: data?.status }, config);
     return response.data;
 
 };
@@ -89,7 +117,11 @@ const authService = {
 
     login,
     getAllOrders,
-    getOrderByUser
+    getOrderByUser,
+    getMonthlyOrders,
+    getYearlyStats,
+    getOrder,
+    updateOrder
 
 };
 

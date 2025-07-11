@@ -620,7 +620,7 @@ const UpdateProduct = () => {
                                     severity="help"
                                     type="submit"
                                     className="rounded"
-                                    label="Add Product"
+                                    label="Update Product"
                                 />
 
                             </Form.Item>

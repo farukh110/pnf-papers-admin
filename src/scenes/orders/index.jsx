@@ -6,7 +6,7 @@ import CustomPanel from '../../components/global/custom-web-controls/custom-butt
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { getAllOrders } from '../../redux/api/auth/authSlice';
+import { getAllOrders, updateOrder } from '../../redux/api/auth/authSlice';
 
 const Orders = () => {
 
@@ -130,6 +130,35 @@ const Orders = () => {
         }
     }, [orders]);
 
+    const updateOrderStatus = (id, status) => {
+
+        dispatch(updateOrder({ id, status }));
+    };
+
+    const statusTemplate = useCallback((rowData) => {
+
+        console.log('rowData: ', rowData._id);
+
+        return (
+
+            <select
+                name=""
+                defaultValue={rowData.orderStatus ? rowData.orderStatus : ""}
+                className="form-control"
+                onChange={(e) => updateOrderStatus(rowData._id, e.target.value)}
+                id=""
+            >
+                <option value="Ordered" disabled selected>Ordered</option>
+                <option value="Processed">Processed</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Out for Delivery">Out for Delivery</option>
+                <option value="Delivered">Delivered</option>
+
+            </select>
+        );
+
+    }, []);
+
     const columns = useMemo(() => [
         {
             field: "serialNumber",
@@ -142,7 +171,7 @@ const Orders = () => {
         {
             field: "name",
             header: "Name",
-            body: (rowData) => (`${rowData?.orderBy?.firstname} ${rowData?.orderBy?.lastname}`),
+            body: (rowData) => (`${rowData?.orderBy?.firstname ? rowData?.orderBy?.firstname : ""} ${rowData?.orderBy?.lastname ? rowData?.orderBy?.lastname : ""}`),
             sortable: true,
             filter: true,
             visible: true,
@@ -151,7 +180,7 @@ const Orders = () => {
         {
             field: "order",
             header: "Order",
-            body: (rowData) => (<Link to={`/admin/order/${rowData?.orderBy?._id}`}> View Orders </Link>),
+            body: (rowData) => (<Link to={`/admin/order/${rowData?._id}`}> View Orders </Link>),
             sortable: true,
             filter: true,
             visible: true,
@@ -185,6 +214,15 @@ const Orders = () => {
             filter: true,
             visible: true,
             width: "100px",
+        },
+        {
+            field: "status",
+            header: "Status",
+            body: statusTemplate,
+            sortable: true,
+            filter: true,
+            visible: true,
+            width: "130px",
         },
     ], []);
 

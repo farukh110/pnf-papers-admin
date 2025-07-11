@@ -31,6 +31,8 @@ import UpdateBlog from './scenes/blogs/UpdateBlog';
 import ViewEnquiry from './scenes/Enquiries/ViewEnquiry';
 import ViewOrder from './scenes/orders/ViewOrder';
 import UpdateProduct from './scenes/products/UpdateProduct';
+import { PrivateRoutes } from './routes/PrivateRoutes';
+import { OpenRoutes } from './routes/OpenRoutes';
 
 const App = () => {
 
@@ -38,10 +40,10 @@ const App = () => {
     <>
       <Router>
         <Routes>
-          <Route path='/login' element={<Login />} />
-          <Route path='/reset-password' element={<ResetPassword />} />
-          <Route path='/forgot-password' element={<ForgotPassword />} />
-          <Route path='/admin' element={<MainLayout />}>
+          <Route path='/' element={<OpenRoutes> <Login /> </OpenRoutes>} />
+          {/* <Route path='/reset-password' element={<ResetPassword />} /> */}
+          {/* <Route path='/forgot-password' element={<ForgotPassword />} /> */}
+          <Route path='/admin' element={<PrivateRoutes> <MainLayout /> </PrivateRoutes>}>
             <Route index element={<Dashboard />} />
             <Route path='enquiries' element={<Enquiries />} />
             <Route path='enquiry/:id' element={<ViewEnquiry />} />
