@@ -250,10 +250,22 @@ const Brands = () => {
     const actionItems = useMemo(() => [
         {
             id: 1,
+            btn_label: "Add Brands",
+            btn_color: "secondary",
+            class_name: "w-100 rounded p-2 ps-3 pe-3",
+            column_class: "col-md-4 pe-1",
+            icon: "pi pi-plus",
+            btn_size: "small",
+            on_action: () => {
+                navigate('/admin/add-brand');
+            },
+        },
+        {
+            id: 1,
             btn_label: "Excel All",
             btn_color: "secondary",
             class_name: "w-100 rounded p-2 ps-3 pe-3",
-            column_class: "col-md-6 pe-1",
+            column_class: "col-md-4 pe-1",
             icon: "pi pi-file-excel",
             btn_size: "small",
             on_action: () => {
@@ -265,7 +277,7 @@ const Brands = () => {
             btn_label: "Clear Filter",
             btn_color: "secondary",
             class_name: "w-100 rounded p-2 ps-3 pe-3",
-            column_class: "col-md-6",
+            column_class: "col-md-4",
             icon: "pi pi-filter-slash",
             btn_size: "small",
             on_action: clearFilters,
@@ -277,8 +289,8 @@ const Brands = () => {
             <div className='col-md-12'>
                 <h4 className='mt-md-2'>Brands List</h4>
                 <div className="row justify-content-between my-md-3">
-                    <div className="col-md-5"></div>
-                    <div className="col-md-3">
+                    <div className="col-md-6"></div>
+                    <div className="col-md-5">
                         <CustomPanel
                             custom_main_class="row"
                             actionList={actionItems}

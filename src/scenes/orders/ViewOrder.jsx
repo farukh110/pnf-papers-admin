@@ -6,7 +6,7 @@ import CustomPanel from '../../components/global/custom-web-controls/custom-butt
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { getAllOrders, getOrderByUser } from '../../redux/api/auth/authSlice';
+import { getOrder } from '../../redux/api/auth/authSlice';
 
 const ViewOrder = () => {
 
@@ -19,9 +19,11 @@ const ViewOrder = () => {
 
     console.log('userId: ', userId);
 
-    const { orderByUser = {}, totalRecords = 0, isLoading } = useSelector(state => state.auth);
+    const { order: orderWrapper = {}, totalRecords = 0, isLoading } = useSelector(state => state.auth);
 
-    console.log('products of order user : ', orderByUser.products);
+    const order = orderWrapper?.order || {};
+
+    console.log('products of order user : ', order.orderItems);
 
     const queryParams = new URLSearchParams(location.search);
     const initialPage = parseInt(queryParams.get('page'), 10) || 1;
@@ -55,7 +57,7 @@ const ViewOrder = () => {
             sortOrder: sortOrder === 1 ? 'asc' : 'desc',
         };
 
-        dispatch(getOrderByUser(userId))
+        dispatch(getOrder(userId))
             .unwrap()
             .catch((error) => {
                 console.log(`Error: ${error.message}`);
@@ -67,15 +69,14 @@ const ViewOrder = () => {
     }, [loadLazyData]);
 
     useEffect(() => {
-        if (Array.isArray(orderByUser?.products)) {
-            const ordersWithSerialNumbers = orderByUser?.products.map((order, index) => ({
-                ...order,
+        if (Array.isArray(order?.orderItems)) {
+            const itemsWithSerial = order.orderItems.map((item, index) => ({
+                ...item,
                 serialNumber: lazyState.first + index + 1,
             }));
-
-            setDataSource(ordersWithSerialNumbers);
+            setDataSource(itemsWithSerial);
         }
-    }, [orderByUser?.products, lazyState.first]);
+    }, [order?.orderItems, lazyState.first]);
 
     const onPage = useCallback((event) => {
         const { first, rows } = event;
@@ -130,12 +131,12 @@ const ViewOrder = () => {
         const selectAll = event.checked;
         if (selectAll) {
             setSelectAll(true);
-            setSelectedItems(orderByUser.products);
+            setSelectedItems(order.orderItems);
         } else {
             setSelectAll(false);
             setSelectedItems([]);
         }
-    }, [orderByUser.products]);
+    }, [order?.orderItems]);
 
     const columns = useMemo(() => [
         {
@@ -167,7 +168,7 @@ const ViewOrder = () => {
         {
             field: "count",
             header: "Count",
-            body: (rowData) => (`${rowData?.count}`),
+            body: (rowData) => (`${rowData?.quantity}`),
             sortable: true,
             filter: true,
             visible: true,

@@ -7,7 +7,7 @@ import { Avatar, Button, Layout, List, Menu, theme } from 'antd';
 import { RiCoupon3Line, RiCustomerService2Line, RiDashboard3Line, RiProductHuntLine } from 'react-icons/ri';
 import { HiOutlineUsers } from 'react-icons/hi';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { AiOutlineBgColors } from 'react-icons/ai';
+import { AiOutlineBgColors, AiOutlineLogout } from 'react-icons/ai';
 import { GoDot } from 'react-icons/go';
 import { PiClipboardText } from 'react-icons/pi';
 import { TbBrandAirtable, TbBrandBlogger } from 'react-icons/tb';
@@ -48,7 +48,13 @@ const MainLayout = () => {
                     className='mt-md-2'
                     defaultSelectedKeys={['']}
                     onClick={({ key }) => {
-                        if (key) {
+                        if (key === 'logout') {
+
+                            localStorage.clear();
+                            navigate('/');
+
+                        } else {
+
                             navigate(key);
                         }
                     }}
@@ -64,7 +70,7 @@ const MainLayout = () => {
                             label: 'Customers',
                         },
                         {
-                            key: 'products',
+                            key: 'products-list',
                             icon: <RiProductHuntLine className='sidebar-icon' />,
                             label: 'Products',
                             children: [
@@ -81,7 +87,7 @@ const MainLayout = () => {
                             ]
                         },
                         {
-                            key: 'brands',
+                            key: 'brands-list',
                             icon: <TbBrandAirtable className='sidebar-icon' />,
                             label: 'Brands',
                             children: [
@@ -115,7 +121,7 @@ const MainLayout = () => {
                             ]
                         },
                         {
-                            key: 'colors',
+                            key: 'colors-list',
                             icon: <AiOutlineBgColors className='sidebar-icon' />,
                             label: 'Colors',
                             children: [
@@ -137,7 +143,7 @@ const MainLayout = () => {
                             label: 'Orders',
                         },
                         {
-                            key: 'coupons',
+                            key: 'coupons-list',
                             icon: <RiCoupon3Line className='sidebar-icon' />,
                             label: 'Coupons',
                             children: [
@@ -154,7 +160,7 @@ const MainLayout = () => {
                             ]
                         },
                         {
-                            key: 'blogs',
+                            key: 'blogs-list',
                             icon: <TbBrandBlogger className='sidebar-icon' />,
                             label: 'Blogs',
                             children: [
@@ -191,6 +197,11 @@ const MainLayout = () => {
                             key: 'enquiries',
                             icon: <RiCustomerService2Line className='sidebar-icon' />,
                             label: 'Enquiries',
+                        },
+                        {
+                            key: 'logout',
+                            icon: <AiOutlineLogout className='sidebar-icon' />,
+                            label: 'Logout',
                         },
                     ]}
                 />

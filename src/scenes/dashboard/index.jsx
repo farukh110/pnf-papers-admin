@@ -2,27 +2,82 @@ import { Table } from 'antd';
 import { BsArrowDownRight } from 'react-icons/bs';
 import { Column } from '@ant-design/plots';
 import './index.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { getMonthlyOrders, getYearlyStats } from '../../redux/api/auth/authSlice';
+import RecentOrders from '../recent-orders';
 
 const Dashboard = () => {
 
-    const data = [
-        { type: 'January', sales: 40 },
-        { type: 'February', sales: 20 },
-        { type: 'March', sales: 30 },
-        { type: 'April', sales: 50 },
-        { type: 'May', sales: 70 },
-        { type: 'June', sales: 100 },
-        { type: 'July', sales: 50 },
-        { type: 'August', sales: 95 },
-        { type: 'September', sales: 24 },
-        { type: 'October', sales: 85 },
-        { type: 'November', sales: 25 },
-        { type: 'December', sales: 60 },
-    ];
+    const dispatch = useDispatch();
+
+    const monthlyDataState = useSelector(state => state?.auth?.monthlyData);
+    const yearlyDataState = useSelector(state => state?.auth?.yearlyData);
+
+    const [dataMonthly, setDataMonthly] = useState([]);
+    const [dataMonthlySales, setDataMonthlySales] = useState([]);
+
+    useEffect(() => {
+
+        dispatch(getMonthlyOrders());
+        dispatch(getYearlyStats());
+
+    }, []);
+
+    useEffect(() => {
+
+        let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        let data = [];
+        let monthlyOrderCount = [];
+
+        for (let index = 0; index < monthlyDataState?.length; index++) {
+
+            const element = monthlyDataState[index];
+
+            data.push({ type: monthNames[element?._id?.month], income: element?._id?.amount });
+            monthlyOrderCount.push({ type: monthNames[element?._id?.month], sales: element?._id?.count });
+        }
+
+        console.log('data: ', data);
+
+        setDataMonthly(data);
+        setDataMonthlySales(monthlyOrderCount);
+
+
+    }, [monthlyDataState]);
+
 
     const config = {
 
-        data,
+        data: dataMonthly,
+        xField: 'type',
+        yField: 'income',
+        style: {
+            fill: () => {
+                return '#2989FF';
+            },
+        },
+        xAxis: {
+            label: {
+                autoHide: true,
+                autoRotate: false
+            }
+        },
+        legend: true,
+        meta: {
+            type: {
+                alias: "Month",
+            },
+            sales: {
+                alias: "Income"
+            }
+        }
+    };
+
+    const config2 = {
+
+        data: dataMonthlySales,
         xField: 'type',
         yField: 'sales',
         style: {
@@ -42,7 +97,7 @@ const Dashboard = () => {
                 alias: "Month",
             },
             sales: {
-                alias: "Income"
+                alias: "Sales"
             }
         }
     };
@@ -78,7 +133,7 @@ const Dashboard = () => {
     return (
         <>
             <div className='dashboard'>
-                <div className='row'>
+                <div className='row justify-content-center'>
 
                     <div className='col-md-4'>
 
@@ -86,20 +141,20 @@ const Dashboard = () => {
 
                             <div className='row'>
 
-                                <div className='col-md-6'>
+                                <div className='col-md-5'>
 
                                     <p className='mb-0'>
-                                        Total
+                                        Total Income
                                     </p>
-                                    <h4 className='mb-0'> 500 </h4>
+                                    <h4 className='mb-0'> {yearlyDataState?.length > 0 ? yearlyDataState[0]?.amount : 'Loading...'} </h4>
                                 </div>
 
-                                <div className='col-md-6 align-self-end'>
+                                <div className='col-md-7 align-self-end'>
 
-                                    <h6 className='mb-0 float-end'> <BsArrowDownRight className='text-success' /> 40% </h6>
+                                    {/* <h6 className='mb-0 float-end'> <BsArrowDownRight className='text-success' /> 40% </h6> */}
                                     <br />
                                     <p className='mb-0 float-end'>
-                                        Compare to August 2024
+                                        Income in Last Year from Today
                                     </p>
 
                                 </div>
@@ -116,20 +171,20 @@ const Dashboard = () => {
 
                             <div className='row'>
 
-                                <div className='col-md-6'>
+                                <div className='col-md-5'>
 
                                     <p className='mb-0'>
-                                        Total
+                                        Total Sales
                                     </p>
-                                    <h4 className='mb-0'> 500 </h4>
+                                    <h4 className='mb-0'> {yearlyDataState?.length > 0 ? yearlyDataState[0].count : 'Loading...'} </h4>
                                 </div>
 
-                                <div className='col-md-6 align-self-end'>
+                                <div className='col-md-7 align-self-end'>
 
-                                    <h6 className='mb-0 float-end'> <BsArrowDownRight className='text-success' /> 40% </h6>
+                                    {/* <h6 className='mb-0 float-end'> <BsArrowDownRight className='text-success' /> 40% </h6> */}
                                     <br />
                                     <p className='mb-0 float-end'>
-                                        Compare to August 2024
+                                        Sales in Last Year from Today
                                     </p>
 
                                 </div>
@@ -140,60 +195,26 @@ const Dashboard = () => {
 
                     </div>
 
-                    <div className='col-md-4'>
-
-                        <div className='dashboard-card card-light-sky rounded-3 p-3'>
-
-                            <div className='row'>
-
-                                <div className='col-md-6'>
-
-                                    <p className='mb-0'>
-                                        Total
-                                    </p>
-                                    <h4 className='mb-0'> 500 </h4>
-                                </div>
-
-                                <div className='col-md-6 align-self-end'>
-
-                                    <h6 className='mb-0 float-end'> <BsArrowDownRight className='text-success' /> 40% </h6>
-                                    <br />
-                                    <p className='mb-0 float-end'>
-                                        Compare to August 2024
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
 
                 </div>
 
                 <div className='row'>
-                    <div className='col-md-12'>
+                    <div className='col-md-6'>
 
                         <h4 className='mt-md-3'> Income Statistics </h4>
 
                         <Column className="mt-md-3" {...config} />
                     </div>
-                </div>
+                    <div className='col-md-6'>
 
-                <div className='row'>
-                    <div className='col-md-12'>
+                        <h4 className='mt-md-3'> Sales Statistics </h4>
 
-                        <h4 className='mt-md-2'> Recent Orders </h4>
-
-                        <Table
-                            className='mt-md-3'
-                            columns={columns}
-                            dataSource={dataSource}
-                        />
-
+                        <Column className="mt-md-3" {...config2} />
                     </div>
                 </div>
+
+                <RecentOrders />
+
             </div>
         </>
     )

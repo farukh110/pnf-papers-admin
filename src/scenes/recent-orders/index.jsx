@@ -1,26 +1,23 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { SplitButton } from 'primereact/splitbutton';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import CustomDataTable from '../../components/global/custom-web-controls/custom-data-table';
-import CustomPanel from '../../components/global/custom-web-controls/custom-button-panel';
 import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { deleteCategory, getAllProductsCategory } from './../../redux/api/product-categories/categoriesSlice';
-import { Modal, notification } from 'antd';
+import { getAllOrders } from '../../redux/api/auth/authSlice';
 
-const ProductsCategories = () => {
+const RecentOrders = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
 
-    const { categories = [], totalRecords = 0, isLoading } = useSelector(state => state.productsCategory);
+    const { orders = [], totalRecords = 0, isLoading } = useSelector(state => state.auth);
 
     const queryParams = new URLSearchParams(location.search);
     const initialPage = parseInt(queryParams.get('page'), 10) || 1;
     const initialLimit = parseInt(queryParams.get('limit'), 10) || 50;
-    const initialSortBy = queryParams.get('sortBy') || 'createdAt';
+    const initialSortBy = queryParams.get('sortBy') || 'orderDate';
     const initialSortOrder = queryParams.get('sortOrder') === 'asc' ? 1 : -1;
 
     const [dataSource, setDataSource] = useState([]);
@@ -49,9 +46,7 @@ const ProductsCategories = () => {
             sortOrder: sortOrder === 1 ? 'asc' : 'desc',
         };
 
-        console.log("API Request Params:", params); // Debugging
-
-        dispatch(getAllProductsCategory(params))
+        dispatch(getAllOrders(params))
             .unwrap()
             .catch((error) => {
                 console.log(`Error: ${error.message}`);
@@ -63,18 +58,17 @@ const ProductsCategories = () => {
     }, [loadLazyData]);
 
     useEffect(() => {
-        if (Array.isArray(categories)) {
-            const categoryWithSerialNumbers = categories.map((category, index) => ({
-                ...category,
+        if (Array.isArray(orders)) {
+            const ordersWithSerialNumbers = orders.map((order, index) => ({
+                ...order,
                 serialNumber: lazyState.first + index + 1,
             }));
 
-            setDataSource(categoryWithSerialNumbers);
+            setDataSource(ordersWithSerialNumbers);
         }
-    }, [categories, lazyState.first]);
+    }, [orders, lazyState.first]);
 
     const onPage = useCallback((event) => {
-
         const { first, rows } = event;
         const newPage = Math.floor(first / rows) + 1;
 
@@ -85,8 +79,7 @@ const ProductsCategories = () => {
             page: newPage,
         }));
 
-        navigate(`/category?page=${newPage}&limit=${rows}`);
-
+        navigate(`/orders?page=${newPage}&limit=${rows}`);
     }, [navigate]);
 
     const onSort = useCallback((event) => {
@@ -98,7 +91,6 @@ const ProductsCategories = () => {
     }, []);
 
     const processFilters = (filters) => {
-
         return Object.entries(filters).reduce((acc, [key, { value, matchMode }]) => {
             if (value !== null && value !== '') { // Check if value is not null or empty
                 acc[key] = { value, matchMode: matchMode || 'startsWith' }; // Default matchMode if not provided
@@ -110,7 +102,7 @@ const ProductsCategories = () => {
     const onFilter = useCallback((event) => {
         const processedFilters = processFilters(event.filters);
 
-        console.log('Processed filters before sending:', processedFilters);
+        // console.log('Processed filters before sending:', processedFilters);
 
         setLazyState(prevState => ({
             ...prevState,
@@ -118,39 +110,6 @@ const ProductsCategories = () => {
             page: 1,
         }));
     }, []);
-
-    const editCategory = useCallback((categoryId) => {
-
-        navigate(`/admin/category/${categoryId}`);
-
-    }, [navigate]);
-
-    const deleteCategoryItem = useCallback((categoryId) => {
-        Modal.confirm({
-            title: 'Are you sure you want to delete this category?',
-            content: 'This action cannot be undone.',
-            okText: 'Yes, Delete',
-            okType: 'danger',
-            cancelText: 'Cancel',
-            onOk: async () => {
-                try {
-                    await dispatch(deleteCategory(categoryId)).unwrap();
-                    notification.success({
-                        message: 'Category Deleted',
-                        description: 'The category has been deleted successfully!',
-                        duration: 2,
-                    });
-                    loadLazyData(); // Refresh list
-                } catch (error) {
-                    notification.error({
-                        message: 'Deletion Failed',
-                        description: 'An error occurred while deleting the category. Please try again.',
-                        duration: 2,
-                    });
-                }
-            },
-        });
-    }, [dispatch, loadLazyData]);
 
     const onSelectionChange = useCallback((event) => {
         const value = event.value;
@@ -162,37 +121,12 @@ const ProductsCategories = () => {
         const selectAll = event.checked;
         if (selectAll) {
             setSelectAll(true);
-            setSelectedItems(categories);
+            setSelectedItems(orders);
         } else {
             setSelectAll(false);
             setSelectedItems([]);
         }
-    }, [categories]);
-
-    const actionTemplate = useCallback((rowData) => {
-        return (
-            <SplitButton
-                label="Actions"
-                icon="pi pi-bars"
-                size="small"
-                className='rounded'
-                menuClassName='ps-0'
-                severity="success"
-                model={[
-                    {
-                        label: "Edit",
-                        icon: "pi pi-pencil",
-                        command: () => editCategory(rowData._id),
-                    },
-                    {
-                        label: "Delete",
-                        icon: "pi pi-trash",
-                        command: () => deleteCategoryItem(rowData._id),
-                    },
-                ]}
-            />
-        );
-    }, [editCategory, deleteCategoryItem]);
+    }, [orders]);
 
     const columns = useMemo(() => [
         {
@@ -204,37 +138,71 @@ const ProductsCategories = () => {
             width: "30px",
         },
         {
-            field: "title",
-            header: "Title",
+            field: "name",
+            header: "Name",
+            body: (rowData) => (`${rowData?.orderBy?.firstname ? rowData?.orderBy?.firstname : ""} ${rowData?.orderBy?.lastname ? rowData?.orderBy?.lastname : ""}`),
             sortable: true,
             filter: true,
-            visible: true,
-            width: "150px",
-        },
-        {
-            field: "createdAt",
-            header: "Created Date",
-            sortable: true,
-            filter: true,
-            visible: true,
-            width: "150px",
-        },
-        {
-            field: "updatedAt",
-            header: "Updated Date",
-            sortable: true,
-            filter: true,
-            visible: true,
-            width: "200px",
-        },
-        {
-            field: "action",
-            header: "Action",
-            body: actionTemplate,
             visible: true,
             width: "100px",
         },
-    ], [actionTemplate]);
+        {
+            field: "order",
+            header: "Order",
+            body: (rowData) => (<Link to={`/admin/order/${rowData?.orderBy?._id}`}> View Orders </Link>),
+            sortable: true,
+            filter: true,
+            visible: true,
+            width: "50px",
+        },
+        {
+            field: "product",
+            header: "Product",
+            body: (rowData) => (rowData?.products?.map((productItem, idx) => (
+                <p key={idx}>{productItem?.product?.title}</p>
+            ))),
+            sortable: true,
+            filter: true,
+            visible: true,
+            width: "150px",
+        },
+        {
+            field: "amount",
+            header: "Price",
+            body: (rowData) => (`${rowData?.paymentIntent?.amount ? rowData?.paymentIntent?.amount : ""}`),
+            sortable: true,
+            filter: true,
+            visible: true,
+            width: "80px",
+        },
+        {
+            field: "totalPriceAfterDiscount",
+            header: "Total Price After Discount",
+            body: (rowData) => (`${rowData?.totalPriceAfterDiscount ? rowData?.totalPriceAfterDiscount : ""}`),
+            sortable: true,
+            filter: true,
+            visible: true,
+            width: "80px",
+        },
+        {
+            field: "orderStatus",
+            header: "Status",
+            body: (rowData) => (`${rowData?.orderStatus ? rowData?.orderStatus : ""}`),
+            sortable: true,
+            filter: true,
+            visible: true,
+            width: "80px",
+        },
+        {
+            field: "createdAt",
+            header: "Date",
+            body: (rowData) => (new Date(rowData?.createdAt).toLocaleString()),
+            sortable: true,
+            filter: true,
+            visible: true,
+            width: "100px",
+        },
+    ], []);
 
     const clearFilters = () => {
         setLazyState(prevState => ({
@@ -246,56 +214,13 @@ const ProductsCategories = () => {
         loadLazyData(); // Trigger a new data fetch
     };
 
-    const actionItems = useMemo(() => [
-        {
-            id: 1,
-            btn_label: "Add Category",
-            btn_color: "secondary",
-            class_name: "w-100 rounded p-2 ps-3 pe-3",
-            column_class: "col-md-4 pe-1",
-            icon: "pi pi-plus",
-            btn_size: "small",
-            on_action: () => {
-                navigate('/admin/add-category');
-            },
-        },
-        {
-            id: 2,
-            btn_label: "Excel All",
-            btn_color: "secondary",
-            class_name: "w-100 rounded p-2 ps-3 pe-3",
-            column_class: "col-md-4 pe-1",
-            icon: "pi pi-file-excel",
-            btn_size: "small",
-            on_action: () => {
-                console.log("Excel all");
-            },
-        },
-        {
-            id: 3,
-            btn_label: "Clear Filter",
-            btn_color: "secondary",
-            class_name: "w-100 rounded p-2 ps-3 pe-3",
-            column_class: "col-md-4",
-            icon: "pi pi-filter-slash",
-            btn_size: "small",
-            on_action: clearFilters,
-        },
-    ], []);
+    // console.log('dataSource: ', dataSource);
 
     return (
         <div className='row'>
             <div className='col-md-12'>
-                <h4 className='mt-md-2'>Products Category List</h4>
-                <div className="row justify-content-between my-md-3">
-                    <div className="col-md-5"></div>
-                    <div className="col-md-5">
-                        <CustomPanel
-                            custom_main_class="row"
-                            actionList={actionItems}
-                        />
-                    </div>
-                </div>
+                <h4 className='mt-md-2'>Recent Orders</h4>
+
                 <CustomDataTable
                     loadLazyData={loadLazyData}
                     columns={columns}
@@ -321,4 +246,4 @@ const ProductsCategories = () => {
     );
 }
 
-export default ProductsCategories;
+export default RecentOrders;

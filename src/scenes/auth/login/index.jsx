@@ -41,11 +41,7 @@ const Login = () => {
     });
 
     useEffect(() => {
-        if (!user && !isLoading && !isSuccess) {
-            navigate("/login");
-        }
-
-        if (isSuccess) {
+        if (isSuccess && user) {
             navigate("/admin");
         }
     }, [user, isError, isLoading, isSuccess]);
@@ -68,6 +64,7 @@ const Login = () => {
                                     <div className="form-item">
                                         <Input
                                             name="email"
+                                            autoComplete="username"
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
                                             value={formik.values.email}
@@ -84,6 +81,7 @@ const Login = () => {
                                             name="password"
                                             onChange={formik.handleChange}
                                             onBlur={formik.handleBlur}
+                                            autoComplete="current-password"
                                             value={formik.values.password}
                                             status={formik.errors.password && formik.touched.password ? 'error' : ''}
                                             className='custom-input-password'
@@ -93,7 +91,7 @@ const Login = () => {
                                         )}
                                     </div>
 
-                                    <Link className='text-decoration-none' to='/forgot-password'>Forgot Password?</Link>
+                                    {/* <Link className='text-decoration-none' to='/forgot-password'>Forgot Password?</Link> */}
 
                                     {message.message === "Rejected" ? <Alert message="You are not an admin" type="warning" showIcon closable /> : ""}
 
