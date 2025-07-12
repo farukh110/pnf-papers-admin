@@ -74,7 +74,6 @@ const ProductsCategories = () => {
     }, [categories, lazyState.first]);
 
     const onPage = useCallback((event) => {
-
         const { first, rows } = event;
         const newPage = Math.floor(first / rows) + 1;
 
@@ -84,10 +83,7 @@ const ProductsCategories = () => {
             rows,
             page: newPage,
         }));
-
-        navigate(`/category?page=${newPage}&limit=${rows}`);
-
-    }, [navigate]);
+    }, []);
 
     const onSort = useCallback((event) => {
         setLazyState((prevState) => ({
@@ -109,9 +105,6 @@ const ProductsCategories = () => {
 
     const onFilter = useCallback((event) => {
         const processedFilters = processFilters(event.filters);
-
-        console.log('Processed filters before sending:', processedFilters);
-
         setLazyState(prevState => ({
             ...prevState,
             filters: processedFilters,
