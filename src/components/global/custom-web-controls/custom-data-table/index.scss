@@ -74,3 +74,56 @@
 
     display: none !important;
 }
+
+.p-splitbutton {
+
+    .p-splitbutton-defaultbutton {
+
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+
+    .p-splitbutton-menubutton {
+
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+}
+
+.p-tieredmenu-root-list {
+
+    margin-bottom: 0px;
+    padding-left: 0px;
+
+    li {
+
+        .p-menuitem-content {
+
+            .p-menuitem-link {
+
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+button.p-paginator-page.p-paginator-element.p-link.p-paginator-page-start.p-highlight {
+
+    border-radius: 50px;
+
+}
+
+button.p-paginator-page.p-paginator-element.p-link.p-paginator-page-end {
+
+    border-radius: 50px;
+}
+
+button.p-paginator-next.p-paginator-element.p-link {
+
+    border-radius: 50px;
+}
+
+.button.p-paginator-last.p-paginator-element.p-link {
+
+    border-radius: 50px !important;
+}
