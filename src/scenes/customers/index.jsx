@@ -80,9 +80,7 @@ const Customers = () => {
             rows,
             page: newPage,
         }));
-
-        navigate(`/customers?page=${newPage}&limit=${rows}`);
-    }, [navigate]);
+    }, []);
 
     const onSort = useCallback((event) => {
         setLazyState((prevState) => ({

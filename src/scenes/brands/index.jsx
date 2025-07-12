@@ -83,9 +83,7 @@ const Brands = () => {
             rows,
             page: newPage,
         }));
-
-        navigate(`/brands?page=${newPage}&limit=${rows}`);
-    }, [navigate]);
+    }, []);
 
     const onSort = useCallback((event) => {
         setLazyState((prevState) => ({
@@ -108,9 +106,6 @@ const Brands = () => {
 
     const onFilter = useCallback((event) => {
         const processedFilters = processFilters(event.filters);
-
-        console.log('Processed filters before sending:', processedFilters);
-
         setLazyState(prevState => ({
             ...prevState,
             filters: processedFilters,
