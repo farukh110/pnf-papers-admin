@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Form, notification } from "antd";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { InboxOutlined } from '@ant-design/icons';
 import { message, Upload } from 'antd';
 const { Dragger } = Upload;
 import './index.scss';
@@ -12,7 +11,7 @@ import CustomInputText from "../../components/global/custom-web-controls/custom-
 import Dropzone from 'react-dropzone';
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteImage, uploadImages } from "../../redux/api/upload/uploadSlice";
+import { deleteImage, resetImages, uploadImages } from "../../redux/api/upload/uploadSlice";
 import { getAllBlogCategoryOption } from "../../redux/api/blog-category/blogCategorySlice";
 import { createBlog, resetState } from "../../redux/api/blog/blogSlice";
 
@@ -73,6 +72,7 @@ const AddBlog = () => {
             setTimeout(() => {
 
                 dispatch(resetState());
+                dispatch(resetImages());
                 navigate('/admin/blogs');
 
             }, 1000);

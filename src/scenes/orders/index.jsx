@@ -135,27 +135,21 @@ const Orders = () => {
     };
 
     const statusTemplate = useCallback((rowData) => {
-
-        console.log('rowData: ', rowData._id);
+        const currentStatus = rowData.orderStatus || 'Ordered';
 
         return (
-
             <select
-                name=""
-                defaultValue={rowData.orderStatus ? rowData.orderStatus : ""}
                 className="form-control"
+                value={currentStatus}
                 onChange={(e) => updateOrderStatus(rowData._id, e.target.value)}
-                id=""
             >
-                <option value="Ordered" disabled selected>Ordered</option>
+                <option value="Ordered" disabled>Ordered</option>
                 <option value="Processed">Processed</option>
                 <option value="Shipped">Shipped</option>
                 <option value="Out for Delivery">Out for Delivery</option>
                 <option value="Delivered">Delivered</option>
-
             </select>
         );
-
     }, []);
 
     const columns = useMemo(() => [

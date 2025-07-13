@@ -257,7 +257,7 @@ const Brands = () => {
             },
         },
         {
-            id: 1,
+            id: 2,
             btn_label: "Excel All",
             btn_color: "secondary",
             class_name: "w-100 rounded p-2 ps-3 pe-3",
@@ -296,7 +296,7 @@ const Brands = () => {
             }
         },
         {
-            id: 2,
+            id: 3,
             btn_label: "Clear Filter",
             btn_color: "secondary",
             class_name: "w-100 rounded p-2 ps-3 pe-3",

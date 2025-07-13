@@ -51,6 +51,13 @@ export const uploadSlice = createSlice({
         setUploadedImages: (state, action) => {
             state.images = action.payload;
         },
+        resetImages: (state) => {
+            state.images = [];
+            state.isError = false;
+            state.isLoading = false;
+            state.isSuccess = false;
+            state.message = "";
+        },
     },
     extraReducers: (builder) => {
 
@@ -67,7 +74,7 @@ export const uploadSlice = createSlice({
                 state.isLoading = false;
                 state.isError = false;
                 state.isSuccess = true;
-                state.images = action.payload;
+                state.images = [...state.images, ...action.payload];
             })
             .addCase(uploadImages.rejected, (state, action) => {
 
@@ -101,5 +108,5 @@ export const uploadSlice = createSlice({
     }
 });
 
-export const { setUploadedImages } = uploadSlice.actions;
+export const { setUploadedImages, resetImages } = uploadSlice.actions;
 export default uploadSlice.reducer;

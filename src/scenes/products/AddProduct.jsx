@@ -13,7 +13,7 @@ import { DropdownList, Multiselect } from "react-widgets";
 import "react-widgets/styles.css";
 import { getAllColorsOption } from "../../redux/api/color/colorSlice";
 import Dropzone from 'react-dropzone'
-import { deleteImage, uploadImages } from "../../redux/api/upload/uploadSlice";
+import { deleteImage, resetImages, uploadImages } from "../../redux/api/upload/uploadSlice";
 import { createProduct, resetState } from "../../redux/api/product/productSlice";
 import { useNavigate } from "react-router-dom";
 import namer from 'color-namer';
@@ -53,18 +53,18 @@ const AddProduct = () => {
 
     }
 
-    const handleKeyPress = (e) => {
+    // const handleKeyPress = (e) => {
 
-        const charCode = e.which ? e.which : e.keyCode;
-        if (
-            (charCode >= 48 && charCode <= 57) ||
-            (charCode === 46 && e.target.value.indexOf('.') === -1)
-        ) {
-            return;
-        }
+    //     const charCode = e.which ? e.which : e.keyCode;
+    //     if (
+    //         (charCode >= 48 && charCode <= 57) ||
+    //         (charCode === 46 && e.target.value.indexOf('.') === -1)
+    //     ) {
+    //         return;
+    //     }
 
-        e.preventDefault();
-    };
+    //     e.preventDefault();
+    // };
 
     const handleDrop = (acceptedFiles) => {
         dispatch(uploadImages(acceptedFiles));
@@ -105,6 +105,7 @@ const AddProduct = () => {
             setTimeout(() => {
 
                 dispatch(resetState());
+                dispatch(resetImages());
                 navigate('/admin/products');
 
             }, 1000);
