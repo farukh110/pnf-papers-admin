@@ -16,6 +16,7 @@ import Dropzone from 'react-dropzone'
 import { deleteImage, uploadImages } from "../../redux/api/upload/uploadSlice";
 import { createProduct, resetState } from "../../redux/api/product/productSlice";
 import { useNavigate } from "react-router-dom";
+import namer from 'color-namer';
 
 const AddProduct = () => {
 
@@ -297,11 +298,20 @@ const AddProduct = () => {
                                         dataKey="id"
                                         onChange={(e) => {
                                             console.log(e);
-                                            setColorsOption(e.value)
+                                            setColorsOption(e.map(item => item.hex));
                                         }}
                                         textField="color"
-                                        value={["Red"]}
-                                        data={colors.map((item) => ({ color: item?.title, id: item?._id }))}
+                                        value={[]}
+                                        data={colors.map((item) => {
+                                            const hex = item?.title;
+                                            const nameResult = namer(hex);
+                                            const colorName = nameResult?.ntc?.[0]?.name || 'Unknown';
+                                            return {
+                                                color: colorName,   // for display
+                                                hex: hex,           // actual hex value (optional)
+                                                id: item?._id,      // unique key
+                                            };
+                                        })}
                                     />
 
                                 </Form.Item>
