@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
 import { deleteCategory, getAllProductsCategory } from './../../redux/api/product-categories/categoriesSlice';
 import { Modal, notification } from 'antd';
+import { exportToExcel } from '../../utils';
 
 const ProductsCategories = () => {
 
@@ -260,9 +261,36 @@ const ProductsCategories = () => {
             column_class: "col-md-4 pe-1",
             icon: "pi pi-file-excel",
             btn_size: "small",
-            on_action: () => {
-                console.log("Excel all");
-            },
+            on_action: async () => {
+                try {
+                    const allParams = {
+                        page: 1,
+                        limit: 10000,
+                        sortBy: 'createdAt',
+                        sortOrder: 'desc',
+                        filters: {},
+                    };
+
+                    const result = await dispatch(getAllProductsCategory(allParams)).unwrap();
+                    const rawColors = result?.data || [];
+
+                    const exportData = rawColors.map((item, index) => {
+
+                        return {
+                            "S.No": index + 1,
+                            "Name": item.title,
+                            "Created Date": new Date(item.createdAt).toLocaleString(),
+                            "Updated Date": new Date(item.updatedAt).toLocaleString(),
+                        };
+                    });
+
+                    console.log("Exporting Excel data:", exportData);
+
+                    exportToExcel(exportData, 'Categories_List');
+                } catch (err) {
+                    console.error('Excel export error:', err);
+                }
+            }
         },
         {
             id: 3,

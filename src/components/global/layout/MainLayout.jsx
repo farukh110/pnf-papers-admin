@@ -3,7 +3,7 @@ import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, Layout, List, Menu, theme } from 'antd';
+import { Button, Layout, List, Menu, theme } from 'antd';
 import { RiCoupon3Line, RiCustomerService2Line, RiDashboard3Line, RiProductHuntLine } from 'react-icons/ri';
 import { HiOutlineUsers } from 'react-icons/hi';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
@@ -15,7 +15,7 @@ import { BiCategory } from 'react-icons/bi';
 const { Header, Sider, Content } = Layout;
 import logo from '../../../assets/images/logo/pnf-papers.png';
 import './index.scss';
-import { IoIosNotificationsOutline } from 'react-icons/io';
+import { useSelector } from 'react-redux';
 
 const MainLayout = () => {
 
@@ -27,11 +27,16 @@ const MainLayout = () => {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
 
+    const { user } = useSelector((state) => state.auth);
+
+
     const data = [
         {
-            title: 'Farukh Sajjad',
+            title: `${user?.firstname} ${user?.lastname}`,
         },
     ];
+
+    console.log('main layout: ', user);
 
     return (
         <Layout>
@@ -228,7 +233,7 @@ const MainLayout = () => {
                         />
                     </div>
 
-                    <div className='col-md-1 notifications'>
+                    {/* <div className='col-md-1 notifications'>
                         <div className='position-relative float-end'>
                             <IoIosNotificationsOutline className='notify-icon' />
                             <span className='badge bg-danger notify-badge rounded-circle p-1 position-absolute'>
@@ -236,9 +241,9 @@ const MainLayout = () => {
                             </span>
                         </div>
 
-                    </div>
+                    </div> */}
 
-                    <div className='col-md-3 header-right-area'>
+                    <div className='col-md-2 header-right-area me-md-5'>
 
                         <List
                             itemLayout="horizontal"
@@ -246,9 +251,9 @@ const MainLayout = () => {
                             renderItem={(item, index) => (
                                 <List.Item key={index}>
                                     <List.Item.Meta
-                                        avatar={<Avatar src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAw436esCuqhWhF6QPU_r2FKQmpnscithCVg&s`} />}
+                                        // avatar={<Avatar src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAw436esCuqhWhF6QPU_r2FKQmpnscithCVg&s`} />}
                                         title={<p className='mb-0'>{item.title}</p>}
-                                        description={<p className='mb-0 text-dark'>farukhsajjad110@gmail.com</p>}
+                                        description={<p className='mb-0 text-dark'>{user?.email}</p>}
 
                                     />
                                 </List.Item>

@@ -26,6 +26,8 @@ body {
 
 .custom-sidebar {
 
+    background: #0D0E12;
+
     .logo {
 
         height: 90px;
@@ -36,6 +38,16 @@ body {
 
     .sidebar-icon {
         font-size: 20px !important;
+    }
+
+    .ant-menu-dark {
+        background: #0D0E12;
+    }
+
+    :where(.css-dev-only-do-not-override-1kf000u).ant-menu-dark .ant-menu-item-selected,
+    :where(.css-dev-only-do-not-override-1kf000u).ant-menu-dark>.ant-menu {
+
+        background: #2C2C41;
     }
 }
 

@@ -7,6 +7,7 @@ import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllUsers } from '../../redux/api/customer/customerSlice';
 import debounce from 'lodash/debounce';
+import { exportToExcel } from '../../utils';
 
 const Customers = () => {
     const navigate = useNavigate();
@@ -241,9 +242,38 @@ const Customers = () => {
             column_class: "col-md-6 pe-1",
             icon: "pi pi-file-excel",
             btn_size: "small",
-            on_action: () => {
-                console.log("Excel all");
-            },
+            on_action: async () => {
+                try {
+                    const allParams = {
+                        page: 1,
+                        limit: 10000,
+                        sortBy: 'createdAt',
+                        sortOrder: 'desc',
+                        filters: {},
+                    };
+
+                    const result = await dispatch(getAllUsers(allParams)).unwrap();
+                    const rawColors = result?.data || [];
+
+                    const exportData = rawColors.map((item, index) => {
+
+                        return {
+                            "S.No": index + 1,
+                            "First Name": item.firstname,
+                            "Last Name": item.lastname,
+                            "Email": item.email,
+                            "Role": item.role,
+                            "Blocked": (item.isBlocked ? 'Yes' : 'No'),
+                        };
+                    });
+
+                    console.log("Exporting Excel data:", exportData);
+
+                    exportToExcel(exportData, 'Customers_List');
+                } catch (err) {
+                    console.error('Excel export error:', err);
+                }
+            }
         },
         {
             id: 2,

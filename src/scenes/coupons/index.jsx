@@ -8,6 +8,7 @@ import debounce from 'lodash/debounce';
 import { deleteCoupon, getAllCoupons } from '../../redux/api/coupon/couponSlice';
 import { Modal, notification } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { exportToExcel } from '../../utils';
 
 const Coupons = () => {
 
@@ -253,9 +254,36 @@ const Coupons = () => {
             column_class: "col-md-4 pe-1",
             icon: "pi pi-file-excel",
             btn_size: "small",
-            on_action: () => {
-                console.log("Excel all");
-            },
+            on_action: async () => {
+                try {
+                    const allParams = {
+                        page: 1,
+                        limit: 10000,
+                        sortBy: 'createdAt',
+                        sortOrder: 'desc',
+                        filters: {},
+                    };
+
+                    const result = await dispatch(getAllCoupons(allParams)).unwrap();
+                    const rawColors = result?.data || [];
+
+                    const exportData = rawColors.map((item, index) => {
+
+                        return {
+                            "S.No": index + 1,
+                            "Name": item.name,
+                            "Discount": `${item.discount}%`,
+                            "Expiry Date": new Date(item.expiry).toLocaleString(),
+                        };
+                    });
+
+                    console.log("Exporting Excel data:", exportData);
+
+                    exportToExcel(exportData, 'Coupons_List');
+                } catch (err) {
+                    console.error('Excel export error:', err);
+                }
+            }
         },
         {
             id: 3,

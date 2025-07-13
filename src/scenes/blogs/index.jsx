@@ -8,6 +8,7 @@ import debounce from 'lodash/debounce';
 import { deleteBlog, getAllBlogs } from './../../redux/api/blog/blogSlice';
 import { Modal, notification } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { exportToExcel } from '../../utils';
 
 const Blogs = () => {
 
@@ -277,9 +278,39 @@ const Blogs = () => {
             column_class: "col-md-4 pe-1",
             icon: "pi pi-file-excel",
             btn_size: "small",
-            on_action: () => {
-                console.log("Excel all");
-            },
+            on_action: async () => {
+                try {
+                    const allParams = {
+                        page: 1,
+                        limit: 10000,
+                        sortBy: 'createdAt',
+                        sortOrder: 'desc',
+                        filters: {},
+                    };
+
+                    const result = await dispatch(getAllBlogs(allParams)).unwrap();
+                    const rawColors = result?.data || [];
+
+                    const exportData = rawColors.map((item, index) => {
+
+                        return {
+                            "S.No": index + 1,
+                            "Name": item.title,
+                            "Category": item.category,
+                            "Description": item.description,
+                            "Author": item.author,
+                            "Created Date": new Date(item.createdAt).toLocaleString(),
+                            "Updated Date": new Date(item.updatedAt).toLocaleString(),
+                        };
+                    });
+
+                    console.log("Exporting Excel data:", exportData);
+
+                    exportToExcel(exportData, 'Blogs_List');
+                } catch (err) {
+                    console.error('Excel export error:', err);
+                }
+            }
         },
         {
             id: 3,

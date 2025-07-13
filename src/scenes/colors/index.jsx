@@ -8,6 +8,8 @@ import debounce from 'lodash/debounce';
 import { deleteColor, getAllColors } from './../../redux/api/color/colorSlice';
 import { useNavigate } from 'react-router-dom';
 import { Modal, notification } from 'antd';
+import { exportToExcel } from '../../utils';
+import namer from 'color-namer';
 
 const Colors = () => {
 
@@ -259,9 +261,42 @@ const Colors = () => {
             column_class: "col-md-4 pe-1",
             icon: "pi pi-file-excel",
             btn_size: "small",
-            on_action: () => {
-                console.log("Excel all");
-            },
+            on_action: async () => {
+                try {
+                    const allParams = {
+                        page: 1,
+                        limit: 10000,
+                        sortBy: 'createdAt',
+                        sortOrder: 'desc',
+                        filters: {},
+                    };
+
+                    const result = await dispatch(getAllColors(allParams)).unwrap();
+                    const rawColors = result?.data || [];
+
+                    const exportData = rawColors.map((item, index) => {
+                        const hex = `#${item.title.toLowerCase()}`;
+                        const nameResult = namer(hex);
+                        const colorName = nameResult?.ntc?.[0]?.name || 'Unknown';
+
+                        return {
+                            "S.No": index + 1,
+                            "Color Hex": hex,
+                            "Color Name": colorName,
+                            "Created Date": new Date(item.createdAt).toLocaleString(),
+                            "Updated Date": new Date(item.updatedAt).toLocaleString(),
+                        };
+                    });
+
+                    console.log("Exporting Excel data:", exportData);
+
+                    exportToExcel(exportData, 'Colors_List');
+                } catch (err) {
+                    console.error('Excel export error:', err);
+                }
+            }
+
+
         },
         {
             id: 3,

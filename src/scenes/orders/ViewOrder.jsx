@@ -7,6 +7,7 @@ import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
 import { getOrder } from '../../redux/api/auth/authSlice';
+import { exportToExcel } from '../../utils';
 
 const ViewOrder = () => {
 
@@ -222,9 +223,31 @@ const ViewOrder = () => {
             column_class: "col-md-6 pe-1",
             icon: "pi pi-file-excel",
             btn_size: "small",
-            on_action: () => {
-                console.log("Excel all");
-            },
+            on_action: async () => {
+                try {
+                    const result = await dispatch(getOrder(userId)).unwrap();
+                    const rawItems = result?.order?.orderItems || [];
+
+                    const exportData = rawItems.map((item, index) => ({
+                        "S.No": index + 1,
+                        "Product Name": item.product?.title,
+                        "Brand": item.product?.brand,
+                        "Count": item?.quantity,
+                        "Color": Array.isArray(item?.product?.color)
+                            ? item.product.color.join(", ")
+                            : item?.product?.color || '',
+                        "Amount": item?.product?.price ?? "",
+                        "Date": item?.product?.updatedAt
+                            ? new Date(item.product.updatedAt).toLocaleString()
+                            : "",
+                    }));
+
+                    exportToExcel(exportData, 'View_Order_List');
+                } catch (err) {
+                    console.error('Excel export error:', err);
+                }
+            }
+
         },
         {
             id: 2,

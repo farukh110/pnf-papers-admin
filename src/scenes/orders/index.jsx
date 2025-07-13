@@ -7,6 +7,7 @@ import './index.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
 import { getAllOrders, updateOrder } from '../../redux/api/auth/authSlice';
+import { exportToExcel } from '../../utils';
 
 const Orders = () => {
 
@@ -243,9 +244,37 @@ const Orders = () => {
             column_class: "col-md-6 pe-1",
             icon: "pi pi-file-excel",
             btn_size: "small",
-            on_action: () => {
-                console.log("Excel all");
-            },
+            on_action: async () => {
+                try {
+                    const allParams = {
+                        page: 1,
+                        limit: 10000,
+                        sortBy: 'createdAt',
+                        sortOrder: 'desc',
+                        filters: {},
+                    };
+
+                    const result = await dispatch(getAllOrders(allParams)).unwrap();
+                    const rawItems = result?.data || [];
+
+                    const exportData = rawItems.map((item, index) => {
+                        return {
+                            "S.No": index + 1,
+                            "Name": `${item?.orderBy?.firstname || ""} ${item?.orderBy?.lastname || ""}`,
+                            "Order": `/admin/order/${item?._id}`,
+                            "Product": item?.products?.map(p => p?.product?.title).join(", "),
+                            "Amount": item?.paymentIntent?.amount || "",
+                            "Created Date": new Date(item.createdAt).toLocaleString(),
+                        };
+                    });
+
+                    console.log("Exporting Excel data:", exportData);
+
+                    exportToExcel(exportData, 'Orders_List');
+                } catch (err) {
+                    console.error('Excel export error:', err);
+                }
+            }
         },
         {
             id: 2,
